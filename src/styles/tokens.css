@@ -1,0 +1,61 @@
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/cormorant-garamond-latin-wght-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-wght-normal.woff2') format('woff2');
+}
+
+:root {
+  /* Colour */
+  --ink: #141312;
+  --plaster: #ede6da;
+  --muted: #a59c90;
+  --brass: #b8935a;
+  --olive: #46503f;
+  --walnut: #7a5638;
+  --line: rgb(237 230 218 / 0.14);
+
+  /* Type */
+  --font-display: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --text-headline: clamp(2.7rem, 1.6rem + 4.9vw, 5.4rem);
+  --text-title: clamp(1.9rem, 1.4rem + 2vw, 3rem);
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-label: 0.6875rem; /* 11px */
+
+  --leading-tight: 1.02;
+  --leading-body: 1.6;
+  --tracking-label: 0.28em;
+  --measure: 60ch;
+
+  /* Space */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 7rem;
+
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --header-height: 4.5rem;
+  --tap: 2.75rem; /* 44px minimum tap target */
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --fast: 180ms;
+  --medium: 500ms;
+}

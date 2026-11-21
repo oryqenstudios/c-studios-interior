@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#141312" />
+    <title>C Studios Interior · Spaces, built around you.</title>
+    <meta
+      name="description"
+      content="C Studios Interior is an interior design studio in Singapore. Scroll to build a home, from the first line of the plan to the last lamp."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="preload"
+      href="/fonts/cormorant-garamond-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/manrope-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body>
+    <canvas
+      id="scene"
+      class="scene"
+      role="img"
+      aria-label="A 3D scale model of an apartment that is built step by step as you scroll: floor plan, walls, floors, furniture and lighting, followed by a walk through each room."
+    ></canvas>
+
+    <header class="site-header">
+      <a class="logo" href="#top" aria-label="C Studios Interior, back to top">
+        <span class="logo__mark" aria-hidden="true">C</span>
+        <span class="logo__word" aria-hidden="true">Studios Interior</span>
+      </a>
+      <nav class="site-header__actions" aria-label="Primary">
+        <a class="button button--primary" href="#consultation">Book a consultation</a>
+      </nav>
+    </header>
+
+    <main id="top"></main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
