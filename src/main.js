@@ -5,6 +5,7 @@ import 'lenis/dist/lenis.css';
 import { initFilms } from './ui/film.js';
 import { initMagnetic } from './ui/magnetic.js';
 import { initForm } from './ui/form.js';
+import { initFaq, initHeader, initMoods, initProcess, initReveals, initTilt, initWork } from './ui/sections.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,13 +22,20 @@ if (!reducedMotion) {
 ScrollTrigger.config({ ignoreMobileResize: true });
 
 initFilms();
+initHeader();
+initReveals({ reducedMotion });
+initTilt({ reducedMotion });
+initMoods();
+initProcess({ reducedMotion });
+initWork();
+initFaq();
 initForm();
 initMagnetic({ reducedMotion });
 for (const el of document.querySelectorAll('[data-year]')) el.textContent = new Date().getFullYear();
 
-// The header gets a solid background once both films have scrolled away.
+// The header gets a solid background once the three films have scrolled away.
 ScrollTrigger.create({
-  trigger: '#build',
+  trigger: '#walkthrough',
   start: 'bottom 96px',
   end: 'max',
   toggleClass: { targets: root, className: 'is-past-hero' },
@@ -44,3 +52,15 @@ if (progressBar) {
     },
   });
 }
+
+// Loader: show the mark briefly, then fade the page up. Never longer than two seconds.
+const started = performance.now();
+let cleared = false;
+const clearLoader = () => {
+  if (cleared) return;
+  cleared = true;
+  const wait = reducedMotion ? 0 : Math.max(0, 1200 - (performance.now() - started));
+  setTimeout(() => root.classList.remove('is-loading'), wait);
+};
+document.fonts.ready.then(clearLoader);
+setTimeout(clearLoader, 1800);

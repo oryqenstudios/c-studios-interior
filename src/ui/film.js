@@ -24,6 +24,7 @@ function initFilm(section) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const count = Number(section.dataset.frames);
+  const first = Number(section.dataset.first || 0); // index of this section's first frame within the folder
   const filmEnd = Number(section.dataset.end || 0.94); // the last frame holds after this
   const scrim = section.querySelector('.film__scrim');
   const rail = section.querySelector('.film__rail-bar');
@@ -36,7 +37,7 @@ function initFilm(section) {
   const portrait = window.innerWidth / window.innerHeight < 0.8;
   const wide = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 900;
   const set = portrait ? 'p' : wide ? 'd' : 'm';
-  const url = (i) => `${section.dataset.film}/${set}/f-${pad(i)}.webp`;
+  const url = (i) => `${section.dataset.film}/${set}/f-${pad(first + i)}.webp`;
   const frames = new Array(count);
   let progress = 0;
   let drawnKey = '';

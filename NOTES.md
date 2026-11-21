@@ -2,7 +2,49 @@
 
 Every placeholder and every decision made without input is listed here.
 
-## Current state (read this first)
+## The page as it stands now (read this first)
+
+The studio supplied a 14-section flow written around the original 3D model, then chose
+to keep the films and adapt the flow to them ("option A"), and asked for the flow's
+order to be followed. Sections older than this one in this file are history.
+
+| # | Flow section | What was built |
+| --- | --- | --- |
+| 0 | Loader | The C mark wipes in on ink, then the page fades up. 1.2 s normally, 1.8 s at most. The flow asked for the mark to draw itself; the logo is a photograph-filled image, not line art, so it is revealed with a wipe instead. |
+| 1 | Header | Logo and four anchor links (Services, Process, About, Contact). Hides on the way down, returns on the way up. **No booking button**: the studio asked for those to be removed before choosing this flow, and that instruction was kept. |
+| 2 | Hero | The arrival: entrance wall with the name and motto, then through the walnut door (first 5 seconds of the house walk). |
+| 3 | Build story | The model-to-door film with four short stage headings: "It starts as a model.", "Then you step inside it.", "Walls, floors, joinery, light.", "And the door opens." The flow describes walls rising and floors being laid; this film does not show that, and the third heading only names it. |
+| 4 | Walkthrough | The rest of the house walk with four room cards (living space, kitchen, primary suite, bath). The dining room and the closing sea view pass without a card. |
+| 5 | Statement | "A home should feel like the people who live in it. / We take the journey there with you." revealed line by line. Draft copy. |
+| 6 | Services | Four cards that rise in turn; on desktop they tilt toward the cursor and their edge lights up. |
+| 7 | Material moods | Three palettes of the living room, each by day and night (six generated images that cross-fade), with material names. Replaces the live 3D restyling the flow describes. |
+| 8 | Process | Five steps. On screens at least 900 px wide the section pins and scrolls sideways while a brass line fills; on phones and with reduced motion it is a vertical list. Durations are placeholders. |
+| 9 | Selected work | A sideways drag gallery of four **concept studies**, labelled as studio concepts and not client projects, each opening a detail panel. No location or size is given, since they are not real projects. |
+| 10 | About | Text and portrait slide in from opposite sides. Story, founder name, role and portrait are placeholders. |
+| 11 | Questions | Six questions in an accordion with a smooth height change. Only "Which areas do you serve?" has an answer ("We work across Singapore", from the plan). The rest are placeholders. |
+| 12 | Consultation | Two-step form (project, then contact details) over the house at dusk. Success shows a tick that draws itself. Still in demo mode. |
+| 13 | Footer | Unchanged. |
+
+### Decisions and conflicts in this change
+
+- **Booking buttons.** The flow asks for four; the studio had just asked for all of them to
+  be removed. The removal was kept. The header's Contact link is the route to the form.
+- **Testimonials** are left out, as the flow itself says.
+- **"Your space next?"** section removed; the statement takes its place.
+- **Footage reuse.** No new video was generated: the hero and the walkthrough are two
+  parts of the same 30-second house walk. Five new stills were generated for the moods.
+- **Durations, founder, story, answers, portrait** must come from the studio. None were
+  invented.
+- **Magnetic buttons** now only affect the form's buttons, since the others were removed.
+- **Not tested:** real devices, Safari and Firefox, and the live site.
+
+### New placeholders
+
+`[DURATION 1]` to `[DURATION 5]` (process), `[STUDIO STORY]`, `[FOUNDER NAME]`,
+`[FOUNDER ROLE]`, `[PORTRAIT]` (about), `[ANSWER 1]`, `[ANSWER 2]`, `[ANSWER 4]`,
+`[ANSWER 5]`, `[ANSWER 6]` (questions). All are in `index.html`.
+
+## Earlier state: the first film version (history)
 
 The site was first built to the original plan as a scroll-driven 3D model (phases 1 to 8
 below). On 21 Nov 2026 the studio changed direction: real-looking imagery instead of the

@@ -1,4 +1,4 @@
-// Enquiry form: validation, submit, success and failure states.
+// Enquiry form in two steps: the project, then contact details.
 
 // Both values come from .env (or the host's environment settings) at build time.
 // Until a real endpoint is set, a valid submission shows the success state with a
@@ -9,14 +9,15 @@ const FALLBACK_EMAIL = import.meta.env.VITE_ENQUIRY_EMAIL || '[EMAIL]';
 const hasEndpoint = /^https?:\/\//.test(ENDPOINT);
 
 const RULES = {
+  project_type: (v) => (v ? '' : 'Please choose a project type.'),
   name: (v) => (v.trim() ? '' : 'Please enter your name.'),
   email: (v) => {
     if (!v.trim()) return 'Please enter your email address.';
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? '' : 'Please enter a valid email address, such as name@example.com.';
   },
-  project_type: (v) => (v ? '' : 'Please choose a project type.'),
   message: (v) => (v.trim() ? '' : 'Please tell us a little about the project.'),
 };
+const STEP_FIELDS = { 1: ['project_type'], 2: ['name', 'email', 'message'] };
 
 export function initForm() {
   const form = document.getElementById('enquiry');
@@ -26,7 +27,9 @@ export function initForm() {
   const status = form.querySelector('.form__status');
   const submit = form.querySelector('[type="submit"]');
   const submitLabel = submit.textContent;
-  let attempted = false;
+  const steps = { 1: form.querySelector('[data-step="1"]'), 2: form.querySelector('[data-step="2"]') };
+  const stepNow = form.querySelector('[data-step-now]');
+  const attempted = { 1: false, 2: false };
 
   function showError(input, message) {
     const field = input.closest('.field');
@@ -55,17 +58,40 @@ export function initForm() {
     return !message;
   }
 
+  // Validates one step; focuses its first invalid field. Returns true if the step is fine.
+  function validateStep(step) {
+    attempted[step] = true;
+    const invalid = STEP_FIELDS[step].filter((name) => !validate(name));
+    if (invalid.length) form.elements[invalid[0]].focus();
+    return invalid.length === 0;
+  }
+
+  function goTo(step, focus = true) {
+    steps[1].hidden = step !== 1;
+    steps[2].hidden = step !== 2;
+    stepNow.textContent = String(step);
+    if (focus) steps[step].querySelector('select, input, textarea')?.focus();
+  }
+
   function setStatus(message) {
     status.hidden = !message;
     status.textContent = message;
   }
 
-  // After the first attempt, errors clear as soon as each field is corrected.
-  for (const name of Object.keys(RULES)) {
-    const input = form.elements[name];
-    input.addEventListener('blur', () => attempted && validate(name));
-    input.addEventListener('input', () => input.hasAttribute('aria-invalid') && validate(name));
+  // After a step has been attempted, errors clear as soon as each field is corrected.
+  for (const [step, names] of Object.entries(STEP_FIELDS)) {
+    for (const name of names) {
+      const input = form.elements[name];
+      input.addEventListener('blur', () => attempted[step] && validate(name));
+      input.addEventListener('input', () => input.hasAttribute('aria-invalid') && validate(name));
+      input.addEventListener('change', () => input.hasAttribute('aria-invalid') && validate(name));
+    }
   }
+
+  form.querySelector('[data-next]').addEventListener('click', () => {
+    if (validateStep(1)) goTo(2);
+  });
+  form.querySelector('[data-back]').addEventListener('click', () => goTo(1));
 
   function showSuccess(demo) {
     form.hidden = true;
@@ -76,14 +102,19 @@ export function initForm() {
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    attempted = true;
     setStatus('');
 
-    const invalid = Object.keys(RULES).filter((name) => !validate(name));
-    if (invalid.length) {
-      form.elements[invalid[0]].focus();
+    // Enter pressed on step 1 moves on instead of sending.
+    if (!steps[1].hidden) {
+      if (validateStep(1)) goTo(2);
       return;
     }
+    if (!validateStep(1)) {
+      goTo(1, false);
+      validateStep(1);
+      return;
+    }
+    if (!validateStep(2)) return;
 
     const data = new FormData(form);
     // Spam trap: a filled hidden field means a bot. Pretend it worked and send nothing.
