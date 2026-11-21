@@ -26,7 +26,7 @@ h2,
 h3 {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 400;
   line-height: var(--leading-tight);
 }
 
@@ -287,7 +287,7 @@ a {
   display: grid;
   gap: var(--space-5);
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 400;
   font-size: var(--text-headline);
   letter-spacing: -0.01em;
   text-transform: none;
@@ -364,7 +364,7 @@ a {
   max-width: none;
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.1;
 }
 
@@ -1036,7 +1036,7 @@ a {
 .statement__text {
   max-width: none;
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 400;
   font-size: clamp(2.2rem, 1.2rem + 4.4vw, 5rem);
   line-height: 1.08;
   letter-spacing: -0.01em;
@@ -1406,7 +1406,7 @@ a {
   color: var(--plaster);
   font-family: var(--font-display);
   font-size: 1.5rem;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.2;
   text-align: left;
   cursor: pointer;
@@ -1766,4 +1766,62 @@ a {
   .film__float > * {
     animation: none;
   }
+/* ---------- Typeface refinements (Bodoni Moda for display, Jost for text) ---------- */
+h1,
+h2,
+h3,
+.statement__text,
+.faq__q,
+.film__tag,
+.form__legend,
+.work__name {
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+body {
+  font-weight: 300;
+}
+
+.label,
+.site-nav a,
+.film__index,
+.film__note,
+.scroll-cue,
+.pstep__number,
+.work__kind,
+.form__progress {
+  font-weight: 500;
+}
+
+.field label,
+.palette__name,
+.button {
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+/* The motto, set small and widely spaced as in the studio's logo */
+.film__title--brand h1 .film__motto {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: clamp(0.8rem, 0.7rem + 0.5vw, 1.0625rem);
+  line-height: 1.6;
+  letter-spacing: 0.34em;
+  text-transform: none;
+}
+
+.film__brand {
+  font-weight: 200;
+  letter-spacing: 0.08em;
+}
+
+.film__title h2 {
+  font-weight: 200;
+  letter-spacing: 0.02em;
+}
+
+.logo__word {
+  font-weight: 300;
+  letter-spacing: 0.02em;
 }
