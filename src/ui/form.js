@@ -4,7 +4,7 @@
 // Until a real endpoint is set, a valid submission shows the success state with a
 // visible demo note and sends nothing.
 const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT ?? '';
-const FALLBACK_EMAIL = import.meta.env.VITE_ENQUIRY_EMAIL || '[EMAIL]';
+const FALLBACK_EMAIL = /@/.test(import.meta.env.VITE_ENQUIRY_EMAIL ?? '') ? import.meta.env.VITE_ENQUIRY_EMAIL : '';
 
 const hasEndpoint = /^https?:\/\//.test(ENDPOINT);
 
@@ -139,7 +139,11 @@ export function initForm() {
       }
       showSuccess(!hasEndpoint);
     } catch {
-      setStatus(`Sorry, your message was not sent. Please try again, or email us at ${FALLBACK_EMAIL}.`);
+      setStatus(
+        FALLBACK_EMAIL
+          ? `Sorry, your message was not sent. Please try again, or email us at ${FALLBACK_EMAIL}.`
+          : 'Sorry, your message was not sent. Please try again in a moment.',
+      );
     } finally {
       submit.disabled = false;
       submit.textContent = submitLabel;

@@ -1658,3 +1658,22 @@ a {
     gap: var(--space-1);
   }
 }
+
+/* About image (a detail of the house, standing in until a portrait is supplied) */
+.about__image {
+  position: relative;
+  margin: 0;
+}
+
+.about__image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 36rem;
+  object-fit: cover;
+}
+
+.site-footer a {
+  color: var(--plaster);
+  text-underline-offset: 0.2em;
+}

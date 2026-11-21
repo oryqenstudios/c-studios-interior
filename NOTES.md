@@ -38,7 +38,40 @@ order to be followed. Sections older than this one in this file are history.
 - **Magnetic buttons** now only affect the form's buttons, since the others were removed.
 - **Not tested:** real devices, Safari and Firefox, and the live site.
 
-### New placeholders
+### Draft content written on request ("generate me everything")
+
+The studio asked for the missing content to be generated. Everything below is a **draft
+written without facts from the studio** and must be confirmed or corrected before it is
+relied on. None of it was verified.
+
+- **Process durations.** Brief about 1 to 2 weeks, Plan 3 to 6, Build 8 to 12, Style 1 to
+  2, Handover about 1 week. These are typical ranges for a home renovation, not the
+  studio's own figures.
+- **Studio story.** Two paragraphs built only from what is known: an interior design
+  studio in Singapore offering residential, commercial, styling and renovation
+  management. It claims "one team looks after design, styling and the renovation itself";
+  confirm that is how the studio works. No founding year, team size or history is stated.
+- **Answers to the questions.** Cost (no figures; says an itemised quotation follows the
+  brief), timeline ("about three to five months" for most homes, consistent with the
+  durations above), what the fee includes, renovation management, and how to start.
+- **Budget ranges** in the form: Under S$50,000; S$50,000 to S$100,000; S$100,000 to
+  S$200,000; Above S$200,000.
+
+### Deliberately not generated
+
+Inventing these would put false facts about a real business and real people on a live
+site, so they were left out of the page until the studio supplies them:
+
+- **Phone, email, address, social links.** The footer now shows "Singapore" and a link to
+  the enquiry form. A comment in `index.html` marks where the details go.
+- **Founder name and role.** The line was removed from the About section.
+- **Founder portrait.** The slot shows a detail of the house (a concept visual) in its
+  place.
+- **Enquiry email.** `VITE_ENQUIRY_EMAIL` is empty, so the form's failure message no
+  longer offers an email address.
+- **Form endpoint.** Still not connected; the form remains in demo mode.
+
+### New placeholders (now resolved or removed as described above)
 
 `[DURATION 1]` to `[DURATION 5]` (process), `[STUDIO STORY]`, `[FOUNDER NAME]`,
 `[FOUNDER ROLE]`, `[PORTRAIT]` (about), `[ANSWER 1]`, `[ANSWER 2]`, `[ANSWER 4]`,
