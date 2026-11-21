@@ -13,7 +13,7 @@ Every placeholder and every decision made without input is listed here.
 | `[ABOUT STATEMENT]` | About section (`index.html`), about 80 words | In the page, awaiting content |
 | `[BUDGET RANGE 1]` to `[BUDGET RANGE 4]` | Budget select in the form (`index.html`) | In the page, awaiting content |
 | Form endpoint | `VITE_FORM_ENDPOINT` in `.env` (empty = demo mode) | Awaiting a form service URL |
-| `[DOMAIN]` | `VITE_SITE_URL` in `.env` (feeds the canonical link and share tags) | Awaiting content |
+| Site address | `VITE_SITE_URL` in `.env` (feeds the canonical link and share tags) | Set to `https://cstudiosinterior.vercel.app`; change if a custom domain is attached |
 
 Draft copy written without input, for the studio to confirm or replace: the four service
 descriptions and their bullets, the five process steps, the section headings, the room
@@ -26,7 +26,7 @@ card lines, and the footer line "Interior design in Singapore."
 
 ## Decisions made without input
 
-### Phase 8 (in progress: waiting on the endpoint, hosting and content)
+### Phase 8 (in progress: waiting on the form endpoint and content)
 
 - **Site settings in one place.** The site address, form endpoint and fallback email are
   read from `.env` at build time, so launch needs no code edits for them. `.env` is
@@ -40,8 +40,11 @@ card lines, and the footer line "Interior design in Singapore."
 - **Frame rate changes** (asked for during this phase): frames are only redrawn when
   something changes; multisampling is skipped on screens with a pixel ratio of 2 or more;
   laptops and tablets now step down a tier below 45 fps (phones below 30).
-- **Not done.** Deployment, connecting the form endpoint, a test enquiry, replacing
-  placeholders, and checks on real devices and in Safari and Firefox.
+- **Hosting.** Deployed on Vercel from the GitHub repository `oryqenstudios/c-studios-interior`
+  at https://cstudiosinterior.vercel.app. Every push to `main` redeploys. `netlify.toml`
+  is unused and can be deleted.
+- **Not done.** Connecting the form endpoint, a test enquiry, replacing placeholders, and
+  checks on real devices and in Safari and Firefox.
 
 ### Phase 7
 
