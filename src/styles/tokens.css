@@ -1,17 +1,17 @@
 @font-face {
-  font-family: 'Cormorant Garamond';
+  font-family: 'Bodoni Moda';
   font-style: normal;
-  font-weight: 300 700;
+  font-weight: 400 900;
   font-display: swap;
-  src: url('../assets/fonts/cormorant-garamond-latin-wght-normal.woff2') format('woff2');
+  src: url('../assets/fonts/bodoni-moda-latin-wght-normal.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Manrope';
+  font-family: 'Jost';
   font-style: normal;
-  font-weight: 200 800;
+  font-weight: 100 900;
   font-display: swap;
-  src: url('../assets/fonts/manrope-latin-wght-normal.woff2') format('woff2');
+  src: url('../assets/fonts/jost-latin-wght-normal.woff2') format('woff2');
 }
 
 :root {
@@ -25,16 +25,16 @@
   --line: rgb(237 230 218 / 0.14);
 
   /* Type */
-  --font-display: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
-  --font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Bodoni Moda', 'Didot', 'Bodoni MT', Georgia, serif;
+  --font-body: 'Jost', 'Futura', 'Century Gothic', system-ui, sans-serif;
 
-  --text-headline: clamp(2.7rem, 1.6rem + 4.9vw, 5.4rem);
-  --text-title: clamp(1.9rem, 1.4rem + 2vw, 3rem);
-  --text-body: 1rem;
+  --text-headline: clamp(2.4rem, 1.5rem + 4vw, 4.6rem);
+  --text-title: clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem);
+  --text-body: 1.0625rem;
   --text-small: 0.875rem;
   --text-label: 0.6875rem; /* 11px */
 
-  --leading-tight: 1.02;
+  --leading-tight: 1.08;
   --leading-body: 1.6;
   --tracking-label: 0.28em;
   --measure: 60ch;
