@@ -25,9 +25,9 @@ initForm();
 initMagnetic({ reducedMotion });
 for (const el of document.querySelectorAll('[data-year]')) el.textContent = new Date().getFullYear();
 
-// The header gets a solid background once the hero film has scrolled away.
+// The header gets a solid background once both films have scrolled away.
 ScrollTrigger.create({
-  trigger: '#hero',
+  trigger: '#build',
   start: 'bottom 96px',
   end: 'max',
   toggleClass: { targets: root, className: 'is-past-hero' },

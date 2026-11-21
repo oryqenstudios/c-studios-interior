@@ -355,7 +355,7 @@ a {
   background: var(--ink);
 }
 
-/* Header gets a solid background once the hero film is behind it */
+/* Header gets a solid background once the films are behind it */
 .is-past-hero .site-header {
   background: var(--ink);
   border-bottom: 1px solid var(--line);

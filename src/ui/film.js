@@ -10,7 +10,9 @@ gsap.registerPlugin(ScrollTrigger);
 // Markup: <section class="film" data-film="/film/walk" data-frames="120">, containing
 // a .film__canvas and any number of captions with data-from / data-to (0 to 1 of the
 // section's scroll) that fade in and out.
-const SIZES = { d: 1280, m: 720 }; // frame widths of the desktop and phone sets
+// Frame sets: d = 1280 x 720, m = 720 x 405, p = 540 x 960 (the centre of the picture,
+// for portrait phones, so the footage is not enlarged until it goes soft).
+const SETS = ['d', 'm', 'p'];
 const CAPTION_FADE = 0.025;
 
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
@@ -29,7 +31,9 @@ function initFilm(section) {
     to: Number(el.dataset.to),
   }));
 
-  const set = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 900 ? 'd' : 'm';
+  const portrait = window.innerWidth / window.innerHeight < 0.8;
+  const wide = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 900;
+  const set = portrait ? 'p' : wide ? 'd' : 'm';
   const url = (i) => `${section.dataset.film}/${set}/f-${pad(i)}.webp`;
   const frames = new Array(count);
   let progress = 0;
@@ -161,4 +165,4 @@ export function initFilms() {
   for (const section of document.querySelectorAll('[data-film]')) initFilm(section);
 }
 
-export { SIZES as FILM_SIZES };
+export { SETS as FILM_SETS };

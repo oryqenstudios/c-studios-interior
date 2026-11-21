@@ -1,6 +1,6 @@
 # C Studios Interior
 
-Single-page, scroll-driven 3D website. Vite, vanilla JavaScript, Three.js, GSAP and Lenis.
+Single-page website with two scroll-driven films. Vite, vanilla JavaScript, GSAP and Lenis.
 Decisions and open placeholders are listed in [NOTES.md](NOTES.md).
 
 ## Run
@@ -11,9 +11,6 @@ npm run dev      # local development
 npm run build    # production build in dist/
 npm run preview  # serve the production build locally
 ```
-
-Useful address options: `?stats` shows the quality tier and frame rate,
-`?quality=high|medium|low` forces a tier.
 
 ## Before launch
 
@@ -37,13 +34,17 @@ demo mode: it validates, shows the success state with a "[DEMO]" note and sends 
 styles) with a one-year cache. Connect the repository, set the environment values, then
 attach the domain.
 
-## Share image
+## Films
 
-`public/og-image.png` is rendered from the model:
+Each film is a folder of WebP frames under `public/film/<name>/` in three sets: `d`
+(1280 x 720), `m` (720 x 405) and `p` (540 x 960, centre crop for portrait phones).
+A section opts in with `data-film="/film/<name>"` and `data-frames="<count>"`; captions
+inside it fade by their `data-from` and `data-to` (0 to 1 of the section's scroll).
+
+To replace a film, export frames from the new video with ffmpeg, for example:
 
 ```bash
-npm run dev
-node scripts/make-og-image.cjs
+ffmpeg -i new.mp4 -vf "fps=8,scale=1280:720" -c:v libwebp -quality 74 -start_number 0 public/film/walk/d/f-%03d.webp
 ```
 
-This needs Playwright with Chromium, which is not a project dependency.
+then update `data-frames` and the caption timings in `index.html`.

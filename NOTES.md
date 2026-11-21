@@ -2,6 +2,65 @@
 
 Every placeholder and every decision made without input is listed here.
 
+## Current state (read this first)
+
+The site was first built to the original plan as a scroll-driven 3D model (phases 1 to 8
+below). On 21 Nov 2026 the studio changed direction: real-looking imagery instead of the
+3D model. The 3D story, its controls and the Three.js code were removed. The sections
+further down that describe the 3D build are kept as a record; that code now exists only
+in the Git history (last commit with it: "Add real-life room photographs to the
+walkthrough").
+
+The page is now:
+
+1. **Hero film.** A full-screen walk through a finished home (living and dining, kitchen,
+   bedroom, bathroom), played frame by frame as the visitor scrolls, with the headline,
+   a small room caption and the booking button over it.
+2. **Build film.** The section below the hero: a bare concrete shell becomes the finished
+   living area as the visitor scrolls, with three of the agreed stage lines as captions.
+3. Closing call to action, Services, Process, About, Consultation form, footer (unchanged).
+
+### Decisions in this change
+
+- **Footage source.** All footage was generated with the studio's Higgsfield account:
+  still frames with Grok Image 2.0 (guided by frames of the old 3D model, so every room
+  shares one layout and palette), and motion with Kling 3.0 Pro image-to-video (five
+  5-second moves for the walk, one 10-second first-to-last-frame clip for the build).
+  The two reference videos the studio sent were used as direction only and are not in
+  the site.
+- **These are concept visuals.** They show a model home, not completed client projects.
+  Each film carries a small "Concept visual" label, added without being asked. It can be
+  removed in `index.html` (`.film__note`).
+- **Scrubbing by frames.** Each film is a set of WebP frames drawn to a canvas, with
+  neighbouring frames blended, because seeking inside a video file is jerky in several
+  browsers. Three sets per film: 1280 x 720, 720 x 405 and a 540 x 960 centre crop for
+  portrait phones. The hero is 168 frames and the build film 121. Frames live in
+  `public/film/` and are cached for a week rather than a year, as they are not hashed.
+- **Weight.** A visitor downloads one set per film: about 4.4 MB plus 3.1 MB on desktop,
+  2.4 MB plus 1.7 MB on a portrait phone. Frames load progressively (a coarse pass first)
+  and the build film waits until the visitor is near it.
+- **Large screens.** Frames are 1280 px wide, so the films are slightly soft above about
+  1600 px. A 1920 px set would roughly double the download.
+- **Portrait phones** see the centre of each shot, not the full width.
+- **Hero copy.** The headline is unchanged. The agreed hero line ("Scroll to build a
+  home...") no longer fits a walk-through, so the hero says "Interior design in Singapore.
+  Scroll to walk through a home." Draft, for the studio to confirm.
+- **Build film copy.** "Floors go down board by board", "Every piece has a place" and
+  "Then the lights come on" are used as agreed. "Walls rise from the plan" does not match
+  footage of walls being painted, so the opening caption is "It starts as an empty
+  shell." Draft, for the studio to confirm.
+- **Removed with the 3D model:** material moods, day and night switch, plan navigation,
+  orbit, room hover, cursor parallax, quality tiers, the loading screen and the WebGL
+  fallback page. The process heading changed from "in the order you just scrolled" to
+  "from brief to handover".
+- **Kept:** smooth scroll (off with reduced motion), magnetic buttons, the progress line,
+  the form and its validation, and all placeholders.
+- **Without JavaScript** each film shows its first frame as a still, one screen tall.
+- **Share image** is now a crop of the finished living-area frame.
+- **Script size** fell from about 209 KB to about 52 KB compressed.
+- **Not tested:** real devices, Safari and Firefox, and download behaviour on a slow
+  connection.
+
 ## Placeholders
 
 | Placeholder | Where | Status |
