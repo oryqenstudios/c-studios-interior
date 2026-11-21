@@ -148,7 +148,7 @@ export function initProcess({ reducedMotion }) {
 const STUDIES = {
   dining: { scope: 'Dining room for eight', mats: 'Walnut, brushed brass, lime plaster, limestone' },
   kitchen: { scope: 'Kitchen with island seating', mats: 'Honed travertine, walnut, olive stone, brass' },
-  suite: { scope: 'Primary bedroom', mats: 'Walnut, linen, wool, lime plaster' },
+  suite: { scope: 'Bedroom', mats: 'Walnut, linen, wool, lime plaster' },
   bath: { scope: 'Primary bathroom', mats: 'Carved stone, walnut, travertine, brushed brass' },
 };
 

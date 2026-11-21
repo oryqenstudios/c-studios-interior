@@ -2109,3 +2109,131 @@ body {
     font-size: 1.75rem;
   }
 }
+
+/* ---------- Customiser: rooms, camera and transitions ---------- */
+.cfg__view {
+  transition: transform 1100ms var(--ease);
+  transform-origin: center;
+}
+
+.cfg__canvas {
+  opacity: 0;
+  transform: scale(1.1);
+  transition:
+    opacity 1100ms var(--ease),
+    transform 1300ms var(--ease);
+  pointer-events: none;
+}
+
+.cfg__canvas.is-active {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* The room being left pushes forward as it dissolves */
+.cfg__canvas.is-leaving {
+  opacity: 0;
+  transform: scale(1.22);
+}
+
+.cfg__original {
+  z-index: 1;
+}
+
+.cfg.is-zoomed .cfg__original {
+  visibility: hidden;
+}
+
+.cfg.is-zoomed .cfg__divider,
+.cfg.is-zoomed .cfg__handle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cfg__divider,
+.cfg__handle {
+  transition: opacity var(--medium) var(--ease);
+}
+
+.cfg__rooms {
+  position: absolute;
+  z-index: 2;
+  right: var(--gutter);
+  top: calc(var(--header-height) + var(--space-5));
+  display: flex;
+  gap: var(--space-2);
+}
+
+.cfg__room {
+  min-height: var(--tap);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgb(20 19 18 / 0.7);
+  color: var(--plaster);
+  font: inherit;
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.cfg__room[aria-pressed='true'] {
+  background: var(--plaster);
+  border-color: var(--plaster);
+  color: var(--ink);
+}
+
+.cfg__room.is-loading {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.cfg__reset[aria-pressed='true'] {
+  border-color: var(--brass);
+  color: var(--brass);
+}
+
+.cfg__row {
+  gap: var(--space-2);
+}
+
+@media (max-width: 47.99rem) {
+  .cfg__rooms {
+    left: var(--space-4);
+    right: 0;
+    top: calc(var(--header-height) + 5.75rem);
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-right: var(--space-4);
+  }
+
+  .cfg__room {
+    flex: none;
+    padding: 0 var(--space-3);
+  }
+
+  .cfg__hint {
+    display: none;
+  }
+
+  .cfg__row .cfg__reset {
+    margin-right: 0;
+  }
+
+  .cfg__row .cfg__reset:last-child {
+    margin-right: var(--space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cfg__view,
+  .cfg__canvas {
+    transition-duration: 0.01ms;
+  }
+}
