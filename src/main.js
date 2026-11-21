@@ -3,6 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import { initFilms } from './ui/film.js';
+import { initHeroVideo } from './ui/herovideo.js';
 import { initMagnetic } from './ui/magnetic.js';
 import { initForm } from './ui/form.js';
 import { initCustomiser } from './ui/customise.js';
@@ -24,6 +25,7 @@ if (!reducedMotion) {
 ScrollTrigger.config({ ignoreMobileResize: true });
 
 initFilms();
+const heroVideo = initHeroVideo({ reducedMotion });
 initHeader();
 initReveals({ reducedMotion });
 initTilt({ reducedMotion });
@@ -64,7 +66,10 @@ const clearLoader = () => {
   if (cleared) return;
   cleared = true;
   const wait = reducedMotion ? 0 : Math.max(0, 1200 - (performance.now() - started));
-  setTimeout(() => root.classList.remove('is-loading'), wait);
+  setTimeout(() => {
+    root.classList.remove('is-loading');
+    heroVideo?.play(); // the hero clip starts as the page is revealed
+  }, wait);
 };
 document.fonts.ready.then(clearLoader);
 setTimeout(clearLoader, 1800);

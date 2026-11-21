@@ -2237,3 +2237,45 @@ body {
     transition-duration: 0.01ms;
   }
 }
+
+/* ---------- Hero as a self-playing clip: one screen tall ---------- */
+.film--clip,
+.film--clip.is-live {
+  height: 100svh;
+}
+
+.film__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--ink);
+}
+
+/* Small screens: header links must fit beside the mark */
+@media (max-width: 30rem) {
+  .site-header {
+    padding: 0 var(--space-3);
+  }
+
+  .site-nav {
+    gap: 0;
+    min-width: 0;
+  }
+
+  .site-nav a {
+    font-size: 0.59rem;
+    letter-spacing: 0.03em;
+    padding: 0 0.22rem;
+  }
+
+  .logo__mark {
+    height: 2.25rem;
+  }
+}
+
+/* Elements that slide in from the side must not widen the page while they wait */
+.content {
+  overflow-x: clip;
+}
