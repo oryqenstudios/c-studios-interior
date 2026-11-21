@@ -1844,3 +1844,39 @@ body {
 .film__float .film__brand {
   font-family: var(--font-body);
 }
+
+/* ---------- Model section: floating lines on the left, the model on the right ---------- */
+.film--build.is-live {
+  height: 780vh;
+}
+
+.film__scrim--side {
+  background: linear-gradient(to top, rgb(20 19 18 / 0.85) 0%, rgb(20 19 18 / 0.55) 30%, rgb(20 19 18 / 0) 58%);
+}
+
+.film__float--side h2 {
+  font-size: clamp(1.9rem, 1.3rem + 2.4vw, 3.5rem);
+  max-width: 11em;
+}
+
+/* Narrow screens: lines sit low, over the fade */
+@media (max-width: 56.24rem), (max-aspect-ratio: 23/20) {
+  .film__float--side {
+    top: auto;
+    bottom: calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
+    transform: translateY(var(--float-y, 0px));
+  }
+}
+
+@media (min-width: 56.25rem) and (min-aspect-ratio: 23/20) {
+  .film__float--side {
+    right: auto;
+    width: min(40vw, 34rem);
+    justify-items: start;
+    text-align: left;
+  }
+
+  .film__scrim--side {
+    background: linear-gradient(to right, rgb(20 19 18 / 0.6) 0%, rgb(20 19 18 / 0.3) 30%, rgb(20 19 18 / 0) 52%);
+  }
+}
