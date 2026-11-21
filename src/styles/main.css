@@ -171,7 +171,7 @@ a {
 }
 
 .film--hero.is-live {
-  height: 700vh;
+  height: 900vh;
 }
 
 .film--build.is-live {
@@ -244,6 +244,112 @@ a {
 
 .film__copy {
   max-width: 36ch;
+}
+
+/* Large room titles that travel with the walk, as thin spaced capitals */
+.film__title {
+  position: absolute;
+  z-index: 1;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: 50%;
+  display: grid;
+  gap: var(--space-3);
+  transform: translateY(-50%);
+  text-shadow: 0 1px 24px rgb(20 19 18 / 0.45);
+  will-change: opacity, transform;
+}
+
+.film__title[data-side='right'] {
+  justify-items: end;
+  text-align: right;
+}
+
+.film__title--centre,
+.film__title--brand {
+  justify-items: center;
+  text-align: center;
+}
+
+.film__title h1,
+.film__title h2 {
+  font-family: var(--font-body);
+  font-weight: 200;
+  font-size: clamp(2.4rem, 1rem + 6.6vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  max-width: 9em;
+  text-wrap: balance;
+}
+
+.film__title--brand h1 {
+  display: grid;
+  gap: var(--space-5);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-headline);
+  letter-spacing: -0.01em;
+  text-transform: none;
+  max-width: none;
+}
+
+.film__brand {
+  font-family: var(--font-body);
+  font-weight: 200;
+  font-size: clamp(2rem, 0.8rem + 5.6vw, 6.25rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.film__title--brand .scroll-cue {
+  justify-content: center;
+  margin-top: var(--space-5);
+  color: var(--plaster);
+}
+
+.film__index {
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  color: var(--plaster);
+}
+
+.film__sub {
+  font-size: var(--text-small);
+  letter-spacing: 0.04em;
+  max-width: 28ch;
+}
+
+.film__cta {
+  margin-top: var(--space-5);
+}
+
+/* Thin vertical progress rail for the walk, right edge */
+.film__rail {
+  position: absolute;
+  z-index: 1;
+  right: var(--gutter);
+  top: 30%;
+  bottom: 30%;
+  width: 1px;
+  background: rgb(237 230 218 / 0.3);
+}
+
+.film__rail-bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--plaster);
+  transform: scaleY(0);
+  transform-origin: top;
+}
+
+@media (max-width: 47.99rem) {
+  .film__rail {
+    display: none;
+  }
 }
 
 /* Small room caption, bottom left */

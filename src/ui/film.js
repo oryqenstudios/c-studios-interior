@@ -14,6 +14,7 @@ gsap.registerPlugin(ScrollTrigger);
 // for portrait phones, so the footage is not enlarged until it goes soft).
 const SETS = ['d', 'm', 'p'];
 const CAPTION_FADE = 0.025;
+const drift = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const pad = (n) => String(n).padStart(3, '0');
@@ -25,6 +26,7 @@ function initFilm(section) {
   const count = Number(section.dataset.frames);
   const filmEnd = Number(section.dataset.end || 0.94); // the last frame holds after this
   const scrim = section.querySelector('.film__scrim');
+  const rail = section.querySelector('.film__rail-bar');
   const captions = [...section.querySelectorAll('[data-from]')].map((el) => ({
     el,
     from: Number(el.dataset.from),
@@ -123,9 +125,17 @@ function initFilm(section) {
       const opacity = Math.min(fadeIn, fadeOut);
       el.style.opacity = opacity;
       el.style.visibility = opacity > 0 ? 'visible' : 'hidden';
+      // Travelling titles drift sideways across their time on screen, like signage passed on a walk.
+      if (drift && el.classList.contains('film__title') && el.dataset.side) {
+        const life = clamp01((progress - from) / (to - from)) - 0.5;
+        const dir = el.dataset.side === 'left' ? -1 : 1;
+        el.style.transform = `translate(${(dir * life * 6).toFixed(2)}vw, -50%)`;
+      }
+      if ('inert' in el && el.querySelector('a, button')) el.inert = opacity < 0.5;
       if (!el.classList.contains('film__tag')) strongest = Math.max(strongest, opacity);
     }
     if (scrim) scrim.style.opacity = strongest;
+    if (rail) rail.style.transform = `scaleY(${clamp01(progress / filmEnd)})`;
   }
 
   // The hero film starts loading at once; a film further down waits until it is near.
