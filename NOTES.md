@@ -7,13 +7,13 @@ Every placeholder and every decision made without input is listed here.
 | Placeholder | Where | Status |
 | --- | --- | --- |
 | `[PHONE]` | Footer (`index.html`); later structured data | In the page, awaiting content |
-| `[EMAIL]` | Footer (`index.html`) and the form failure message (`src/ui/form.js`, `FALLBACK_EMAIL`) | In the page, awaiting content |
+| `[EMAIL]` | Footer (`index.html`) and `VITE_ENQUIRY_EMAIL` in `.env` (form failure message) | In the page, awaiting content |
 | `[ADDRESS]` | Footer (`index.html`); later structured data | In the page, awaiting content |
 | `[SOCIAL LINKS]` | Footer (`index.html`) | In the page, awaiting content |
 | `[ABOUT STATEMENT]` | About section (`index.html`), about 80 words | In the page, awaiting content |
 | `[BUDGET RANGE 1]` to `[BUDGET RANGE 4]` | Budget select in the form (`index.html`) | In the page, awaiting content |
-| `[FORM ENDPOINT]` | `src/ui/form.js`, `ENDPOINT`, and the form's `action` | Connected in phase 8 |
-| `[DOMAIN]` | `index.html` head: canonical link, `og:url`, `og:image`, `twitter:image` (four places) | In the page, awaiting content |
+| Form endpoint | `VITE_FORM_ENDPOINT` in `.env` (empty = demo mode) | Awaiting a form service URL |
+| `[DOMAIN]` | `VITE_SITE_URL` in `.env` (feeds the canonical link and share tags) | Awaiting content |
 
 Draft copy written without input, for the studio to confirm or replace: the four service
 descriptions and their bullets, the five process steps, the section headings, the room
@@ -26,6 +26,23 @@ card lines, and the footer line "Interior design in Singapore."
 
 ## Decisions made without input
 
+### Phase 8 (in progress: waiting on the endpoint, hosting and content)
+
+- **Site settings in one place.** The site address, form endpoint and fallback email are
+  read from `.env` at build time, so launch needs no code edits for them. `.env` is
+  committed because it holds no secrets.
+- **Hashed fonts.** Fonts moved from `public/fonts` to `src/assets/fonts` so the build
+  gives them hashed filenames, as the plan asks.
+- **Host configuration.** Both `netlify.toml` and `vercel.json` are included, each with a
+  one-year immutable cache for `/assets/*`. Delete the one not used.
+- **Form service.** The form is built for a Formspree-style endpoint. Netlify Forms would
+  need a small change to the form markup and submit code.
+- **Frame rate changes** (asked for during this phase): frames are only redrawn when
+  something changes; multisampling is skipped on screens with a pixel ratio of 2 or more;
+  laptops and tablets now step down a tier below 45 fps (phones below 30).
+- **Not done.** Deployment, connecting the form endpoint, a test enquiry, replacing
+  placeholders, and checks on real devices and in Safari and Firefox.
+
 ### Phase 7
 
 - **Quality tiers.** Chosen at load from processor cores, memory, whether the device is a
@@ -33,7 +50,7 @@ card lines, and the footer line "Interior design in Singapore."
   ratio up to 2), medium (1024, up to 1.5), low (no shadows, pixel ratio 1, floorboards
   twice as wide, so about half as many). These rules are a starting guess and have not
   been tuned on real devices.
-- **Automatic step-down.** If the frame rate stays under 30 for two seconds in a row, the
+- **Automatic step-down.** If the frame rate stays low for two seconds in a row, the
   site drops one tier (after a three second grace period at start-up). Resolution and
   shadows change straight away; the floorboard count is fixed at load and does not.
 - **Checking on a device.** Adding `?stats` to the address shows the current tier and

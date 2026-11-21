@@ -58,11 +58,32 @@ if (stage) {
   const planNav = initPlanNav({ ui, jumpToRoom });
   initMagnetic({ reducedMotion });
 
+  // Everything that can change the picture. If none of it moved since the last frame,
+  // the frame is not redrawn.
+  const moodMats = [mats.wall, mats.floorTimber, mats.timber, mats.fabric, mats.fabricDeep];
+  const snapshot = () => [
+    ...Object.values(story.state),
+    ui.parX,
+    ui.parY,
+    ui.orbitAz,
+    ui.orbitPolar,
+    ui.night,
+    ui.override,
+    ...Object.values(ui.boost),
+    ...moodMats.map((m) => m.color.r + m.color.g * 2 + m.color.b * 4),
+  ];
+  let previous = [];
+
   stage.setFrameCallback(() => {
     pointer.update();
     story.update();
     dayNight?.update();
     planNav?.update();
+
+    const current = snapshot();
+    const changed = current.length !== previous.length || current.some((v, i) => Math.abs(v - previous[i]) > 1e-4);
+    if (changed) previous = current;
+    return changed;
   });
 
   // Stop rendering while the story (and so the canvas) is scrolled out of view.

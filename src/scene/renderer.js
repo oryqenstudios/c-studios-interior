@@ -21,7 +21,10 @@ export const TIERS = {
 };
 const TIER_ORDER = ['high', 'medium', 'low'];
 
-const LOW_FPS = 30; // below this for two seconds running, drop one tier
+// Below this for two seconds running, drop one tier. Phones aim for 30 or better;
+// larger screens step down sooner so they stay close to 60.
+const isPhone = window.matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) < 820;
+const LOW_FPS = isPhone ? 30 : 45;
 const GRACE_MS = 3000; // ignore the first seconds after starting or resuming
 
 // ?quality=high|medium|low in the address forces a tier (and switches off the automatic
@@ -41,9 +44,7 @@ function pickTier(renderer) {
 
   const cores = navigator.hardwareConcurrency || 4;
   const memory = navigator.deviceMemory || 4;
-  const phone = window.matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) < 820;
-
-  if (phone) return cores >= 6 && memory >= 4 ? 'medium' : 'low';
+  if (isPhone) return cores >= 6 && memory >= 4 ? 'medium' : 'low';
   if (cores <= 2 || memory <= 2) return 'low';
   return cores >= 8 ? 'high' : 'medium';
 }
@@ -59,7 +60,10 @@ export function createStage(canvas) {
 
   let renderer;
   try {
-    renderer = new WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    // On high-density screens the extra pixels already smooth edges, so multisampling is
+    // skipped there: it is one of the larger per-frame costs on phones.
+    const antialias = (window.devicePixelRatio || 1) < 2;
+    renderer = new WebGLRenderer({ canvas, antialias, powerPreference: 'high-performance' });
   } catch {
     return null;
   }
@@ -81,6 +85,8 @@ export function createStage(canvas) {
   camera.lookAt(0, 0, 0);
 
   let tier = pickTier(renderer);
+  let needsRender = true;
+  let rendered = 0;
   const tierListeners = [];
   const resizeListeners = [];
 
@@ -92,6 +98,7 @@ export function createStage(canvas) {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     for (const fn of resizeListeners) fn(width, height);
+    needsRender = true;
   }
 
   function setTier(name) {
@@ -99,6 +106,7 @@ export function createStage(canvas) {
     tier = name;
     resize();
     for (const fn of tierListeners) fn(tier, TIERS[tier]);
+    needsRender = true;
   }
 
   // One render loop. It stops while the tab is hidden or the canvas is scrolled out of view.
@@ -142,10 +150,16 @@ export function createStage(canvas) {
     }
   }
 
+  // The frame callback returns false when nothing has changed since the last frame, and
+  // the draw is skipped. Idle pages then cost almost nothing.
   function frame(time) {
     watch(time);
-    if (onFrame) onFrame(time);
-    renderer.render(scene, camera);
+    const changed = onFrame ? onFrame(time) !== false : true;
+    if (changed || needsRender) {
+      needsRender = false;
+      rendered++;
+      renderer.render(scene, camera);
+    }
   }
 
   function sync() {
@@ -155,6 +169,7 @@ export function createStage(canvas) {
     if (running) {
       graceUntil = performance.now() + GRACE_MS;
       lowSeconds = 0;
+      needsRender = true;
       renderer.setAnimationLoop(frame);
     } else {
       renderer.setAnimationLoop(null);
@@ -193,6 +208,9 @@ export function createStage(canvas) {
     },
     get fps() {
       return fps;
+    },
+    get rendered() {
+      return rendered;
     },
     get running() {
       return running;

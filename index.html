@@ -9,8 +9,8 @@
       name="description"
       content="C Studios Interior is an interior design studio in Singapore. Scroll to build a home, from the first line of the plan to the last lamp."
     />
-    <!-- PLACEHOLDER: replace [DOMAIN] with the live domain (canonical, og:url, og:image, twitter:image) -->
-    <link rel="canonical" href="https://[DOMAIN]/" />
+    <!-- The site address comes from VITE_SITE_URL in .env (currently a placeholder) -->
+    <link rel="canonical" href="%VITE_SITE_URL%/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="C Studios Interior" />
     <meta property="og:title" content="C Studios Interior · Spaces, built around you." />
@@ -18,8 +18,8 @@
       property="og:description"
       content="Scroll to build a home, from the first line of the plan to the last lamp. Interior design in Singapore."
     />
-    <meta property="og:url" content="https://[DOMAIN]/" />
-    <meta property="og:image" content="https://[DOMAIN]/og-image.png" />
+    <meta property="og:url" content="%VITE_SITE_URL%/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="A scale model of a finished apartment, lit at night and seen from above." />
@@ -30,18 +30,18 @@
       name="twitter:description"
       content="Scroll to build a home, from the first line of the plan to the last lamp. Interior design in Singapore."
     />
-    <meta name="twitter:image" content="https://[DOMAIN]/og-image.png" />
+    <meta name="twitter:image" content="%VITE_SITE_URL%/og-image.png" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link
       rel="preload"
-      href="/fonts/cormorant-garamond-latin-wght-normal.woff2"
+      href="/src/assets/fonts/cormorant-garamond-latin-wght-normal.woff2"
       as="font"
       type="font/woff2"
       crossorigin
     />
     <link
       rel="preload"
-      href="/fonts/manrope-latin-wght-normal.woff2"
+      href="/src/assets/fonts/manrope-latin-wght-normal.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -270,7 +270,7 @@
             <p>A few details are enough to start. We reply by email.</p>
           </header>
           <div class="section__body">
-            <form class="form" id="enquiry" method="post" action="" novalidate>
+            <form class="form" id="enquiry" method="post" action="%VITE_FORM_ENDPOINT%" novalidate>
               <div class="field">
                 <label for="f-name">Name</label>
                 <input id="f-name" name="name" type="text" autocomplete="name" required />

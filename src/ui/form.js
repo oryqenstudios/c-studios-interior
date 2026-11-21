@@ -1,9 +1,10 @@
 // Enquiry form: validation, submit, success and failure states.
 
-// PLACEHOLDER: replaced with the real form-service URL in phase 8. While it is a
-// placeholder, a valid submission shows the success state without sending anything.
-const ENDPOINT = '[FORM ENDPOINT]';
-const FALLBACK_EMAIL = '[EMAIL]';
+// Both values come from .env (or the host's environment settings) at build time.
+// Until a real endpoint is set, a valid submission shows the success state with a
+// visible demo note and sends nothing.
+const ENDPOINT = import.meta.env.VITE_FORM_ENDPOINT ?? '';
+const FALLBACK_EMAIL = import.meta.env.VITE_ENQUIRY_EMAIL || '[EMAIL]';
 
 const hasEndpoint = /^https?:\/\//.test(ENDPOINT);
 
