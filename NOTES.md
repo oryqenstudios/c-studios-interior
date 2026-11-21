@@ -25,6 +25,14 @@ order to be followed. Sections older than this one in this file are history.
 | 12 | Consultation | Two-step form (project, then contact details) over the house at dusk. Success shows a tick that draws itself. Still in demo mode. |
 | 13 | Footer | Unchanged. |
 
+### Hero restored, walkthrough pending (latest)
+
+The studio asked to keep the full house walk as the hero: entrance, living space, dining
+room, kitchen, primary suite, bath and the grand view, with the large room titles. Rows
+2 and 4 of the table above are superseded: the hero is the whole walk again, and the
+separate Walkthrough section was removed so the same footage does not play twice. The
+studio will send a reference for a new Walkthrough section, to sit after the build story.
+
 ### Decisions and conflicts in this change
 
 - **Booking buttons.** The flow asks for four; the studio had just asked for all of them to
