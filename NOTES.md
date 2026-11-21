@@ -20,6 +20,14 @@ The page is now:
    that opens onto the finished room (see "Step-inside section" below).
 3. Closing call to action, Services, Process, About, Consultation form, footer (unchanged).
 
+### Booking buttons removed (studio request)
+
+The Book a consultation buttons were removed from the header, the end of the hero, the
+step-inside section and the "Your space next?" section. The only one left is the submit
+button of the enquiry form itself, which the form needs in order to send. There is now
+no shortcut to the form: visitors reach it by scrolling to the Consultation section.
+The header holds only the logo.
+
 ### Step-inside section (replaces the shell-to-home film)
 
 The studio sent a fourth reference and asked for the same style and format: a dark page
