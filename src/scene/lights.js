@@ -45,10 +45,10 @@ export function createLights(scene, mats, { shadowMapSize = 2048 } = {}) {
     scene.add(light);
   }
 
-  // amount: 0 = off, 1 = fully on.
-  function setRoomLight(name, amount) {
-    rooms[name].intensity = rooms[name].userData.full * amount;
-    mats.glow[name].emissiveIntensity = GLOW_INTENSITY * amount;
+  // amount: 0 = off, 1 = fully on. boost: 0 to 1 extra lift for a highlighted room.
+  function setRoomLight(name, amount, boost = 0) {
+    rooms[name].intensity = rooms[name].userData.full * (amount * (1 + 0.8 * boost) + 0.35 * boost);
+    mats.glow[name].emissiveIntensity = GLOW_INTENSITY * amount * (1 + 0.4 * boost);
   }
 
   // amount: 0 = day, 1 = night. Affects the sun and fill only.

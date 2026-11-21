@@ -49,7 +49,14 @@ function orbitPosition(distance, polar, azimuth, targetY, out) {
   );
 }
 
-export function createCameraRig(camera) {
+// Weight of the overview stage: 1 while it is on screen, easing to 0 at both ends.
+export const overviewWeight = (p) => smoothstep(p, 54, 56) * (1 - smoothstep(p, 62, FLIGHT_START));
+
+const _right = new Vector3();
+const _up = new Vector3();
+
+// `ui` carries live interaction values: orbit offsets and the smoothed pointer position.
+export function createCameraRig(camera, ui = { orbitAz: 0, orbitPolar: 0, parX: 0, parY: 0 }) {
   let width = 1;
   let height = 1;
   let wide = true;
@@ -68,9 +75,10 @@ export function createCameraRig(camera) {
   // Orbiting views: overhead (stages 01 to 03), the tilt (04 and 05) and the overview.
   function orbitPose(p, tilt, out) {
     const o = clamp((p - 54) / (FLIGHT_START - 54), 0, 1); // progress through the overview
-    const polar = lerp(0.0006, degToRad(38), tilt) + degToRad(16) * o;
+    const w = overviewWeight(p); // dragging only has an effect during the overview
+    const polar = clamp(lerp(0.0006, degToRad(38), tilt) + degToRad(16) * o + ui.orbitPolar * w, 0.0006, degToRad(80));
     // Swings toward the south-east, then keeps turning slowly through the overview.
-    const azimuth = degToRad(30) * tilt + degToRad(18) * o;
+    const azimuth = degToRad(30) * tilt + degToRad(18) * o + ui.orbitAz * w;
     const d = distance * (1 + (wide ? 0.06 : 0.3) * tilt + (wide ? 0 : 0.12) * o);
     const targetY = 0.5 * tilt + 0.3 * o;
     orbitPosition(d, polar, azimuth, targetY, out.position);
@@ -134,8 +142,9 @@ export function createCameraRig(camera) {
     distance = Math.max(fitDepth, fitWidth);
 
     const modelPx = (MODEL_D / (span * distance)) * h;
+    const header = document.querySelector('.site-header')?.offsetHeight ?? HEADER_PX;
     shiftX = wide ? w * 0.2 : 0;
-    shiftY = wide ? -HEADER_PX * 0.25 : Math.max(0, h / 2 - (HEADER_PX + 12 + modelPx / 2));
+    shiftY = wide ? -header * 0.25 : Math.max(0, h / 2 - (header + 12 + modelPx / 2));
     appliedShift = -1;
 
     buildFlight();
@@ -152,6 +161,16 @@ export function createCameraRig(camera) {
     camera.position.copy(pose.position);
     camera.fov = pose.fov;
     camera.lookAt(pose.target);
+
+    // Cursor parallax: a small sideways and vertical drift, scaled to the viewing distance.
+    if (ui.parX !== 0 || ui.parY !== 0) {
+      const reach = pose.position.distanceTo(pose.target) * 0.012;
+      camera.updateMatrix();
+      _right.setFromMatrixColumn(camera.matrix, 0);
+      _up.setFromMatrixColumn(camera.matrix, 1);
+      camera.position.addScaledVector(_right, ui.parX * reach).addScaledVector(_up, -ui.parY * reach);
+      camera.lookAt(pose.target);
+    }
 
     // Shifting the view (not the model) keeps the perspective identical to a centred shot.
     const shift = shiftAmount(p);

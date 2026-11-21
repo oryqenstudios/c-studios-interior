@@ -20,6 +20,38 @@ Every placeholder and every decision made without input is listed here.
 
 ## Decisions made without input
 
+### Phase 5
+
+- **Mood swatches.** Each swatch shows the mood's wall and timber colours as two flat
+  halves. The choice is kept in session storage, so it lasts for the visit and resets in a
+  new tab.
+- **Day and night switch.** Locked until the lights stage has played once. Until the
+  visitor uses it, lighting follows the scroll and the switch moves in step with it. Once
+  used, the visitor's choice applies at every stage, including on scrolling back up. This
+  is the one place where scroll no longer decides the lighting, and it is deliberate.
+- **Parallax.** The camera drifts by about 1.2% of its viewing distance. Mouse only, and
+  off with reduced motion.
+- **Orbit.** Dragging in the overview turns the model up to 34 degrees either way; with a
+  mouse it also tilts up to 11 degrees. On touch only sideways drags orbit, so vertical
+  swipes always scroll. Release eases back over one second.
+- **Room hover and click.** Hovering a room in the overview brightens it and shows its
+  name beside the cursor. Clicking or tapping it scrolls to that room. Because a hover on
+  the 3D view is not a button, the overview panel also has four real room buttons that do
+  the same by keyboard and touch.
+- **Jump targets.** Rooms are entered at 72.5% (living), 80% (kitchen), 89.5% (bedroom)
+  and 94% (bathroom) of the story.
+- **Plan navigation.** The floor-plan button opens a mini plan with four room buttons.
+  Escape, clicking outside or choosing a room closes it. The current room is marked.
+- **Plan icon.** Drawn in code as a small outline of this apartment's plan.
+- **Magnetic buttons.** Primary buttons move up to 8 px toward the cursor. Mouse only, off
+  with reduced motion.
+- **Header on small screens.** Under 768 px the swatches, switch and plan button sit in a
+  second row beneath the logo and the Book a consultation button.
+- **Hidden buttons.** Buttons inside a faded-out text panel are made inert so they cannot
+  be clicked or focused while invisible.
+- **File layout.** Text panel logic lives in `scroll/timeline.js` rather than a separate
+  `ui/panels.js`, and `ui/pointer.js`, `ui/plannav.js` and `ui/magnetic.js` were added.
+
 ### Phase 4
 
 - **Camera path.** The orbiting views (overhead, tilt, overview) are computed from angles.

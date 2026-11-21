@@ -24,6 +24,9 @@ export const STAGES = {
 
 const ROOM_ORDER = ['living', 'kitchen', 'bedroom', 'bathroom'];
 
+// Where "jump to a room" lands: a point inside each room's part of the walkthrough.
+export const ROOM_JUMPS = { living: 72.5, kitchen: 80, bedroom: 89.5, bathroom: 94 };
+
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 // Progress of a staggered item: `index` of `count`, each taking `share` of the whole stage.
 const stagger = (value, index, count, share) => clamp01((value - (index / count) * (1 - share)) / share);
@@ -99,12 +102,19 @@ function applyFurniture({ pieces }, value) {
   });
 }
 
-function applyLight(lights, light, night) {
-  lights.setDayNight(night);
-  ROOM_ORDER.forEach((room, i) => lights.setRoomLight(room, stagger(light, i, ROOM_ORDER.length, 0.4)));
+const mix = (a, b, t) => a + (b - a) * t;
+
+// Scroll decides the lighting until the visitor uses the day and night toggle; from then
+// on their choice (ui.night) wins. ui.boost lifts a highlighted room.
+function applyLight(lights, light, night, ui) {
+  lights.setDayNight(mix(night, ui.night, ui.override));
+  ROOM_ORDER.forEach((room, i) => {
+    const scripted = stagger(light, i, ROOM_ORDER.length, 0.4);
+    lights.setRoomLight(room, mix(scripted, ui.night, ui.override), ui.boost[room]);
+  });
 }
 
-export function createStory({ apartment, furniture, lights, mats, rig, reducedMotion }) {
+export function createStory({ apartment, furniture, lights, mats, rig, ui, reducedMotion }) {
   const story = document.getElementById('story');
   const progressBar = document.querySelector('.progress__bar');
 
@@ -190,17 +200,39 @@ export function createStory({ apartment, furniture, lights, mats, rig, reducedMo
     });
   }
 
+  // Buttons inside a faded-out panel must not be reachable.
+  const actions = [...story.querySelectorAll('.panel__actions')].map((el) => ({ el, panel: el.closest('.panel') }));
+
+  // Scrolls to a percentage of the story. Smooth unless reduced motion is requested.
+  function scrollToPercent(percent) {
+    const top = story.getBoundingClientRect().top + window.scrollY;
+    const y = top + ((story.offsetHeight - window.innerHeight) * percent) / 100;
+    if (lenis) lenis.scrollTo(y, { duration: 1.8 });
+    else window.scrollTo(0, y);
+  }
+
   function update() {
+    ui.p = state.p;
+    ui.scriptedNight = state.night;
+    if (!ui.unlocked && state.p >= STAGES.light[1] - 0.5) {
+      ui.unlocked = true;
+      ui.onUnlock?.();
+    }
+    for (const { el, panel } of actions) {
+      const shown = parseFloat(panel.style.opacity === '' ? 1 : panel.style.opacity) > 0.5;
+      if (el.inert === shown) el.inert = !shown;
+    }
+
     applyPlan(apartment, mats, state.draw, state.swings, state.planFade);
     applyWalls(apartment, state.walls);
     applyFloor(apartment.floors.boards, state.floors);
     applyFloor(apartment.floors.tiles, state.floors);
     applyFurniture(furniture, state.furnish);
-    applyLight(lights, state.light, state.night);
+    applyLight(lights, state.light, state.night, ui);
     mats.ceiling.opacity = 1 - state.ceilingFade;
     apartment.ceiling.visible = state.ceilingFade < 1;
     rig.update(state);
   }
 
-  return { update, state, master, lenis };
+  return { update, state, master, lenis, scrollToPercent };
 }

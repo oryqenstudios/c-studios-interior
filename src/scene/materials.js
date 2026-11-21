@@ -154,14 +154,19 @@ export function createMaterials() {
   return mats;
 }
 
-const scratch = new Color();
+// The five mood-driven colours for a mood, keyed by material name.
+export function moodColors(key) {
+  const mood = MOODS[key] ?? MOODS[DEFAULT_MOOD];
+  return {
+    wall: new Color(mood.walls),
+    floorTimber: new Color(mood.timber),
+    // Furniture timber sits a little deeper than the floor so pieces read against the boards.
+    timber: new Color(mood.timber).multiplyScalar(0.72),
+    fabric: new Color(mood.fabric),
+    fabricDeep: new Color(mood.fabric).multiplyScalar(0.62),
+  };
+}
 
 export function setMood(mats, key) {
-  const mood = MOODS[key] ?? MOODS[DEFAULT_MOOD];
-  mats.wall.color.setHex(mood.walls);
-  mats.floorTimber.color.setHex(mood.timber);
-  // Furniture timber sits a little deeper than the floor so pieces read against the boards.
-  mats.timber.color.copy(scratch.setHex(mood.timber)).multiplyScalar(0.72);
-  mats.fabric.color.setHex(mood.fabric);
-  mats.fabricDeep.color.copy(scratch.setHex(mood.fabric)).multiplyScalar(0.62);
+  for (const [name, color] of Object.entries(moodColors(key))) mats[name].color.copy(color);
 }

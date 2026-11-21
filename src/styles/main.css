@@ -91,10 +91,187 @@ a {
   gap: var(--space-4);
 }
 
+/* Header controls: mood swatches, day and night switch, plan navigation */
+.site-header__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.moods {
+  display: flex;
+}
+
+.swatch,
+.daynight,
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--plaster);
+  cursor: pointer;
+}
+
+.swatch__dot {
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 50%;
+  /* two flat halves: wall colour and timber colour */
+  background: linear-gradient(135deg, var(--a) 50%, var(--b) 50%);
+  box-shadow: 0 0 0 1px var(--line);
+  transition: box-shadow var(--fast) var(--ease);
+}
+
+.swatch:hover .swatch__dot {
+  box-shadow: 0 0 0 1px var(--muted);
+}
+
+.swatch[aria-pressed='true'] .swatch__dot {
+  box-shadow:
+    0 0 0 2px var(--ink),
+    0 0 0 3px var(--brass);
+}
+
+.daynight {
+  width: 3.25rem;
+  border-radius: 999px;
+}
+
+.daynight__track {
+  position: relative;
+  width: 2.5rem;
+  height: 1.375rem;
+  border: 1px solid var(--muted);
+  border-radius: 999px;
+  transition: border-color var(--fast) var(--ease);
+}
+
+/* The knob is a full disc by day and a crescent by night */
+.daynight__knob {
+  position: absolute;
+  top: 50%;
+  left: 0.1875rem;
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-top: -0.4375rem;
+  border-radius: 50%;
+  background: var(--brass);
+  transition:
+    transform var(--medium) var(--ease),
+    background-color var(--medium) var(--ease),
+    box-shadow var(--medium) var(--ease);
+}
+
+.daynight[aria-checked='true'] .daynight__knob {
+  transform: translateX(1.125rem);
+  background: transparent;
+  box-shadow: inset -0.3rem -0.05rem 0 0 var(--plaster);
+}
+
+.daynight:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.icon-button:hover,
+.icon-button[aria-expanded='true'] {
+  color: var(--brass);
+}
+
+.plan-nav {
+  position: relative;
+}
+
+.plan-popover {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 30;
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  background: var(--ink);
+}
+
+.plan-popover[hidden] {
+  display: none;
+}
+
+.mini-plan {
+  position: relative;
+  width: 11rem;
+  aspect-ratio: 8 / 12;
+  border: 1px solid var(--plaster);
+}
+
+.mini-plan button {
+  position: absolute;
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
+  width: calc(var(--w) * 1%);
+  height: calc(var(--h) * 1%);
+  padding: var(--space-1);
+  border: 1px solid var(--line);
+  background: none;
+  color: var(--plaster);
+  font: inherit;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.mini-plan button:hover,
+.mini-plan button:focus-visible {
+  background: rgb(184 147 90 / 0.18);
+}
+
+.mini-plan button[aria-current='true'] {
+  background: var(--brass);
+  color: var(--ink);
+}
+
+/* Narrow screens: controls move to a second row under the logo and button */
+@media (max-width: 47.99rem) {
+  .site-header {
+    height: auto;
+    flex-wrap: wrap;
+    row-gap: 0;
+    padding-top: var(--space-3);
+  }
+
+  .site-header__tools {
+    order: 3;
+    width: 100%;
+    margin-left: calc(var(--space-3) * -1);
+  }
+
+  /* Anchor the mini plan to the header so it stays on screen */
+  .plan-nav {
+    position: static;
+  }
+
+  .plan-popover {
+    top: 100%;
+    right: auto;
+    left: var(--gutter);
+  }
+}
+
 .logo {
   display: inline-flex;
   align-items: center;
   gap: var(--space-3);
+  min-width: var(--tap);
   min-height: var(--tap);
   text-decoration: none;
   color: var(--plaster);
@@ -102,8 +279,8 @@ a {
 
 .logo__mark {
   flex: none;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   display: grid;
   place-items: center;
   border: 1px solid var(--brass);
@@ -248,6 +425,85 @@ a {
   }
 }
 
+/* Buttons inside panels */
+.panel__actions {
+  pointer-events: auto;
+}
+
+.panel__actions[inert] {
+  pointer-events: none;
+}
+
+.room-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.room-links button {
+  min-height: var(--tap);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgb(20 19 18 / 0.6);
+  color: var(--plaster);
+  font: inherit;
+  font-size: var(--text-small);
+  cursor: pointer;
+  transition:
+    border-color var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.room-links button:hover,
+.room-links button:focus-visible {
+  border-color: var(--brass);
+  color: var(--brass);
+}
+
+/* Orbit and room hover in the overview */
+.story {
+  touch-action: pan-y pinch-zoom;
+}
+
+.is-overview .story {
+  cursor: grab;
+}
+
+.is-overview.is-room-hover .story {
+  cursor: pointer;
+}
+
+.is-orbiting,
+.is-orbiting .story {
+  cursor: grabbing;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.room-tip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 15;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  background: var(--ink);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brass);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--fast) var(--ease);
+}
+
+.room-tip.is-visible {
+  opacity: 1;
+}
+
 /* Room cards: smaller type, with a brass rule */
 .panel--card {
   gap: var(--space-3);
@@ -259,10 +515,9 @@ a {
   font-size: var(--text-title);
 }
 
-.panel--closing .button {
+.panel--closing .panel__actions {
   justify-self: start;
   margin-top: var(--space-3);
-  pointer-events: auto;
 }
 
 /* Wide screens: text on the left, vertically centred; the model sits to the right */
