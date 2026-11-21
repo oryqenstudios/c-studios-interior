@@ -54,8 +54,7 @@ Every placeholder and every decision made without input is listed here.
 ### Phase 3
 
 - **Story length.** The story section is the full twelve screen heights. Stages
-  01 to 05 use the first 54% as planned. From 54% to 100% the finished night model holds
-  still until phase 4 adds the overview, dive, walkthrough and pull back.
+  01 to 05 use the first 54% as planned; phase 4 fills the rest.
 - **Master timeline.** One GSAP timeline of length 100 (so positions read as scroll
   percentages) is scrubbed by the scroll position. It drives one 0 to 1 value per stage,
   and the scene is rebuilt from those values every frame, which is what makes the build
