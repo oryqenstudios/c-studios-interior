@@ -122,6 +122,17 @@ down a corridor, and through a door into the finished room.
 - **Booking button** added in this section's opening text.
 - **Phones.** The text sits over the model on portrait screens, with a dark fade behind it.
 
+### Stale files in visitors' browsers, 22 Nov 2026
+
+The studio reported that updates were not showing. Cause: `/film/*` and `/cfg/*` were
+served with a one-week cache, but those files keep the same names when replaced, so
+browsers kept showing old hero frames and old room data (and the customiser's old data
+no longer matched the new code). Fixed by adding a per-build version to every address the
+scripts request (`__ASSET_VERSION__`, set in `vite.config.js`), versioning the poster
+addresses in `index.html`, and cutting the cache on those folders to ten minutes with
+revalidation. Hashed files under `/assets/` are unaffected and still cached for a year.
+When replacing a poster image, bump its `?v=` in `index.html`.
+
 ### Deployment failure, 21 Nov 2026
 
 From the commit that removed the 3D view until the fix, Vercel rejected every deployment,

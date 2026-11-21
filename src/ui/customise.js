@@ -116,11 +116,11 @@ export async function initCustomiser() {
   async function loadRoom(id) {
     if (loaded[id]) return loaded[id];
     const dir = `${base}/${id}`;
-    const meta = await fetch(`${dir}/meta.json`).then((r) => r.json());
+    const meta = await fetch(`${dir}/meta.json?v=${__ASSET_VERSION__}`).then((r) => r.json());
     const sheets = Math.ceil(meta.surfaces.length / 3);
     const [baseImg, ...maskImgs] = await Promise.all([
-      loadImage(`${dir}/base.webp`),
-      ...Array.from({ length: sheets }, (_, i) => loadImage(`${dir}/masks-${i}.webp`)),
+      loadImage(`${dir}/base.webp?v=${__ASSET_VERSION__}`),
+      ...Array.from({ length: sheets }, (_, i) => loadImage(`${dir}/masks-${i}.webp?v=${__ASSET_VERSION__}`)),
     ]);
     const canvas = document.createElement('canvas');
     canvas.className = 'cfg__canvas';
@@ -136,7 +136,7 @@ export async function initCustomiser() {
       src: pixels(baseImg, meta.width, meta.height),
       masks: maskImgs.map((img) => pixels(img, meta.width, meta.height)),
       out: ctx.createImageData(meta.width, meta.height),
-      baseUrl: `${dir}/base.webp`,
+      baseUrl: `${dir}/base.webp?v=${__ASSET_VERSION__}`,
     };
     canvas.addEventListener('click', (event) => {
       const index = surfaceAt(data, event);

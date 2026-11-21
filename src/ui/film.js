@@ -38,7 +38,7 @@ function initFilm(section) {
   const portrait = window.innerWidth / window.innerHeight < 0.8;
   const wide = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 900;
   const set = portrait ? 'p' : wide ? 'd' : 'm';
-  const url = (i) => `${section.dataset.film}/${set}/f-${pad(first + i)}.webp`;
+  const url = (i) => `${section.dataset.film}/${set}/f-${pad(first + i)}.webp?v=${__ASSET_VERSION__}`;
   const frames = new Array(count);
   let progress = 0;
   let drawnKey = '';
