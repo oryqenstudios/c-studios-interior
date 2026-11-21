@@ -11,6 +11,7 @@ import { initPointer } from './ui/pointer.js';
 import { initPlanNav } from './ui/plannav.js';
 import { initMagnetic } from './ui/magnetic.js';
 import { initForm } from './ui/form.js';
+import { initPhotos } from './ui/photos.js';
 
 const canvas = document.getElementById('scene');
 const stage = createStage(canvas);
@@ -34,6 +35,7 @@ if (stage) {
     override: 0, // 0 = lighting follows the scroll, 1 = the visitor's choice applies
     scriptedNight: 0,
     boost: { living: 0, kitchen: 0, bedroom: 0, bathroom: 0 }, // highlighted room
+    photo: { living: 0, kitchen: 0, bedroom: 0, bathroom: 0 }, // how far each room photograph is switched on
     unlocked: false,
     onUnlock: null,
   };
@@ -52,7 +54,9 @@ if (stage) {
   const story = createStory({ apartment, furniture, lights, mats, rig, ui, reducedMotion });
   const jumpToRoom = (room) => story.scrollToPercent(ROOM_JUMPS[room]);
 
-  initMoods({ mats, reducedMotion });
+  let photos = null;
+  const moods = initMoods({ mats, reducedMotion, onChange: () => photos?.refresh() });
+  photos = initPhotos({ ui, getMood: moods.current, reducedMotion });
   const dayNight = initDayNight({ ui, reducedMotion });
   const pointer = initPointer({ ui, camera: stage.camera, jumpToRoom, reducedMotion });
   const planNav = initPlanNav({ ui, jumpToRoom });
@@ -70,6 +74,7 @@ if (stage) {
     ui.night,
     ui.override,
     ...Object.values(ui.boost),
+    ...Object.values(ui.photo),
     ...moodMats.map((m) => m.color.r + m.color.g * 2 + m.color.b * 4),
   ];
   let previous = [];
@@ -79,6 +84,7 @@ if (stage) {
     story.update();
     dayNight?.update();
     planNav?.update();
+    photos?.update(ui.p);
 
     const current = snapshot();
     const changed = current.length !== previous.length || current.some((v, i) => Math.abs(v - previous[i]) > 1e-4);

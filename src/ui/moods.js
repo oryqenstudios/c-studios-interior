@@ -14,7 +14,7 @@ function remembered() {
 
 // Three round swatches in the header. Choosing one blends wall, timber and fabric
 // colours over about half a second. The choice lasts for the visit.
-export function initMoods({ mats, reducedMotion }) {
+export function initMoods({ mats, reducedMotion, onChange }) {
   const buttons = [...document.querySelectorAll('.swatch[data-mood]')];
   let current = remembered() ?? DEFAULT_MOOD;
 
@@ -26,6 +26,7 @@ export function initMoods({ mats, reducedMotion }) {
     if (!MOODS[key] || key === current) return;
     current = key;
     mark();
+    onChange?.(key);
     try {
       sessionStorage.setItem(STORAGE_KEY, key);
     } catch {

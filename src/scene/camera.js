@@ -1,5 +1,6 @@
 import { CatmullRomCurve3, MathUtils, Vector3 } from 'three';
 import { DEPTH, WALL_T, WIDTH } from './apartment.js';
+import { cameraPercent } from '../ui/photos.js';
 
 const { lerp, degToRad, smoothstep, clamp } = MathUtils;
 
@@ -157,7 +158,8 @@ export function createCameraRig(camera, ui = { orbitAz: 0, orbitPolar: 0, parX: 
   }
 
   function update({ p, tilt }) {
-    poseAt(p, tilt, pose);
+    // Where a room photograph is switched on, the camera waits at the point it was taken from.
+    poseAt(ui.photo ? cameraPercent(p, ui.photo) : p, tilt, pose);
     camera.position.copy(pose.position);
     camera.fov = pose.fov;
     camera.lookAt(pose.target);

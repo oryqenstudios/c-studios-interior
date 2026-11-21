@@ -25,7 +25,7 @@ export const STAGES = {
 const ROOM_ORDER = ['living', 'kitchen', 'bedroom', 'bathroom'];
 
 // Where "jump to a room" lands: a point inside each room's part of the walkthrough.
-export const ROOM_JUMPS = { living: 72.5, kitchen: 80, bedroom: 89.5, bathroom: 94 };
+export const ROOM_JUMPS = { living: 74, kitchen: 80.5, bedroom: 89.7, bathroom: 94 };
 
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 // Progress of a staggered item: `index` of `count`, each taking `share` of the whole stage.

@@ -26,6 +26,33 @@ card lines, and the footer line "Interior design in Singapore."
 
 ## Decisions made without input
 
+### Real-life room photographs (added after phase 7, at the studio's request)
+
+- **Change to the plan.** The plan said everything visual is made in code, with no image
+  files. The studio asked for real-life images, so the four rooms now each have a
+  photograph. The build sequence, overview and camera moves remain 3D.
+- **How they were made.** A daylight frame of each room was captured from the 3D model and
+  turned into a photograph with the studio's Higgsfield account (model: Grok Image 2.0,
+  reference-guided, 2K, 16:9). They are generated concept images of this model
+  apartment, not photographs of completed projects.
+- **How they appear.** In each room's part of the walkthrough the camera stops at the
+  point the photograph was taken from, the photograph fades in over the 3D view with a
+  very slow push-in, then fades out and the walkthrough continues. Jump targets now land
+  inside each photograph's window.
+- **"Concept visual" label.** A small label shows at the bottom right while a photograph
+  is on screen, so visitors are not led to think these are finished client projects.
+  It can be removed in `index.html` (`.photos__note`) if the studio prefers.
+- **Moods.** The photographs show the default olive and walnut materials. With the sand or
+  charcoal mood selected they step aside and the walkthrough stays in 3D. Photographs for
+  the other two moods would need eight more images.
+- **Day and night switch.** It has no effect on the photographs.
+- **Alignment.** A generated photograph does not match the 3D frame to the pixel, so the
+  fade is kept short. On portrait phones the photograph is cropped to its centre.
+- **Loading.** Photographs load only after the visitor passes 40% of the story, in a
+  1920 px or 960 px WebP depending on the screen. They are not shown without WebGL.
+- **Not changed.** The overview stays as the 3D model, and the share image is still the
+  rendered model.
+
 ### Phase 8 (in progress: waiting on the form endpoint and content)
 
 - **Site settings in one place.** The site address, form endpoint and fallback email are
