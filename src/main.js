@@ -5,7 +5,8 @@ import 'lenis/dist/lenis.css';
 import { initFilms } from './ui/film.js';
 import { initMagnetic } from './ui/magnetic.js';
 import { initForm } from './ui/form.js';
-import { initFaq, initHeader, initMoods, initProcess, initReveals, initTilt, initWork } from './ui/sections.js';
+import { initCustomiser } from './ui/customise.js';
+import { initFaq, initHeader, initProcess, initReveals, initTilt, initWork } from './ui/sections.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,17 +26,19 @@ initFilms();
 initHeader();
 initReveals({ reducedMotion });
 initTilt({ reducedMotion });
-initMoods();
 initProcess({ reducedMotion });
 initWork();
 initFaq();
 initForm();
+initCustomiser().catch(() => {
+  /* the room simply stays as the photograph if its assets fail to load */
+});
 initMagnetic({ reducedMotion });
 for (const el of document.querySelectorAll('[data-year]')) el.textContent = new Date().getFullYear();
 
-// The header gets a solid background once the three films have scrolled away.
+// The header gets a solid background once the films have scrolled away.
 ScrollTrigger.create({
-  trigger: '#walkthrough',
+  trigger: '#build',
   start: 'bottom 96px',
   end: 'max',
   toggleClass: { targets: root, className: 'is-past-hero' },

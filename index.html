@@ -88,31 +88,38 @@
         </div>
       </section>
 
-      <section id="build" class="film film--build film--step" data-film="/film/plan" data-frames="178" data-end="0.95" aria-label="From a floor plan to a finished home">
+      <section id="build" class="film film--build film--step" data-film="/film/plan" data-frames="203" data-end="0.86" aria-label="From a floor plan to a finished home">
         <div class="film__stage">
           <img class="film__poster" src="/film/plan/poster.webp" width="1280" height="720" loading="lazy" alt="A floor plan drawn in brass lines on concrete. Scrolling raises its walls into a scale model, adds materials, furniture and light, then moves inside and through a walnut door into the finished room." />
           <canvas class="film__canvas" aria-hidden="true"></canvas>
           <div class="film__scrim film__scrim--side" aria-hidden="true"></div>
-          <div class="film__float film__float--side" data-from="0" data-to="0.1"><p class="film__index">01 The plan</p><h2>A single line, before anything else.</h2></div>
-          <div class="film__float film__float--side" data-from="0.125" data-to="0.215"><p class="film__index">02 Structure</p><h2>Proportion is decided here.</h2></div>
-          <div class="film__float film__float--side" data-from="0.25" data-to="0.345"><p class="film__index">03 Materials</p><h2>Chosen for the hand as much as the eye.</h2></div>
-          <div class="film__float film__float--side" data-from="0.38" data-to="0.475"><p class="film__index">04 Furnishing</p><h2>Nothing arrives by accident.</h2></div>
-          <div class="film__float film__float--side" data-from="0.51" data-to="0.61"><p class="film__index">05 Evening</p><h2>Dusk is designed too.</h2></div>
-          <div class="film__float film__float--side" data-from="0.66" data-to="0.8"><p class="film__index">06 Arrival</p><h2>Now open the door.</h2></div>
-          <span class="film__note" aria-hidden="true">Concept visual</span>
-        </div>
-      </section>
-
-      <section id="walkthrough" class="film film--walk" data-film="/film/walk" data-first="30" data-frames="150" data-end="0.96" aria-label="A walk through the finished home">
-        <div class="film__stage">
-          <img class="film__poster" src="/film/walk/d/f-030.webp" width="1280" height="720" loading="lazy" alt="A living room in olive, cream and walnut, open to a tropical garden. Scrolling walks through the dining room, kitchen, primary suite and bathroom to a terrace with a sea view." />
-          <canvas class="film__canvas" aria-hidden="true"></canvas>
-          <div class="film__scrim film__scrim--even" aria-hidden="true"></div>
-          <div class="film__title" data-side="left" data-from="0" data-to="0.13"><p class="film__index">Room 1 of 4</p><h2>The living space</h2><p class="film__sub">Olive velvet, travertine, walnut slats.</p></div>
-          <div class="film__title" data-side="right" data-from="0.33" data-to="0.46"><p class="film__index">Room 2 of 4</p><h2>The kitchen</h2><p class="film__sub">One long island in honed stone.</p></div>
-          <div class="film__title" data-side="left" data-from="0.52" data-to="0.65"><p class="film__index">Room 3 of 4</p><h2>The primary suite</h2><p class="film__sub">Low, quiet, open to the garden.</p></div>
-          <div class="film__title" data-side="right" data-from="0.71" data-to="0.84"><p class="film__index">Room 4 of 4</p><h2>The bath</h2><p class="film__sub">Stone, brass and morning light.</p></div>
-          <div class="film__rail" aria-hidden="true"><span class="film__rail-bar"></span></div>
+          <div class="film__float film__float--side" data-from="0.0" data-to="0.079"><p class="film__index">01 The plan</p><h2>A single line, before anything else.</h2></div>
+          <div class="film__float film__float--side" data-from="0.099" data-to="0.171"><p class="film__index">02 Structure</p><h2>Proportion is decided here.</h2></div>
+          <div class="film__float film__float--side" data-from="0.198" data-to="0.274"><p class="film__index">03 Materials</p><h2>Chosen for the hand as much as the eye.</h2></div>
+          <div class="film__float film__float--side" data-from="0.302" data-to="0.377"><p class="film__index">04 Furnishing</p><h2>Nothing arrives by accident.</h2></div>
+          <div class="film__float film__float--side" data-from="0.405" data-to="0.484"><p class="film__index">05 Evening</p><h2>Dusk is designed too.</h2></div>
+          <div class="film__float film__float--side" data-from="0.524" data-to="0.635"><p class="film__index">06 Arrival</p><h2>Now open the door.</h2></div>
+          <div class="cfg" data-customiser="/cfg/living" aria-label="Customise the living room">
+            <div class="cfg__view">
+              <canvas class="cfg__canvas"></canvas>
+              <img class="cfg__original" src="/cfg/living/base.webp" width="1280" height="720" alt="" loading="lazy" />
+            </div>
+            <div class="cfg__divider" aria-hidden="true"></div>
+            <button type="button" class="cfg__handle" role="slider" aria-label="Compare with the original: drag right to reveal it" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span aria-hidden="true">Compare</span></button>
+            <div class="cfg__head">
+              <p class="film__index">07 Yours</p>
+              <h2>Make it yours.</h2>
+              <p class="cfg__hint">Tap any surface in the room, then choose a finish.</p>
+            </div>
+            <div class="cfg__panel">
+              <div class="cfg__tabs" role="tablist" aria-label="Surface"></div>
+              <div class="cfg__swatches" role="group" aria-label="Finish"></div>
+              <div class="cfg__row">
+                <div class="cfg__themes" role="group" aria-label="Whole-room themes"></div>
+                <button type="button" class="cfg__reset" data-reset>Reset</button>
+              </div>
+            </div>
+          </div>
           <span class="film__note" aria-hidden="true">Concept visual</span>
         </div>
       </section>
@@ -169,48 +176,6 @@
               </ul>
             </li>
           </ul>
-        </section>
-
-        <section id="moods" class="section section--moods" aria-labelledby="moods-title">
-          <header class="section__head">
-            <p class="label">Material moods</p>
-            <h2 id="moods-title">One room, three ways</h2>
-            <p>Choose a palette and see the same room change. Then switch off the daylight.</p>
-          </header>
-          <div class="moods">
-            <div class="moods__stage">
-              <img data-mood-img="olive-day" class="is-on" src="/src/assets/moods/olive-day.webp" width="1600" height="900" loading="lazy" decoding="async" alt="A living room in the selected palette, open to a garden: a curved sofa, a second sofa, a stone table and a slatted timber wall." />
-              <img data-mood-img="olive-night" src="/src/assets/moods/olive-night.webp" width="1600" height="900" loading="lazy" decoding="async" alt="" />
-              <img data-mood-img="sand-day" src="/src/assets/moods/sand-day.webp" width="1600" height="900" loading="lazy" decoding="async" alt="" />
-              <img data-mood-img="sand-night" src="/src/assets/moods/sand-night.webp" width="1600" height="900" loading="lazy" decoding="async" alt="" />
-              <img data-mood-img="charcoal-day" src="/src/assets/moods/charcoal-day.webp" width="1600" height="900" loading="lazy" decoding="async" alt="" />
-              <img data-mood-img="charcoal-night" src="/src/assets/moods/charcoal-night.webp" width="1600" height="900" loading="lazy" decoding="async" alt="" />
-              <span class="film__note" aria-hidden="true">Concept visual</span>
-            </div>
-            <div class="moods__controls">
-              <div class="moods__palettes" role="group" aria-label="Palette">
-                <button type="button" class="palette" data-mood="olive" aria-pressed="true">
-                  <span class="palette__dots" aria-hidden="true"><i style="--c: #46503f"></i><i style="--c: #7a5638"></i><i style="--c: #e6dccb"></i></span>
-                  <span class="palette__name">Olive and walnut</span>
-                  <span class="palette__mats">Olive velvet · walnut · travertine</span>
-                </button>
-                <button type="button" class="palette" data-mood="sand" aria-pressed="false">
-                  <span class="palette__dots" aria-hidden="true"><i style="--c: #b7a68c"></i><i style="--c: #b08d62"></i><i style="--c: #f1ebe0"></i></span>
-                  <span class="palette__name">Sand and oak</span>
-                  <span class="palette__mats">Sand limewash · natural oak · linen</span>
-                </button>
-                <button type="button" class="palette" data-mood="charcoal" aria-pressed="false">
-                  <span class="palette__dots" aria-hidden="true"><i style="--c: #2f2f31"></i><i style="--c: #54453a"></i><i style="--c: #c9c2b6"></i></span>
-                  <span class="palette__name">Charcoal and stone</span>
-                  <span class="palette__mats">Charcoal plaster · smoked oak · grey stone</span>
-                </button>
-              </div>
-              <button type="button" class="daynight" role="switch" aria-checked="false">
-                <span class="daynight__track" aria-hidden="true"><span class="daynight__knob"></span></span>
-                <span class="daynight__label">Night</span>
-              </button>
-            </div>
-          </div>
         </section>
 
         <section id="process" class="process" aria-labelledby="process-title">
