@@ -162,7 +162,7 @@ a {
 }
 
 .film--hero.is-live {
-  height: 260vh;
+  height: 620vh;
 }
 
 .film--walk.is-live {
@@ -1824,4 +1824,21 @@ body {
 .logo__word {
   font-weight: 300;
   letter-spacing: 0.02em;
+}
+
+/* Hero stage lines, in the display face */
+.film__float h2 {
+  font-size: clamp(2rem, 1.3rem + 3.2vw, 4rem);
+}
+
+.film__float h1 .film__motto {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: clamp(0.8rem, 0.7rem + 0.5vw, 1.0625rem);
+  line-height: 1.6;
+  letter-spacing: 0.34em;
+}
+
+.film__float .film__brand {
+  font-family: var(--font-body);
 }
