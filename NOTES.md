@@ -20,9 +20,40 @@ Every placeholder and every decision made without input is listed here.
 
 ## Decisions made without input
 
+### Phase 4
+
+- **Camera path.** The orbiting views (overhead, tilt, overview) are computed from angles.
+  From 64% the camera follows a smooth curve through fixed waypoints, with one waypoint
+  just before and one just after each doorway. An automated check samples the path every
+  0.02% against every wall and furniture bounding box: no contact, and at least 0.42 m
+  to the nearest wall inside the rooms.
+- **Route.** The dive comes over the south wall and lands in the south-west of the living
+  room looking at the sofa and slat wall. The kitchen pass runs along the north side of
+  the island. The walk to the bedroom goes north between the sofa and coffee table. The
+  pull back rises straight up out of the bathroom, then moves out to the south-west.
+- **Entering and leaving through the top.** The dive and the pull back both pass through
+  the ceiling plane. From above the ceiling is invisible; for the pull back it fades out
+  between 95% and 96% so the camera never visibly cuts through it.
+- **"Slowly turning" overview.** The turn (18 degrees) is driven by scroll, not time, to
+  keep the rule that scroll alone decides the state.
+- **Lens.** 35 degrees for model views and 60 degrees indoors on wide screens. Portrait
+  phones use 78 degrees indoors (68 on tablets), because a 60 degree vertical lens is too
+  narrow sideways on a tall screen.
+- **Centring.** The model moves to the centre between 64% and 68%, and back to the right
+  (or top, on phones) between 96% and 100% so the closing text has room.
+- **Room cards.** Each card is shown for its room's scroll range. The bedroom card appears
+  at 83%, while the camera is still walking toward the bedroom doorway with the bed in
+  view through it. Card copy (one line per room) was written without input.
+- **Overview and closing labels.** "The finished home" and "Your turn" were added as small
+  labels above the agreed headings. The closing panel also carries a Book a consultation
+  button.
+- **Interior lighting.** Room lights hang at about 1.5 m and the ceiling is a mid warm
+  grey, so ceilings do not burn out. A soft dark band sits behind the header so the logo
+  stays readable over bright interiors.
+
 ### Phase 3
 
-- **Story length.** The story section is already the full twelve screen heights. Stages
+- **Story length.** The story section is the full twelve screen heights. Stages
   01 to 05 use the first 54% as planned. From 54% to 100% the finished night model holds
   still until phase 4 adds the overview, dive, walkthrough and pull back.
 - **Master timeline.** One GSAP timeline of length 100 (so positions read as scroll

@@ -25,6 +25,9 @@ if (stage) {
   const story = createStory({ apartment, furniture, lights, mats, rig, reducedMotion });
   stage.setFrameCallback(story.update);
 
+  // Development only: lets automated checks sample the camera path against the model.
+  if (import.meta.env.DEV) window.__debug = { rig, apartment, furniture, story, stage };
+
   if (!document.hidden) stage.start();
 } else {
   // Full static fallback arrives in phase 7. For now the page stays readable without the canvas.

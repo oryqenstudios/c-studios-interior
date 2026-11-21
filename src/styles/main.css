@@ -75,6 +75,16 @@ a {
   gap: var(--space-4);
 }
 
+/* Soft dark band behind the header so the logo stays readable over bright interiors */
+.site-header::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 -60% 0;
+  z-index: -1;
+  background: linear-gradient(to bottom, rgb(20 19 18 / 0.7), rgb(20 19 18 / 0));
+  pointer-events: none;
+}
+
 .site-header__actions {
   display: flex;
   align-items: center;
@@ -238,6 +248,23 @@ a {
   }
 }
 
+/* Room cards: smaller type, with a brass rule */
+.panel--card {
+  gap: var(--space-3);
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--brass);
+}
+
+.panel.panel--card h2 {
+  font-size: var(--text-title);
+}
+
+.panel--closing .button {
+  justify-self: start;
+  margin-top: var(--space-3);
+  pointer-events: auto;
+}
+
 /* Wide screens: text on the left, vertically centred; the model sits to the right */
 @media (min-width: 56.25rem) and (min-aspect-ratio: 23/20) {
   .story__stage::after {
@@ -251,6 +278,19 @@ a {
     width: min(44vw, 36rem);
     transform: translateY(-50%);
     gap: var(--space-5);
+  }
+
+  /* Room cards sit low on the left over the interior views */
+  .panel--card {
+    top: auto;
+    bottom: var(--space-8);
+    width: min(36vw, 26rem);
+    transform: none;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-left: 1px solid var(--brass);
+    background: rgb(20 19 18 / 0.82);
   }
 }
 

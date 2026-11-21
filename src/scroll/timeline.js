@@ -13,6 +13,13 @@ export const STAGES = {
   surfaces: [18, 30],
   furnishing: [30, 44],
   light: [44, 54],
+  overview: [54, 64],
+  dive: [64, 70],
+  living: [70, 77],
+  kitchen: [77, 83],
+  bedroom: [83, 91],
+  bathroom: [91, 95],
+  closing: [95, 100],
 };
 
 const ROOM_ORDER = ['living', 'kitchen', 'bedroom', 'bathroom'];
@@ -129,6 +136,8 @@ export function createStory({ apartment, furniture, lights, mats, rig, reducedMo
     light: 0,
     night: 0,
     tilt: 0,
+    ceilingFade: 0,
+    p: 0, // scroll percentage through the story, for the camera
   };
 
   // Stage 01: the plan draws itself on load, then the door swings appear.
@@ -157,15 +166,18 @@ export function createStory({ apartment, furniture, lights, mats, rig, reducedMo
   tween('tilt', [STAGES.furnishing[0], STAGES.light[1]], { ease: 'sine.inOut' });
   tween('light', STAGES.light);
   tween('night', [44, 52]);
+  // The ceiling fades just before the camera rises through it in the pull back.
+  tween('ceilingFade', [95, 96]);
+  master.to(state, { p: 100, duration: 100 }, 0);
 
   // Text panels fade in and out with their stage. The first is visible on load.
   const FADE = 1.5;
   for (const panel of story.querySelectorAll('[data-panel]')) {
     const [from, to] = STAGES[panel.dataset.panel];
-    if (from > 0) master.fromTo(panel, { opacity: 0 }, { opacity: 1, duration: FADE }, from);
-    master.to(panel, { opacity: 0, duration: FADE }, to - FADE);
+    if (from > 0) master.fromTo(panel, { opacity: 0 }, { opacity: 1, duration: FADE }, from + (panel.dataset.delay ? +panel.dataset.delay : 0));
+    // The closing panel stays until the story scrolls away.
+    if (to < 100) master.to(panel, { opacity: 0, duration: FADE }, to - FADE);
   }
-  master.set({}, {}, 100);
 
   // Thin brass line along the bottom edge: progress through the whole page.
   if (progressBar) {
@@ -185,6 +197,8 @@ export function createStory({ apartment, furniture, lights, mats, rig, reducedMo
     applyFloor(apartment.floors.tiles, state.floors);
     applyFurniture(furniture, state.furnish);
     applyLight(lights, state.light, state.night);
+    mats.ceiling.opacity = 1 - state.ceilingFade;
+    apartment.ceiling.visible = state.ceilingFade < 1;
     rig.update(state);
   }
 

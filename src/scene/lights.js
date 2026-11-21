@@ -4,11 +4,12 @@ const DAY = { sun: 2.6, sunColor: new Color(0xfff0dc), fill: 2.1 };
 // Night: the sun drops to about a third and turns cool.
 const NIGHT = { sun: DAY.sun / 3, sunColor: new Color(0x9db2d6), fill: 0.3 };
 
+// Hung well below the ceiling so it is washed evenly instead of burning out above each light.
 const ROOM_LIGHTS = {
-  living: { position: [0.6, 2.1, 0], intensity: 14 },
-  kitchen: { position: [-0.3, 2.0, 4.1], intensity: 12 },
-  bedroom: { position: [2.0, 2.1, -4.3], intensity: 9 },
-  bathroom: { position: [-2.0, 2.1, -4.2], intensity: 9 },
+  living: { position: [0.6, 1.55, 0], intensity: 11 },
+  kitchen: { position: [-0.3, 1.5, 4.1], intensity: 9 },
+  bedroom: { position: [2.0, 1.55, -4.3], intensity: 7 },
+  bathroom: { position: [-2.0, 1.55, -4.2], intensity: 7 },
 };
 
 const GLOW_INTENSITY = 2.4;

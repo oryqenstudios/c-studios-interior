@@ -122,7 +122,7 @@ export function createMaterials() {
     // Fixed
     // A faint glow of its own keeps the table from ever falling below the page background.
     ground: matte(0x1c1a18, { roughness: 1, emissive: PALETTE.ink, emissiveIntensity: 1.7 }),
-    ceiling: matte(PALETTE.plaster, { side: FrontSide }),
+    ceiling: matte(0x9a9184, { side: FrontSide, transparent: true }),
     tile: matte(0xb5aea2, { roughness: 0.75 }),
     stone: matte(0x8f897e, { roughness: 0.8 }),
     marble: matte(0xffffff, { map: veins, roughness: 0.35 }),
