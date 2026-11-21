@@ -1766,6 +1766,8 @@ a {
   .film__float > * {
     animation: none;
   }
+}
+
 /* ---------- Typeface refinements (Bodoni Moda for display, Jost for text) ---------- */
 h1,
 h2,
