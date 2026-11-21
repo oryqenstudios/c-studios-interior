@@ -151,9 +151,11 @@ export function createStory({ apartment, furniture, lights, mats, rig, ui, reduc
   };
 
   // Stage 01: the plan draws itself on load, then the door swings appear.
-  if (!reducedMotion) {
+  // It starts once the loading screen has cleared. With reduced motion the plan is simply there.
+  function startIntro() {
+    if (reducedMotion) return;
     gsap
-      .timeline({ delay: 0.3 })
+      .timeline({ delay: 0.2 })
       .to(state, { draw: 1, duration: 2.5, ease: 'power1.inOut' })
       .to(state, { swings: 1, duration: 0.6, ease: 'power1.out' });
   }
@@ -219,7 +221,15 @@ export function createStory({ apartment, furniture, lights, mats, rig, ui, reduc
     else window.scrollTo(0, y);
   }
 
+  let shadowKey = -1;
+
   function update() {
+    // Shadows only change while walls rise or furniture lands.
+    const key = state.walls * 7 + state.furnish;
+    if (key !== shadowKey) {
+      shadowKey = key;
+      lights.requestShadowUpdate();
+    }
     ui.p = state.p;
     ui.scriptedNight = state.night;
     if (!ui.unlocked && state.p >= STAGES.light[1] - 0.5) {
@@ -242,5 +252,5 @@ export function createStory({ apartment, furniture, lights, mats, rig, ui, reduc
     rig.update(state);
   }
 
-  return { update, state, master, lenis, scrollToPercent };
+  return { update, state, master, lenis, scrollToPercent, startIntro };
 }

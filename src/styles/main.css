@@ -361,8 +361,8 @@ a {
   content: '';
   position: absolute;
   inset: auto 0 0 0;
-  height: 52%;
-  background: linear-gradient(to top, rgb(20 19 18 / 0.94) 0%, rgb(20 19 18 / 0.8) 45%, rgb(20 19 18 / 0) 100%);
+  height: 46%;
+  background: linear-gradient(to top, rgb(20 19 18 / 0.92) 0%, rgb(20 19 18 / 0.7) 50%, rgb(20 19 18 / 0) 100%);
 }
 
 .panel {
@@ -530,7 +530,7 @@ a {
     right: auto;
     bottom: auto;
     top: 50%;
-    width: min(44vw, 36rem);
+    width: min(40vw, 34rem);
     transform: translateY(-50%);
     gap: var(--space-5);
   }
@@ -859,6 +859,66 @@ html:not(.has-webgl) .site-header {
   display: inline !important;
 }
 
+/* ---------- Loading screen (only shown when the 3D view is about to start) ---------- */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--ink);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--medium) var(--ease),
+    visibility 0s linear var(--medium);
+}
+
+.is-loading .loader {
+  opacity: 1;
+  visibility: visible;
+  transition: none;
+}
+
+.loader__mark {
+  width: 4rem;
+  height: 4rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--brass);
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  line-height: 1;
+  padding-bottom: 0.08em;
+  color: var(--plaster);
+}
+
+.fallback-only {
+  display: none;
+}
+
+html:not(.has-webgl) .fallback-only {
+  display: block;
+}
+
+html:not(.has-webgl) .webgl-only {
+  display: none;
+}
+
+.stats {
+  position: fixed;
+  left: var(--space-3);
+  bottom: var(--space-4);
+  z-index: 40;
+  padding: var(--space-1) var(--space-2);
+  background: var(--ink);
+  border: 1px solid var(--line);
+  font-size: 0.75rem;
+  color: var(--plaster);
+  pointer-events: none;
+}
+
 /* ---------- Without WebGL (or without JavaScript) the story is plain stacked text ---------- */
 html:not(.has-webgl) .scene,
 html:not(.has-webgl) .site-header__tools,
@@ -904,5 +964,9 @@ html:not(.has-webgl) .panel h2 {
 
   .scroll-cue__line::after {
     animation: none;
+  }
+
+  .loader {
+    transition: none;
   }
 }

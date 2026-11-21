@@ -66,6 +66,19 @@ function stadium(target, length, width) {
   return target;
 }
 
+// A row of identical thin dark reveals (cabinet door joints), drawn as one instanced mesh.
+function reveals(parent, material, [w, h, d], count, place) {
+  const mesh = new InstancedMesh(cached(`b:${w}:${h}:${d}`, () => new BoxGeometry(w, h, d)), material, count);
+  const matrix = new Matrix4();
+  for (let i = 0; i < count; i++) {
+    const [x, y, z] = place(i);
+    matrix.makeTranslation(x, y + h / 2, z);
+    mesh.setMatrixAt(i, matrix);
+  }
+  parent.add(mesh);
+  return mesh;
+}
+
 function piece(name, room, x = 0, z = 0, rotationY = 0) {
   const group = new Group();
   group.name = name;
@@ -222,7 +235,7 @@ function kitchenCounter(m) {
   box(g, m.marble, [length, 0.04, 0.62], [0, 0.88, 5.615], 0.008);
   box(g, m.marble, [length, 0.58, 0.016], [0, 0.92, 5.917], 0);
   // Door joints, cut as thin dark reveals.
-  for (let i = 1; i < 12; i++) box(g, m.dark, [0.006, 0.76, 0.004], [-length / 2 + (i * length) / 12, 0.11, 5.345], 0).castShadow = false;
+  reveals(g, m.dark, [0.006, 0.76, 0.004], 11, (i) => [-length / 2 + ((i + 1) * length) / 12, 0.11, 5.345]);
   return g;
 }
 
@@ -230,7 +243,7 @@ function upperCabinets(m) {
   const g = piece('Upper cabinets', 'kitchen', -0.3, 0);
   const length = 7.25;
   box(g, m.timber, [length, 0.72, 0.35], [0, 1.5, 5.75], 0.008);
-  for (let i = 1; i < 12; i++) box(g, m.dark, [0.006, 0.7, 0.004], [-length / 2 + (i * length) / 12, 1.51, 5.574], 0).castShadow = false;
+  reveals(g, m.dark, [0.006, 0.7, 0.004], 11, (i) => [-length / 2 + ((i + 1) * length) / 12, 1.51, 5.574]);
   // Under-cabinet strip: glows at night.
   box(g, m.glow.kitchen, [length - 0.2, 0.012, 0.03], [0, 1.487, 5.8], 0).castShadow = false;
   return g;

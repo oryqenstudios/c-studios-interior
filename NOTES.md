@@ -13,7 +13,7 @@ Every placeholder and every decision made without input is listed here.
 | `[ABOUT STATEMENT]` | About section (`index.html`), about 80 words | In the page, awaiting content |
 | `[BUDGET RANGE 1]` to `[BUDGET RANGE 4]` | Budget select in the form (`index.html`) | In the page, awaiting content |
 | `[FORM ENDPOINT]` | `src/ui/form.js`, `ENDPOINT`, and the form's `action` | Connected in phase 8 |
-| `[DOMAIN]` | Canonical URL, Open Graph tags | Not yet used (phase 7) |
+| `[DOMAIN]` | `index.html` head: canonical link, `og:url`, `og:image`, `twitter:image` (four places) | In the page, awaiting content |
 
 Draft copy written without input, for the studio to confirm or replace: the four service
 descriptions and their bullets, the five process steps, the section headings, the room
@@ -25,6 +25,38 @@ card lines, and the footer line "Interior design in Singapore."
   (confirmed 21 Nov 2026).
 
 ## Decisions made without input
+
+### Phase 7
+
+- **Quality tiers.** Chosen at load from processor cores, memory, whether the device is a
+  phone, and whether the graphics are software-rendered: high (2048 shadow map, pixel
+  ratio up to 2), medium (1024, up to 1.5), low (no shadows, pixel ratio 1, floorboards
+  twice as wide, so about half as many). These rules are a starting guess and have not
+  been tuned on real devices.
+- **Automatic step-down.** If the frame rate stays under 30 for two seconds in a row, the
+  site drops one tier (after a three second grace period at start-up). Resolution and
+  shadows change straight away; the floorboard count is fixed at load and does not.
+- **Checking on a device.** Adding `?stats` to the address shows the current tier and
+  frame rate. `?quality=high`, `medium` or `low` forces a tier.
+- **Shadow map.** Redrawn only while walls rise or furniture lands, since the sun does not
+  move. This is the main saving during the walkthrough.
+- **Render pausing.** The loop stops when the tab is hidden and when the story has
+  scrolled out of view behind the content sections.
+- **Loading screen.** The logo mark on ink, shown only when the 3D view is about to
+  start. It clears when fonts are ready and one frame has rendered, or after three seconds
+  at most, and then the plan starts drawing. With reduced motion it clears without a fade.
+- **Share image.** `public/og-image.png` is rendered from the model by
+  `scripts/make-og-image.cjs` (needs Playwright, which is not a project dependency). It
+  shows the night overview only, with no logo or text.
+- **Metadata.** Title, description, Open Graph and Twitter tags and a canonical link are
+  in place, with `[DOMAIN]` to fill in. LocalBusiness structured data is not added yet;
+  the plan asks for it only once real contact details exist.
+- **Cabinet door joints** are now one instanced mesh per run, to keep the rule that
+  anything repeated more than ten times is instanced.
+- **Without WebGL.** The hero line reads "How a home comes together..." there, since
+  "Scroll to build a home" makes no sense without the 3D view.
+- **Not measured.** Real frame rates on a laptop and a mid-range phone. This build
+  environment renders in software only.
 
 ### Phase 6
 
@@ -48,8 +80,6 @@ card lines, and the footer line "Interior design in Singapore."
 - **Privacy note.** A short paragraph in the footer, linked from under the submit button.
 - **Without WebGL or JavaScript.** The story's text panels are laid out as plain stacked
   text above the content sections, the 3D controls are hidden, and the form still works.
-  The hero line still says "Scroll to build a home", which reads oddly there; to revisit
-  in phase 7.
 - **Header.** Gets a solid background and a hairline once the story has scrolled away.
 - **Footer year.** Set from the visitor's clock, with 2026 as the static fallback.
 

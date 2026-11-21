@@ -14,14 +14,13 @@ const ROOM_LIGHTS = {
 
 const GLOW_INTENSITY = 2.4;
 
-export function createLights(scene, mats, { shadowMapSize = 2048 } = {}) {
+export function createLights(scene, mats) {
   // Day: one soft directional light with shadows and a low fill.
   const sun = new DirectionalLight(DAY.sunColor, DAY.sun);
   // High and from the east-south-east: the wall faces seen in the three-quarter views are lit
   // and shadows stay short.
   sun.position.set(7, 17, 3);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(shadowMapSize, shadowMapSize);
   sun.shadow.camera.left = -10;
   sun.shadow.camera.right = 10;
   sun.shadow.camera.top = 10;
@@ -31,6 +30,23 @@ export function createLights(scene, mats, { shadowMapSize = 2048 } = {}) {
   sun.shadow.bias = -0.0004;
   sun.shadow.normalBias = 0.03;
   sun.shadow.radius = 3;
+  // The sun never moves, so the shadow map is only redrawn when the model changes.
+  sun.shadow.autoUpdate = false;
+
+  // size: shadow map size in pixels, or 0 for no shadows (low quality tier).
+  function setShadowSize(size) {
+    sun.castShadow = size > 0;
+    if (size > 0 && sun.shadow.mapSize.x !== size) {
+      sun.shadow.mapSize.set(size, size);
+      sun.shadow.map?.dispose();
+      sun.shadow.map = null;
+    }
+    sun.shadow.needsUpdate = true;
+  }
+
+  function requestShadowUpdate() {
+    sun.shadow.needsUpdate = true;
+  }
 
   const fill = new HemisphereLight(0xf5ecdc, 0x8f7f6a, DAY.fill);
   scene.add(sun, sun.target, fill);
@@ -63,5 +79,5 @@ export function createLights(scene, mats, { shadowMapSize = 2048 } = {}) {
     for (const name of Object.keys(rooms)) setRoomLight(name, amount);
   }
 
-  return { sun, fill, rooms, setRoomLight, setDayNight, setNight };
+  return { sun, fill, rooms, setRoomLight, setDayNight, setNight, setShadowSize, requestShadowUpdate };
 }

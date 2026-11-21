@@ -1,4 +1,4 @@
-import { createStage } from './scene/renderer.js';
+import { createStage, TIERS } from './scene/renderer.js';
 import { createMaterials } from './scene/materials.js';
 import { buildApartment } from './scene/apartment.js';
 import { buildFurniture } from './scene/furniture.js';
@@ -39,10 +39,12 @@ if (stage) {
   };
 
   const mats = createMaterials();
-  const apartment = buildApartment(mats);
+  // The floorboard count is fixed at load; shadows and resolution can still drop later.
+  const apartment = buildApartment(mats, { boardWidth: TIERS[stage.tier].boardWidth });
   const furniture = buildFurniture(mats);
   stage.scene.add(apartment.group, furniture.group);
   const lights = createLights(stage.scene, mats);
+  stage.onTier((name, tier) => lights.setShadowSize(tier.shadow));
 
   const rig = createCameraRig(stage.camera, ui);
   stage.onResize(rig.layout);
@@ -63,13 +65,41 @@ if (stage) {
     planNav?.update();
   });
 
-  // Development only: lets automated checks sample the camera path against the model.
-  if (import.meta.env.DEV) window.__debug = { rig, apartment, furniture, story, stage, ui, mats };
+  // Stop rendering while the story (and so the canvas) is scrolled out of view.
+  // (The top margin ignores the strip that sits under the solid header.)
+  new IntersectionObserver(([entry]) => stage.setInView(entry.isIntersecting), { rootMargin: '-96px 0px 0px 0px' }).observe(
+    document.getElementById('story'),
+  );
 
-  if (!document.hidden) stage.start();
+  // Add ?stats to the address to see the quality tier and frame rate on any device.
+  if (new URLSearchParams(location.search).has('stats')) {
+    const stats = document.createElement('div');
+    stats.className = 'stats';
+    document.body.append(stats);
+    setInterval(() => {
+      stats.textContent = `${stage.tier} · ${stage.running ? Math.round(stage.fps) + ' fps' : 'paused'}`;
+    }, 500);
+  }
+
+  // Development only: lets automated checks sample the camera path against the model.
+  if (import.meta.env.DEV) window.__debug = { rig, apartment, furniture, story, stage, ui, mats, lights };
+
+  // Loading screen: wait for the fonts and a first rendered frame, then reveal and start
+  // the plan drawing. A timer makes sure the page can never stay covered.
+  let revealed = false;
+  const reveal = () => {
+    if (revealed) return;
+    revealed = true;
+    stage.renderOnce();
+    document.documentElement.classList.remove('is-loading');
+    stage.start();
+    story.startIntro();
+  };
+  document.fonts.ready.then(reveal);
+  setTimeout(reveal, 3000);
 } else {
   // No WebGL: the stylesheet lays the story out as plain stacked text above the content sections.
-  document.documentElement.classList.remove('has-webgl');
+  document.documentElement.classList.remove('has-webgl', 'is-loading');
   document.documentElement.classList.add('no-webgl');
   canvas.hidden = true;
 }
