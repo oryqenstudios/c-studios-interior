@@ -20,6 +20,31 @@ The page is now:
    living area as the visitor scrolls, with three of the agreed stage lines as captions.
 3. Closing call to action, Services, Process, About, Consultation form, footer (unchanged).
 
+### New hero (latest change)
+
+The studio sent a third reference and asked for the same concept: one continuous walk
+through a house with large room titles. The hero was rebuilt to match.
+
+- **A new house.** Seven stills of one contemporary tropical house (entrance, living
+  space, dining room, kitchen, primary suite, bath, grand view) in warm plaster, walnut,
+  olive and brass, then six 5-second first-to-last-frame camera moves joining each room to
+  the next, all generated with the studio's Higgsfield account. Joined end to end they
+  make one 30-second walk with no cuts. The reference video itself is not used.
+- **Titles.** The studio name and headline sit on the entrance wall at the start. Each
+  room then gets a large title in thin capitals (Manrope 200) with a number and one line
+  of copy, alternating left and right and drifting slightly as it passes. The last title,
+  "The grand view", carries a booking button. Room names follow the reference; the
+  one-line descriptions are drafts for the studio to confirm.
+- **Readability.** A dark wash fades in behind each title and out again, so the footage
+  is seen clean between titles.
+- **Length and weight.** The hero is nine screen heights of scroll and 180 frames:
+  about 6.9 MB on desktop, 3.4 MB on small landscape screens and 3.2 MB on portrait
+  phones. This is heavy for a first screen; frames load progressively.
+- **Mismatch to resolve.** The build film below the hero still shows the earlier apartment
+  (olive walls, dark walnut), not this house.
+- **Step 1 of the list above is superseded** by this hero; the earlier apartment walk
+  footage was removed.
+
 ### Decisions in this change
 
 - **Footage source.** All footage was generated with the studio's Higgsfield account:

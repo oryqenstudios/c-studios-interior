@@ -213,6 +213,11 @@ a {
   pointer-events: none;
 }
 
+/* Even wash used behind the large room titles: the footage is pale, the type is pale */
+.film__scrim--even {
+  background: rgb(20 19 18 / 0.42);
+}
+
 /* A light permanent shade at the top and bottom edges for the header and captions */
 .film__stage::after {
   content: '';
