@@ -1,4 +1,4 @@
-# C Studios Interior: build notes
+# C Studio Interior: build notes
 
 Every placeholder and every decision made without input is listed here.
 
@@ -19,6 +19,23 @@ The page is now:
 2. **Build film.** The section below the hero: a bare concrete shell becomes the finished
    living area as the visitor scrolls, with three of the agreed stage lines as captions.
 3. Closing call to action, Services, Process, About, Consultation form, footer (unchanged).
+
+### Name, logo and motto (supplied by the studio)
+
+- **Name.** "C Studio Interior" (singular). The build plan said "C Studios Interior"; every
+  mention on the site is corrected. The repository and Vercel address still say
+  "studios".
+- **Motto.** "An interior journey with you." It replaces the working line "Spaces, built
+  around you." as the hero headline, page title, share text and footer line.
+- **Logo.** The studio's C mark (a serif C filled with an interior photograph) was cut out
+  of the supplied 1080 px JPEG with a transparent background, because the site is dark and
+  the file has a white one. The wordmark "Studio Interior" is set as live text in light
+  Manrope, which is close to but not the same typeface as the logo. A vector or
+  transparent original from the studio would be sharper and exact.
+- **Favicon.** Now the C mark on ink (`favicon.png`, `apple-touch-icon.png`). The old
+  `favicon.svg` was removed.
+- **Colours unchanged.** The logo is terracotta and dark brown on white; the site remains
+  ink, plaster and brass.
 
 ### New hero (latest change)
 
@@ -367,7 +384,7 @@ None at the moment.
 - **Header contents.** Phase 1 has the logo and the Book a consultation button. Mood
   swatches and the day and night toggle arrive in phase 5. The button links to
   `#consultation`, which does not exist until phase 6.
-- **Page title and description.** Working title "C Studios Interior · Spaces, built
+- **Page title and description.** Working title "C Studio Interior · Spaces, built
   around you." and a one-sentence description using the agreed hero line. Review in
   phase 7.
 - **Structure.** `src/scroll/` and `src/ui/` exist as folders but their modules are

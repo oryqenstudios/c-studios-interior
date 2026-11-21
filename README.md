@@ -1,4 +1,4 @@
-# C Studios Interior
+# C Studio Interior
 
 Single-page website with two scroll-driven films. Vite, vanilla JavaScript, GSAP and Lenis.
 Decisions and open placeholders are listed in [NOTES.md](NOTES.md).
