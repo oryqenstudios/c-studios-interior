@@ -279,8 +279,13 @@ export async function initCustomiser() {
   // Move to another room: the current view pushes forward and dissolves into the next,
   // which is already wearing every finish chosen so far.
   let switching = false;
+  let wanted = null; // a room asked for while another change was still playing
   async function goTo(id) {
-    if (switching || room?.id === id) return;
+    if (room?.id === id) return;
+    if (switching) {
+      wanted = id;
+      return;
+    }
     switching = true;
     const button = roomNav.querySelector(`[data-room="${id}"]`);
     button?.classList.add('is-loading');
@@ -309,7 +314,30 @@ export async function initCustomiser() {
     for (const b of roomNav.children) b.setAttribute('aria-pressed', String(b.dataset.room === id));
     drawTabs();
     drawSwatches();
-    setTimeout(() => (switching = false), 700);
+    setTimeout(() => {
+      switching = false;
+      if (wanted && wanted !== room.id) goTo(wanted);
+      wanted = null;
+    }, 700);
+  }
+
+  // Scrolling moves through the rooms: the stretch of scroll after the film is divided
+  // into one band per room.
+  const section = root.closest('[data-film]');
+  let filmEnd = 1;
+  const bandOf = (progress) => Math.min(ROOMS.length - 1, Math.max(0, Math.floor(((progress - filmEnd) / (1 - filmEnd)) * ROOMS.length)));
+  section?.addEventListener('film:progress', (event) => {
+    filmEnd = event.detail.filmEnd;
+    if (!room || event.detail.progress < filmEnd) return;
+    goTo(ROOMS[bandOf(event.detail.progress)].id);
+  });
+  // A room button scrolls to the middle of that room's band, so scroll and buttons agree.
+  function scrollToRoom(index) {
+    if (!section || filmEnd >= 1) return goTo(ROOMS[index].id);
+    const progress = filmEnd + ((index + 0.5) / ROOMS.length) * (1 - filmEnd);
+    const top = section.getBoundingClientRect().top + window.scrollY + (section.offsetHeight - window.innerHeight) * progress;
+    if (window.__lenis) window.__lenis.scrollTo(top, { duration: 1.1 });
+    else window.scrollTo(0, top);
   }
 
   roomNav.replaceChildren(
@@ -319,7 +347,7 @@ export async function initCustomiser() {
       button.className = 'cfg__room';
       button.dataset.room = r.id;
       button.textContent = r.label;
-      button.addEventListener('click', () => goTo(r.id));
+      button.addEventListener('click', () => scrollToRoom(ROOMS.indexOf(r)));
       return button;
     }),
   );

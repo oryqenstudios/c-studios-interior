@@ -1847,7 +1847,7 @@ body {
 
 /* ---------- Model section: floating lines on the left, the model on the right ---------- */
 .film--build.is-live {
-  height: 1000vh;
+  height: 1340vh;
 }
 
 .film__scrim--side {

@@ -147,6 +147,7 @@ function initFilm(section) {
     if (scrim) scrim.style.opacity = strongest;
     // Past the film's end the section holds on its last frame; anything layered there can open.
     section.classList.toggle('is-film-done', progress >= filmEnd - 0.004);
+    section.dispatchEvent(new CustomEvent('film:progress', { detail: { progress, filmEnd } }));
     if (rail) rail.style.transform = `scaleY(${clamp01(progress / filmEnd)})`;
   }
 

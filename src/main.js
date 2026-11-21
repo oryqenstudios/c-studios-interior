@@ -17,6 +17,7 @@ const root = document.documentElement;
 if (!reducedMotion) {
   const lenis = new Lenis({ anchors: true });
   lenis.on('scroll', ScrollTrigger.update);
+  window.__lenis = lenis; // lets sections scroll the page smoothly
   gsap.ticker.add((time) => lenis.raf(time * 1000));
   gsap.ticker.lagSmoothing(0);
 }
