@@ -52,53 +52,6 @@ a {
   color: var(--brass);
 }
 
-/* Canvas: fixed, full screen, behind everything */
-.scene {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  z-index: 0;
-}
-
-/* Room photographs: fixed, full screen, directly above the canvas */
-.photos {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.photos img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  visibility: hidden;
-  will-change: opacity, transform;
-}
-
-.photos__note {
-  position: absolute;
-  right: var(--gutter);
-  bottom: var(--space-5);
-  font-size: var(--text-label);
-  font-weight: 600;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--plaster);
-  text-shadow: 0 0 6px rgb(20 19 18 / 0.9);
-  opacity: 0;
-}
-
-html:not(.has-webgl) .photos {
-  display: none;
-}
-
 /* Header */
 .site-header {
   position: fixed;
@@ -128,180 +81,10 @@ html:not(.has-webgl) .photos {
   gap: var(--space-4);
 }
 
-/* Header controls: mood swatches, day and night switch, plan navigation */
-.site-header__tools {
+.site-header__actions {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  margin-left: auto;
-}
-
-.moods {
-  display: flex;
-}
-
-.swatch,
-.daynight,
-.icon-button {
-  display: grid;
-  place-items: center;
-  width: var(--tap);
-  height: var(--tap);
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: none;
-  color: var(--plaster);
-  cursor: pointer;
-}
-
-.swatch__dot {
-  width: 1.375rem;
-  height: 1.375rem;
-  border-radius: 50%;
-  /* two flat halves: wall colour and timber colour */
-  background: linear-gradient(135deg, var(--a) 50%, var(--b) 50%);
-  box-shadow: 0 0 0 1px var(--line);
-  transition: box-shadow var(--fast) var(--ease);
-}
-
-.swatch:hover .swatch__dot {
-  box-shadow: 0 0 0 1px var(--muted);
-}
-
-.swatch[aria-pressed='true'] .swatch__dot {
-  box-shadow:
-    0 0 0 2px var(--ink),
-    0 0 0 3px var(--brass);
-}
-
-.daynight {
-  width: 3.25rem;
-  border-radius: 999px;
-}
-
-.daynight__track {
-  position: relative;
-  width: 2.5rem;
-  height: 1.375rem;
-  border: 1px solid var(--muted);
-  border-radius: 999px;
-  transition: border-color var(--fast) var(--ease);
-}
-
-/* The knob is a full disc by day and a crescent by night */
-.daynight__knob {
-  position: absolute;
-  top: 50%;
-  left: 0.1875rem;
-  width: 0.875rem;
-  height: 0.875rem;
-  margin-top: -0.4375rem;
-  border-radius: 50%;
-  background: var(--brass);
-  transition:
-    transform var(--medium) var(--ease),
-    background-color var(--medium) var(--ease),
-    box-shadow var(--medium) var(--ease);
-}
-
-.daynight[aria-checked='true'] .daynight__knob {
-  transform: translateX(1.125rem);
-  background: transparent;
-  box-shadow: inset -0.3rem -0.05rem 0 0 var(--plaster);
-}
-
-.daynight:disabled {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-
-.icon-button:hover,
-.icon-button[aria-expanded='true'] {
-  color: var(--brass);
-}
-
-.plan-nav {
-  position: relative;
-}
-
-.plan-popover {
-  position: absolute;
-  top: calc(100% + var(--space-2));
-  right: 0;
-  z-index: 30;
-  display: grid;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border: 1px solid var(--line);
-  background: var(--ink);
-}
-
-.plan-popover[hidden] {
-  display: none;
-}
-
-.mini-plan {
-  position: relative;
-  width: 11rem;
-  aspect-ratio: 8 / 12;
-  border: 1px solid var(--plaster);
-}
-
-.mini-plan button {
-  position: absolute;
-  left: calc(var(--x) * 1%);
-  top: calc(var(--y) * 1%);
-  width: calc(var(--w) * 1%);
-  height: calc(var(--h) * 1%);
-  padding: var(--space-1);
-  border: 1px solid var(--line);
-  background: none;
-  color: var(--plaster);
-  font: inherit;
-  font-size: 0.75rem;
-  line-height: 1.2;
-  cursor: pointer;
-  transition:
-    background-color var(--fast) var(--ease),
-    color var(--fast) var(--ease);
-}
-
-.mini-plan button:hover,
-.mini-plan button:focus-visible {
-  background: rgb(184 147 90 / 0.18);
-}
-
-.mini-plan button[aria-current='true'] {
-  background: var(--brass);
-  color: var(--ink);
-}
-
-/* Narrow screens: controls move to a second row under the logo and button */
-@media (max-width: 47.99rem) {
-  .site-header {
-    height: auto;
-    flex-wrap: wrap;
-    row-gap: 0;
-    padding-top: var(--space-3);
-  }
-
-  .site-header__tools {
-    order: 3;
-    width: 100%;
-    margin-left: calc(var(--space-3) * -1);
-  }
-
-  /* Anchor the mini plan to the header so it stays on screen */
-  .plan-nav {
-    position: static;
-  }
-
-  .plan-popover {
-    top: 100%;
-    right: auto;
-    left: var(--gutter);
-  }
+  gap: var(--space-4);
 }
 
 .logo {
@@ -379,49 +162,134 @@ html:not(.has-webgl) .photos {
   }
 }
 
-/* 3D story: twelve screen heights of scroll over the fixed canvas */
-.story {
+/* ---------- Scroll-driven films: full-screen footage scrubbed by scroll ---------- */
+.film {
   position: relative;
-  height: 1200vh;
+  z-index: 1;
+  height: 100svh; /* without JavaScript: one screen showing the poster frame */
+  background: var(--ink);
 }
 
-.story__stage {
+.film--hero.is-live {
+  height: 700vh;
+}
+
+.film--build.is-live {
+  height: 480vh;
+}
+
+.film__stage {
   position: sticky;
   top: 0;
   height: 100vh;
   height: 100svh;
+  overflow: hidden;
+}
+
+.film__poster,
+.film__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.film__canvas {
+  opacity: 0;
+}
+
+.film__canvas.is-ready {
+  opacity: 1;
+}
+
+/* Dark wash behind headline text so it stays readable over pale footage */
+.film__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, rgb(20 19 18 / 0.7) 0%, rgb(20 19 18 / 0.3) 45%, rgb(20 19 18 / 0) 75%),
+    linear-gradient(to top, rgb(20 19 18 / 0.65) 0%, rgb(20 19 18 / 0) 45%);
   pointer-events: none;
 }
 
-/* Soft dark gradient behind bottom-placed text so it stays readable over the model */
-.story__stage::after {
+/* A light permanent shade at the top and bottom edges for the header and captions */
+.film__stage::after {
   content: '';
   position: absolute;
-  inset: auto 0 0 0;
-  height: 46%;
-  background: linear-gradient(to top, rgb(20 19 18 / 0.92) 0%, rgb(20 19 18 / 0.7) 50%, rgb(20 19 18 / 0) 100%);
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgb(20 19 18 / 0.45) 0%, rgb(20 19 18 / 0) 18%),
+    linear-gradient(to top, rgb(20 19 18 / 0.5) 0%, rgb(20 19 18 / 0) 22%);
+  pointer-events: none;
 }
 
-.panel {
+.film__text {
   position: absolute;
   z-index: 1;
   left: var(--gutter);
   right: var(--gutter);
-  bottom: calc(var(--space-7) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
   display: grid;
   gap: var(--space-4);
+  max-width: 44rem;
 }
 
-.panel h1,
-.panel h2 {
+.film__text h1,
+.film__text h2 {
   font-size: var(--text-headline);
   letter-spacing: -0.01em;
   text-wrap: balance;
 }
 
-.panel__copy {
+.film__copy {
+  max-width: 36ch;
+}
+
+/* Small room caption, bottom left */
+.film__tag {
+  position: absolute;
+  z-index: 1;
+  left: var(--gutter);
+  bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  max-width: none;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.film__tag span {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  color: var(--brass);
+}
+
+.film__note {
+  position: absolute;
+  z-index: 1;
+  right: var(--gutter);
+  bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
   color: var(--plaster);
-  max-width: 34ch;
+  opacity: 0.7;
+}
+
+@media (min-width: 56.25rem) and (min-aspect-ratio: 23/20) {
+  .film__text {
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    gap: var(--space-5);
+  }
 }
 
 .scroll-cue {
@@ -462,130 +330,6 @@ html:not(.has-webgl) .photos {
   }
 }
 
-/* Buttons inside panels */
-.panel__actions {
-  pointer-events: auto;
-}
-
-.panel__actions[inert] {
-  pointer-events: none;
-}
-
-.room-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.room-links button {
-  min-height: var(--tap);
-  padding: 0 var(--space-4);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgb(20 19 18 / 0.6);
-  color: var(--plaster);
-  font: inherit;
-  font-size: var(--text-small);
-  cursor: pointer;
-  transition:
-    border-color var(--fast) var(--ease),
-    color var(--fast) var(--ease);
-}
-
-.room-links button:hover,
-.room-links button:focus-visible {
-  border-color: var(--brass);
-  color: var(--brass);
-}
-
-/* Orbit and room hover in the overview */
-.story {
-  touch-action: pan-y pinch-zoom;
-}
-
-.is-overview .story {
-  cursor: grab;
-}
-
-.is-overview.is-room-hover .story {
-  cursor: pointer;
-}
-
-.is-orbiting,
-.is-orbiting .story {
-  cursor: grabbing;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.room-tip {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 15;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--line);
-  background: var(--ink);
-  font-size: var(--text-label);
-  font-weight: 600;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brass);
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--fast) var(--ease);
-}
-
-.room-tip.is-visible {
-  opacity: 1;
-}
-
-/* Room cards: smaller type, with a brass rule */
-.panel--card {
-  gap: var(--space-3);
-  padding-left: var(--space-4);
-  border-left: 1px solid var(--brass);
-}
-
-.panel.panel--card h2 {
-  font-size: var(--text-title);
-}
-
-.panel--closing .panel__actions {
-  justify-self: start;
-  margin-top: var(--space-3);
-}
-
-/* Wide screens: text on the left, vertically centred; the model sits to the right */
-@media (min-width: 56.25rem) and (min-aspect-ratio: 23/20) {
-  .story__stage::after {
-    display: none;
-  }
-
-  .panel {
-    right: auto;
-    bottom: auto;
-    top: 50%;
-    width: min(40vw, 34rem);
-    transform: translateY(-50%);
-    gap: var(--space-5);
-  }
-
-  /* Room cards sit low on the left over the interior views */
-  .panel--card {
-    top: auto;
-    bottom: var(--space-8);
-    width: min(36vw, 26rem);
-    transform: none;
-    gap: var(--space-3);
-    padding: var(--space-5);
-    border: 1px solid var(--line);
-    border-left: 1px solid var(--brass);
-    background: rgb(20 19 18 / 0.82);
-  }
-}
-
 /* Progress line along the bottom edge */
 .progress {
   position: fixed;
@@ -611,9 +355,8 @@ html:not(.has-webgl) .photos {
   background: var(--ink);
 }
 
-/* Header gets a solid background once the 3D story is behind it */
-.is-past-story .site-header,
-html:not(.has-webgl) .site-header {
+/* Header gets a solid background once the hero film is behind it */
+.is-past-hero .site-header {
   background: var(--ink);
   border-bottom: 1px solid var(--line);
 }
@@ -896,102 +639,19 @@ html:not(.has-webgl) .site-header {
   display: inline !important;
 }
 
-/* ---------- Loading screen (only shown when the 3D view is about to start) ---------- */
-.loader {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
+/* Closing call to action */
+.section--closing {
   display: grid;
-  place-items: center;
-  background: var(--ink);
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity var(--medium) var(--ease),
-    visibility 0s linear var(--medium);
+  justify-items: center;
+  gap: var(--space-5);
+  text-align: center;
+  padding-top: var(--space-9);
+  padding-bottom: var(--space-9);
 }
 
-.is-loading .loader {
-  opacity: 1;
-  visibility: visible;
-  transition: none;
-}
-
-.loader__mark {
-  width: 4rem;
-  height: 4rem;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--brass);
-  border-radius: 50%;
-  font-family: var(--font-display);
-  font-size: 2.2rem;
-  line-height: 1;
-  padding-bottom: 0.08em;
-  color: var(--plaster);
-}
-
-.fallback-only {
-  display: none;
-}
-
-html:not(.has-webgl) .fallback-only {
-  display: block;
-}
-
-html:not(.has-webgl) .webgl-only {
-  display: none;
-}
-
-.stats {
-  position: fixed;
-  left: var(--space-3);
-  bottom: var(--space-4);
-  z-index: 40;
-  padding: var(--space-1) var(--space-2);
-  background: var(--ink);
-  border: 1px solid var(--line);
-  font-size: 0.75rem;
-  color: var(--plaster);
-  pointer-events: none;
-}
-
-/* ---------- Without WebGL (or without JavaScript) the story is plain stacked text ---------- */
-html:not(.has-webgl) .scene,
-html:not(.has-webgl) .site-header__tools,
-html:not(.has-webgl) .room-links,
-html:not(.has-webgl) .scroll-cue,
-html:not(.has-webgl) .progress,
-html:not(.has-webgl) .story__stage::after {
-  display: none;
-}
-
-html:not(.has-webgl) .story {
-  height: auto;
-  max-width: 76rem;
-  margin: 0 auto;
-  padding: calc(var(--header-height) + var(--space-8)) var(--gutter) 0;
-}
-
-html:not(.has-webgl) .story__stage {
-  position: static;
-  height: auto;
-  display: grid;
-  gap: var(--space-7);
-  pointer-events: auto;
-}
-
-html:not(.has-webgl) .panel {
-  position: static;
-  width: auto;
-  transform: none;
-  padding: 0;
-  border: 0;
-  background: none;
-}
-
-html:not(.has-webgl) .panel h2 {
-  font-size: var(--text-title);
+.section--closing h2 {
+  font-size: var(--text-headline);
+  letter-spacing: -0.01em;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1003,7 +663,4 @@ html:not(.has-webgl) .panel h2 {
     animation: none;
   }
 
-  .loader {
-    transition: none;
-  }
 }

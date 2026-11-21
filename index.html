@@ -22,7 +22,7 @@
     <meta property="og:image" content="%VITE_SITE_URL%/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="A scale model of a finished apartment, lit at night and seen from above." />
+    <meta property="og:image:alt" content="A finished open-plan living room, dining area and kitchen in olive green and walnut." />
     <meta property="og:locale" content="en_SG" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="C Studios Interior · Spaces, built around you." />
@@ -46,143 +46,71 @@
       type="font/woff2"
       crossorigin
     />
-    <script>
-      // Assume the 3D view will work so the page does not flash its fallback layout.
-      // main.js removes this class if WebGL turns out to be unavailable.
-      if (window.WebGL2RenderingContext) document.documentElement.classList.add('has-webgl', 'is-loading');
-    </script>
     <link rel="stylesheet" href="/src/styles/tokens.css" />
     <link rel="stylesheet" href="/src/styles/main.css" />
   </head>
   <body>
-    <canvas
-      id="scene"
-      class="scene"
-      role="img"
-      aria-label="A 3D scale model of an apartment that is built step by step as you scroll: floor plan, walls, floors, furniture and lighting, followed by a walk through each room."
-    ></canvas>
-
-    <!-- Real-life room photographs that fade in over the 3D view during the walkthrough -->
-    <div class="photos" aria-hidden="true">
-      <img data-photo="living" alt="" decoding="async" />
-      <img data-photo="kitchen" alt="" decoding="async" />
-      <img data-photo="bedroom" alt="" decoding="async" />
-      <img data-photo="bathroom" alt="" decoding="async" />
-      <span class="photos__note">Concept visual</span>
-    </div>
-
-    <div class="loader" aria-hidden="true"><span class="loader__mark">C</span></div>
-
     <header class="site-header">
       <a class="logo" href="#top" aria-label="C Studios Interior, back to top">
         <span class="logo__mark" aria-hidden="true">C</span>
         <span class="logo__word" aria-hidden="true">Studios Interior</span>
       </a>
-      <div class="site-header__tools">
-        <div class="moods" role="group" aria-label="Material mood">
-          <button type="button" class="swatch" data-mood="olive" aria-pressed="true" aria-label="Olive and walnut" title="Olive and walnut">
-            <span class="swatch__dot" style="--a: #46503f; --b: #7a5638"></span>
-          </button>
-          <button type="button" class="swatch" data-mood="sand" aria-pressed="false" aria-label="Sand and oak" title="Sand and oak">
-            <span class="swatch__dot" style="--a: #b7a68c; --b: #b08d62"></span>
-          </button>
-          <button type="button" class="swatch" data-mood="charcoal" aria-pressed="false" aria-label="Charcoal and stone" title="Charcoal and stone">
-            <span class="swatch__dot" style="--a: #2f2f31; --b: #54453a"></span>
-          </button>
-        </div>
-        <button type="button" class="daynight" role="switch" aria-checked="false" aria-label="Night lighting" title="Available once the lights come on" disabled>
-          <span class="daynight__track"><span class="daynight__knob"></span></span>
-        </button>
-        <div class="plan-nav">
-          <button type="button" class="icon-button" id="plan-toggle" aria-expanded="false" aria-controls="plan-popover" aria-label="Floor plan: jump to a room" title="Jump to a room">
-            <svg viewBox="0 0 20 28" width="15" height="21" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="1" y="1" width="18" height="26" />
-              <path d="M1 9h5M9 9h6M18 9h1M10 1v4M10 8v1M14 19h5" />
-            </svg>
-          </button>
-          <div class="plan-popover" id="plan-popover" hidden>
-            <p class="label" id="plan-popover-title">Jump to a room</p>
-            <div class="mini-plan" role="group" aria-labelledby="plan-popover-title">
-              <button type="button" data-room="bathroom" style="--x: 0; --y: 0; --w: 50; --h: 29.17">Bathroom</button>
-              <button type="button" data-room="bedroom" style="--x: 50; --y: 0; --w: 50; --h: 29.17">Bedroom</button>
-              <button type="button" data-room="living" style="--x: 0; --y: 29.17; --w: 100; --h: 41.66">Living and dining</button>
-              <button type="button" data-room="kitchen" style="--x: 0; --y: 70.83; --w: 100; --h: 29.17">Kitchen</button>
-            </div>
-          </div>
-        </div>
-      </div>
       <nav class="site-header__actions" aria-label="Primary">
         <a class="button button--primary" href="#consultation">Book a consultation</a>
       </nav>
     </header>
 
     <main id="top">
-      <section id="story" class="story" aria-label="A home, built step by step">
-        <div class="story__stage">
-          <div class="panel" data-panel="drawing">
-            <p class="label">01 The drawing</p>
+      <section id="hero" class="film film--hero" data-film="/film/walk" data-frames="WALK_N" aria-label="A walk through a finished home">
+        <div class="film__stage">
+          <img class="film__poster" src="/film/walk/poster.webp" width="1280" height="720" alt="A finished open-plan living room, dining area and kitchen in olive green and walnut. Scrolling moves through the living room, kitchen, bedroom and bathroom." />
+          <canvas class="film__canvas" aria-hidden="true"></canvas>
+          <div class="film__scrim" aria-hidden="true"></div>
+          <div class="film__text" data-from="0" data-to="0.1">
             <h1>Spaces, built around you.</h1>
-            <p class="panel__copy webgl-only">Scroll to build a home, from the first line of the plan to the last lamp.</p>
-            <p class="panel__copy fallback-only">How a home comes together, from the first line of the plan to the last lamp.</p>
+            <p class="film__copy">Interior design in Singapore. Scroll to walk through a home.</p>
             <p class="scroll-cue" aria-hidden="true"><span class="scroll-cue__line"></span>Scroll</p>
           </div>
-          <div class="panel" data-panel="structure">
-            <p class="label">02 Structure</p>
-            <h2>Walls rise from the plan.</h2>
+          <p class="film__tag" data-from="0.14" data-to="0.39"><span>01</span>Living and dining</p>
+          <p class="film__tag" data-from="0.41" data-to="0.58"><span>02</span>Kitchen</p>
+          <p class="film__tag" data-from="0.6" data-to="0.77"><span>03</span>Bedroom</p>
+          <p class="film__tag" data-from="0.79" data-to="1"><span>04</span>Bathroom</p>
+          <span class="film__note" aria-hidden="true">Concept visual</span>
+        </div>
+      </section>
+
+      <section id="build" class="film film--build" data-film="/film/build" data-frames="BUILD_N" aria-label="From bare shell to finished home">
+        <div class="film__stage">
+          <img class="film__poster" src="/film/build/poster.webp" width="1280" height="720" loading="lazy" alt="An empty concrete apartment shell. Scrolling fits it out: walls, floors, joinery, furniture and lights." />
+          <canvas class="film__canvas" aria-hidden="true"></canvas>
+          <div class="film__scrim" aria-hidden="true"></div>
+          <div class="film__text" data-from="0" data-to="0.12">
+            <p class="label">How a home comes together</p>
+            <h2>It starts as an empty shell.</h2>
           </div>
-          <div class="panel" data-panel="surfaces">
-            <p class="label">03 Surfaces</p>
+          <div class="film__text" data-from="BUILD_A" data-to="BUILD_B">
+            <p class="label">Surfaces</p>
             <h2>Floors go down board by board.</h2>
           </div>
-          <div class="panel" data-panel="furnishing">
-            <p class="label">04 Furnishing</p>
+          <div class="film__text" data-from="BUILD_C" data-to="BUILD_D">
+            <p class="label">Furnishing</p>
             <h2>Every piece has a place.</h2>
           </div>
-          <div class="panel" data-panel="light">
-            <p class="label">05 Light</p>
+          <div class="film__text" data-from="BUILD_E" data-to="1">
+            <p class="label">Light</p>
             <h2>Then the lights come on.</h2>
           </div>
-          <div class="panel" data-panel="overview">
-            <p class="label">The finished home</p>
-            <h2>One view, before you step inside.</h2>
-            <div class="panel__actions room-links" role="group" aria-label="Step inside a room">
-              <button type="button" data-room="living">Living and dining</button>
-              <button type="button" data-room="kitchen">Kitchen</button>
-              <button type="button" data-room="bedroom">Bedroom</button>
-              <button type="button" data-room="bathroom">Bathroom</button>
-            </div>
-          </div>
-          <div class="panel panel--card" data-panel="living">
-            <p class="label">Room 1 of 4</p>
-            <h2>Living and dining</h2>
-            <p class="panel__copy">Slatted timber, a low stone table, a lamp beside the sofa.</p>
-          </div>
-          <div class="panel panel--card" data-panel="kitchen">
-            <p class="label">Room 2 of 4</p>
-            <h2>Kitchen</h2>
-            <p class="panel__copy">A marble island with room for three, and light over the work.</p>
-          </div>
-          <div class="panel panel--card" data-panel="bedroom">
-            <p class="label">Room 3 of 4</p>
-            <h2>Bedroom</h2>
-            <p class="panel__copy">An upholstered headboard, and a lamp on either side.</p>
-          </div>
-          <div class="panel panel--card" data-panel="bathroom">
-            <p class="label">Room 4 of 4</p>
-            <h2>Bathroom</h2>
-            <p class="panel__copy">A freestanding bath, a floating vanity, a mirror that glows.</p>
-          </div>
-          <div class="panel panel--closing" data-panel="closing" data-delay="1.5">
-            <p class="label">Your turn</p>
-            <h2>Your space next?</h2>
-            <div class="panel__actions">
-              <a class="button button--primary" href="#consultation">Book a consultation</a>
-            </div>
-          </div>
+          <span class="film__note" aria-hidden="true">Concept visual</span>
         </div>
       </section>
 
       <div class="content">
+      <section class="section section--closing" aria-labelledby="closing-title">
+        <p class="label">Your turn</p>
+        <h2 id="closing-title">Your space next?</h2>
+        <a class="button button--primary" href="#consultation">Book a consultation</a>
+      </section>
+
         <section id="services" class="section" aria-labelledby="services-title">
           <header class="section__head">
             <p class="label">Services</p>
@@ -231,7 +159,7 @@
         <section id="process" class="section" aria-labelledby="process-title">
           <header class="section__head">
             <p class="label">Process</p>
-            <h2 id="process-title">Five steps, in the order you just scrolled</h2>
+            <h2 id="process-title">Five steps, from brief to handover</h2>
           </header>
           <ol class="steps">
             <li class="step">
@@ -370,7 +298,6 @@
       <p class="site-footer__legal">&copy; <span data-year>2026</span> C Studios Interior</p>
     </footer>
 
-    <div class="room-tip" aria-hidden="true"></div>
     <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
 
     <script type="module" src="/src/main.js"></script>
