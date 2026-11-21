@@ -14,6 +14,7 @@ gsap.registerPlugin(ScrollTrigger);
 // for portrait phones, so the footage is not enlarged until it goes soft).
 const SETS = ['d', 'm', 'p'];
 const CAPTION_FADE = 0.025;
+const FLOAT_FADE = 0.05; // floating text takes longer to arrive and leave
 const drift = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
@@ -121,11 +122,19 @@ function initFilm(section) {
     let strongest = 0;
     for (const { el, from, to } of captions) {
       // A caption that starts at 0 is already there on load; one that ends at 1 stays.
-      const fadeIn = from <= 0 ? 1 : clamp01((progress - from) / CAPTION_FADE);
-      const fadeOut = to >= 1 ? 1 : clamp01((to - progress) / CAPTION_FADE);
+      const span = el.classList.contains('film__float') ? FLOAT_FADE : CAPTION_FADE;
+      const fadeIn = from <= 0 ? 1 : clamp01((progress - from) / span);
+      const fadeOut = to >= 1 ? 1 : clamp01((to - progress) / span);
       const opacity = Math.min(fadeIn, fadeOut);
       el.style.opacity = opacity;
       el.style.visibility = opacity > 0 ? 'visible' : 'hidden';
+      if (drift && el.classList.contains('film__float')) {
+        // Floating text: rises into place as it arrives, keeps drifting gently upward
+        // while it is on screen, and lifts away as it leaves.
+        const life = clamp01((progress - from) / (to - from));
+        const y = (1 - fadeIn) * 56 - (1 - fadeOut) * 40 - life * 14;
+        el.style.setProperty('--float-y', `${y.toFixed(1)}px`);
+      }
       // Travelling titles drift sideways across their time on screen, like signage passed on a walk.
       if (drift && el.classList.contains('film__title') && el.dataset.side) {
         const life = clamp01((progress - from) / (to - from)) - 0.5;

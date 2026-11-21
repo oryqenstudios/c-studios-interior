@@ -1677,3 +1677,93 @@ a {
   color: var(--plaster);
   text-underline-offset: 0.2em;
 }
+
+/* ---------- Floating hero text ---------- */
+.film__float {
+  position: absolute;
+  z-index: 1;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: 50%;
+  display: grid;
+  gap: var(--space-4);
+  justify-items: center;
+  text-align: center;
+  transform: translateY(calc(-50% + var(--float-y, 0px)));
+  text-shadow: 0 1px 28px rgb(20 19 18 / 0.55);
+  will-change: opacity, transform;
+}
+
+.film__float h1,
+.film__float h2 {
+  font-size: var(--text-headline);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  max-width: 14em;
+}
+
+.film__float h1 {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.film__float .scroll-cue {
+  justify-content: center;
+  margin-top: var(--space-4);
+  color: var(--plaster);
+}
+
+/* On load, each word of the headline floats up in turn */
+.float-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.7em);
+  animation: float-word 1100ms var(--ease) forwards;
+  animation-delay: calc(900ms + var(--w) * 110ms);
+}
+
+.is-loading .float-word {
+  animation-play-state: paused;
+}
+
+@keyframes float-word {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* A slow idle bob so the text never sits completely still */
+.film__float > * {
+  animation: float-idle 7s ease-in-out infinite;
+}
+
+.film__float > *:nth-child(2) {
+  animation-delay: -2.3s;
+}
+
+.film__float > *:nth-child(3) {
+  animation-delay: -4.6s;
+}
+
+@keyframes float-idle {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float-word {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .film__float > * {
+    animation: none;
+  }
+}
