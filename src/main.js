@@ -3,10 +3,12 @@ import { createMaterials } from './scene/materials.js';
 import { buildApartment } from './scene/apartment.js';
 import { buildFurniture } from './scene/furniture.js';
 import { createLights } from './scene/lights.js';
-import { createInspector } from './dev/inspect.js'; // TEMPORARY: removed in phase 3
+import { createCameraRig } from './scene/camera.js';
+import { createStory } from './scroll/timeline.js';
 
 const canvas = document.getElementById('scene');
 const stage = createStage(canvas);
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if (stage) {
   document.documentElement.classList.add('has-webgl');
@@ -17,15 +19,11 @@ if (stage) {
   stage.scene.add(apartment.group, furniture.group);
   const lights = createLights(stage.scene, mats);
 
-  // TEMPORARY: orbit control and preset views for inspection.
-  const inspector = createInspector({
-    camera: stage.camera,
-    renderer: stage.renderer,
-    lights,
-    apartment,
-    furniture,
-  });
-  stage.setFrameCallback(() => inspector.update());
+  const rig = createCameraRig(stage.camera);
+  stage.onResize(rig.layout);
+
+  const story = createStory({ apartment, furniture, lights, mats, rig, reducedMotion });
+  stage.setFrameCallback(story.update);
 
   if (!document.hidden) stage.start();
 } else {

@@ -120,7 +120,8 @@ export function createMaterials() {
     fabricDeep: matte(0xffffff, { roughness: 1 }),
 
     // Fixed
-    ground: matte(0x1c1a18, { roughness: 1 }),
+    // A faint glow of its own keeps the table from ever falling below the page background.
+    ground: matte(0x1c1a18, { roughness: 1, emissive: PALETTE.ink, emissiveIntensity: 1.7 }),
     ceiling: matte(PALETTE.plaster, { side: FrontSide }),
     tile: matte(0xb5aea2, { roughness: 0.75 }),
     stone: matte(0x8f897e, { roughness: 0.8 }),

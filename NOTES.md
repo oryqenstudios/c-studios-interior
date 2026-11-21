@@ -20,6 +20,39 @@ Every placeholder and every decision made without input is listed here.
 
 ## Decisions made without input
 
+### Phase 3
+
+- **Story length.** The story section is already the full twelve screen heights. Stages
+  01 to 05 use the first 54% as planned. From 54% to 100% the finished night model holds
+  still until phase 4 adds the overview, dive, walkthrough and pull back.
+- **Master timeline.** One GSAP timeline of length 100 (so positions read as scroll
+  percentages) is scrubbed by the scroll position. It drives one 0 to 1 value per stage,
+  and the scene is rebuilt from those values every frame, which is what makes the build
+  exactly reversible. Per-item staggering (each wall, board and piece) is computed from
+  the stage value rather than as hundreds of separate tweens.
+- **Plan lines fade** between 10% and 18%, once the first walls are up.
+- **Wall above doorways.** Each piece appears as its neighbouring wall passes door height,
+  so it never floats.
+- **Furniture landing.** Each piece drops about 0.9 m and scales with a 4% overshoot.
+- **Lights.** Rooms come on in turn across 44% to 54%; the sun dims and cools across 44%
+  to 52%.
+- **Tilt.** The camera stays overhead until 30%, then tilts to 38 degrees and swings 30
+  degrees toward the south-east by 54%.
+- **Model placement.** On wide screens the model is shifted right by offsetting the camera
+  view rather than moving the model, so its perspective is the same as a centred shot. On
+  narrow screens the model takes the top half and text sits in the bottom half over a
+  soft dark gradient. "Wide" means at least 900 px wide and wider than tall.
+- **Text panels.** Stages 02 to 05 show the label and heading only, as listed in the plan.
+  Faded-out panels stay in the page for screen readers.
+- **Progress line** shows progress through the whole page, not only the 3D story. Today
+  those are the same; they differ once the content sections exist.
+- **Scroll cue.** A small "Scroll" label with a moving brass tick (idle motion, switched
+  off with reduced motion).
+- **Table colour.** The dark table under the model has a faint glow of its own so it never
+  drops below the page background at night.
+- **Smooth scroll.** Lenis is on by default and off when reduced motion is requested.
+- **Removed.** The temporary inspection tool from phase 2.
+
 ### Phase 2
 
 - **Layout.** The plan fixes the rooms and openings but not where furniture sits. Positions
@@ -50,8 +83,6 @@ Every placeholder and every decision made without input is listed here.
   with the temporary Night preview button. Their levels will be tuned in phases 3 and 5.
   Because room lights cast no shadows (as the plan requires), a little of their light
   reaches the table outside the walls.
-- **Temporary inspection tool.** `src/dev/inspect.js` and the `.inspect` styles add orbit
-  control and view buttons. They are removed in phase 3.
 
 ## Open questions for the studio
 

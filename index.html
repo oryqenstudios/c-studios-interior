@@ -45,7 +45,36 @@
       </nav>
     </header>
 
-    <main id="top"></main>
+    <main id="top">
+      <section id="story" class="story" aria-label="A home, built step by step">
+        <div class="story__stage">
+          <div class="panel" data-panel="drawing">
+            <p class="label">01 The drawing</p>
+            <h1>Spaces, built around you.</h1>
+            <p class="panel__copy">Scroll to build a home, from the first line of the plan to the last lamp.</p>
+            <p class="scroll-cue" aria-hidden="true"><span class="scroll-cue__line"></span>Scroll</p>
+          </div>
+          <div class="panel" data-panel="structure">
+            <p class="label">02 Structure</p>
+            <h2>Walls rise from the plan.</h2>
+          </div>
+          <div class="panel" data-panel="surfaces">
+            <p class="label">03 Surfaces</p>
+            <h2>Floors go down board by board.</h2>
+          </div>
+          <div class="panel" data-panel="furnishing">
+            <p class="label">04 Furnishing</p>
+            <h2>Every piece has a place.</h2>
+          </div>
+          <div class="panel" data-panel="light">
+            <p class="label">05 Light</p>
+            <h2>Then the lights come on.</h2>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
 
     <script type="module" src="/src/main.js"></script>
   </body>

@@ -190,6 +190,8 @@ function buildFloor(pieces, material, name, rand) {
   const mesh = new InstancedMesh(unit, material, pieces.length);
   mesh.name = name;
   pieces.forEach((piece, i) => {
+    // 0 at the north wall, 1 at the south wall, with a little variation along each row.
+    piece.order = Math.min(1, Math.max(0, (piece.z + DEPTH / 2) / DEPTH + (rand() - 0.5) * 0.03));
     _m.compose(_p.set(piece.x, 0, piece.z), _q, _s.set(piece.w, FLOOR_T, piece.d));
     mesh.setMatrixAt(i, _m);
     const tone = 0.86 + rand() * 0.24;
@@ -199,6 +201,7 @@ function buildFloor(pieces, material, name, rand) {
   mesh.instanceColor.needsUpdate = true;
   mesh.receiveShadow = true;
   mesh.userData.pieces = pieces;
+  mesh.userData.thickness = FLOOR_T;
   return mesh;
 }
 

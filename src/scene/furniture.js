@@ -1,4 +1,5 @@
 import {
+  Box3,
   BoxGeometry,
   CylinderGeometry,
   DoubleSide,
@@ -11,6 +12,7 @@ import {
   Shape,
   SphereGeometry,
   TorusGeometry,
+  Vector3,
 } from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { WALL_H } from './apartment.js';
@@ -438,6 +440,22 @@ export function buildFurniture(mats) {
     toilet(m),
     showerScreen(m),
   ];
+
+  // Move each piece's origin to the middle of its footprint so it can settle and scale in place.
+  const bounds = new Box3();
+  const centre = new Vector3();
+  for (const item of pieces) {
+    if (item.rotation.y !== 0) continue; // rotated pieces are already built around their own centre
+    bounds.setFromObject(item).getCenter(centre);
+    const dx = centre.x - item.position.x;
+    const dz = centre.z - item.position.z;
+    for (const child of item.children) {
+      child.position.x -= dx;
+      child.position.z -= dz;
+    }
+    item.position.x = centre.x;
+    item.position.z = centre.z;
+  }
 
   const group = new Group();
   group.name = 'furniture';

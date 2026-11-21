@@ -155,38 +155,128 @@ a {
   }
 }
 
+/* 3D story: twelve screen heights of scroll over the fixed canvas */
+.story {
+  position: relative;
+  height: 1200vh;
+}
+
+.story__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  pointer-events: none;
+}
+
+/* Soft dark gradient behind bottom-placed text so it stays readable over the model */
+.story__stage::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 52%;
+  background: linear-gradient(to top, rgb(20 19 18 / 0.94) 0%, rgb(20 19 18 / 0.8) 45%, rgb(20 19 18 / 0) 100%);
+}
+
+.panel {
+  position: absolute;
+  z-index: 1;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: calc(var(--space-7) + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  gap: var(--space-4);
+}
+
+.panel h1,
+.panel h2 {
+  font-size: var(--text-headline);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.panel__copy {
+  color: var(--plaster);
+  max-width: 34ch;
+}
+
+.scroll-cue {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.scroll-cue__line {
+  position: relative;
+  width: 1px;
+  height: 2.25rem;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.scroll-cue__line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--brass);
+  animation: cue 2.4s var(--ease) infinite;
+}
+
+@keyframes cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* Wide screens: text on the left, vertically centred; the model sits to the right */
+@media (min-width: 56.25rem) and (min-aspect-ratio: 23/20) {
+  .story__stage::after {
+    display: none;
+  }
+
+  .panel {
+    right: auto;
+    bottom: auto;
+    top: 50%;
+    width: min(44vw, 36rem);
+    transform: translateY(-50%);
+    gap: var(--space-5);
+  }
+}
+
+/* Progress line along the bottom edge */
+.progress {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 20;
+  height: 2px;
+  pointer-events: none;
+}
+
+.progress__bar {
+  display: block;
+  height: 100%;
+  background: var(--brass);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition-duration: 0.01ms !important;
   }
-}
 
-/* TEMPORARY (phase 2 only): inspection view buttons. Removed in phase 3. */
-.inspect {
-  position: fixed;
-  left: var(--gutter);
-  right: var(--gutter);
-  bottom: var(--space-5);
-  z-index: 10;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.inspect button {
-  min-height: var(--tap);
-  padding: 0 var(--space-4);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgb(20 19 18 / 0.8);
-  color: var(--plaster);
-  font: inherit;
-  font-size: var(--text-small);
-  cursor: pointer;
-}
-
-.inspect button:hover,
-.inspect button[aria-pressed='true'] {
-  border-color: var(--brass);
-  color: var(--brass);
+  .scroll-cue__line::after {
+    animation: none;
+  }
 }

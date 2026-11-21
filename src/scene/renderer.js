@@ -34,7 +34,7 @@ export function createStage(canvas) {
 
   const scene = new Scene();
   scene.background = new Color(INK);
-  scene.fog = new Fog(INK, 30, 70);
+  scene.fog = new Fog(INK, 42, 95);
 
   const camera = new PerspectiveCamera(35, 1, 0.1, 200);
   camera.position.set(0, 24, 0.001);
@@ -47,7 +47,10 @@ export function createStage(canvas) {
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+    for (const fn of resizeListeners) fn(width, height);
   }
+
+  const resizeListeners = [];
 
   // One render loop. It stops while the tab is hidden.
   let onFrame = null;
@@ -84,6 +87,11 @@ export function createStage(canvas) {
     resize,
     start,
     stop,
+    // Calls fn(width, height) now and after every resize.
+    onResize(fn) {
+      resizeListeners.push(fn);
+      fn(window.innerWidth, window.innerHeight);
+    },
     setFrameCallback(fn) {
       onFrame = fn;
     },
