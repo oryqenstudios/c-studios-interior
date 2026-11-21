@@ -385,6 +385,17 @@ a {
   opacity: 0.7;
 }
 
+/* Narrow screens only: a dark fade rising from the bottom, behind text that sits over the model */
+.film__scrim--low {
+  background: linear-gradient(to top, rgb(20 19 18 / 0.96) 0%, rgb(20 19 18 / 0.9) 42%, rgb(20 19 18 / 0) 68%);
+}
+
+@media (min-width: 56.25rem) and (min-aspect-ratio: 23/20) {
+  .film__scrim--low {
+    display: none;
+  }
+}
+
 /* The step-inside section opens on a dark page with the model at the right, so its
    text needs no wash and sits in the empty left half. */
 .film__text--intro {

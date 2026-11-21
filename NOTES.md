@@ -16,9 +16,37 @@ The page is now:
 1. **Hero film.** A full-screen walk through a finished home (living and dining, kitchen,
    bedroom, bathroom), played frame by frame as the visitor scrolls, with the headline,
    a small room caption and the booking button over it.
-2. **Build film.** The section below the hero: a bare concrete shell becomes the finished
-   living area as the visitor scrolls, with three of the agreed stage lines as captions.
+2. **Step-inside film.** The section below the hero: a scale model, a corridor, a door
+   that opens onto the finished room (see "Step-inside section" below).
 3. Closing call to action, Services, Process, About, Consultation form, footer (unchanged).
+
+### Step-inside section (replaces the shell-to-home film)
+
+The studio sent a fourth reference and asked for the same style and format: a dark page
+with text on the left and a scale model on the right; scrolling dives into the model,
+down a corridor, and through a door into the finished room.
+
+- **Footage.** Three stills (the model on a dark ground, the plaster corridor with a walnut
+  door, the door open onto the hero's living room) and two camera moves (5 and 8 seconds),
+  generated with the studio's Higgsfield account in the hero house's palette. 130 frames:
+  about 2.7 MB on desktop, 2.1 MB on portrait phones.
+- **Copy (draft).** "Step inside before it is built." and "Every project starts as a model
+  you can walk through. Scroll, and open the door." The second line is a claim about how
+  the studio works; confirm it is true or change it.
+- **The model and the house are not the same floor plan.** The model is an apartment; the
+  hero is a house. Only the living room furniture and palette carry across.
+- **Removed.** The earlier shell-to-home film and its captions.
+- **Booking button** added in this section's opening text.
+- **Phones.** The text sits over the model on portrait screens, with a dark fade behind it.
+
+### Deployment failure, 21 Nov 2026
+
+From the commit that removed the 3D view until the fix, Vercel rejected every deployment,
+so the live site kept showing the old 3D version. Cause: a caching rule had been inserted
+into `vercel.json` twice, once nested inside another rule. The file was valid JSON but
+did not match Vercel's schema. Fixed in "Fix vercel.json so deployments succeed again".
+Lesson recorded: a local build does not validate `vercel.json`; check the live site or
+the Vercel deployment list after each push.
 
 ### Name, logo and motto (supplied by the studio)
 
