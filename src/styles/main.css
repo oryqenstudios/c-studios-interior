@@ -160,3 +160,33 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* TEMPORARY (phase 2 only): inspection view buttons. Removed in phase 3. */
+.inspect {
+  position: fixed;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: var(--space-5);
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.inspect button {
+  min-height: var(--tap);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgb(20 19 18 / 0.8);
+  color: var(--plaster);
+  font: inherit;
+  font-size: var(--text-small);
+  cursor: pointer;
+}
+
+.inspect button:hover,
+.inspect button[aria-pressed='true'] {
+  border-color: var(--brass);
+  color: var(--brass);
+}
