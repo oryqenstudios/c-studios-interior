@@ -4,18 +4,24 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 // Scroll-driven film: real footage played frame by frame as the visitor scrolls.
-// Frames are individual images so scrubbing is smooth in every browser (seeking inside
-// a video file is not), and neighbouring frames are blended so slow moves stay fluid.
+// Frames are individual images (seeking inside a video file is jerky in several
+// browsers). Three things keep it smooth:
+//   - the film eases toward the scroll position instead of jumping to it,
+//   - neighbouring frames are blended, so slow scrolling glides between them,
+//   - frames are decoded before they are used, and the ones near the visitor's current
+//     position are fetched first.
 //
-// Markup: <section class="film" data-film="/film/walk" data-frames="120">, containing
-// a .film__canvas and any number of captions with data-from / data-to (0 to 1 of the
+// Markup: <section class="film" data-film="/film/plan" data-frames="325">, containing a
+// .film__canvas and any number of captions with data-from / data-to (0 to 1 of the
 // section's scroll) that fade in and out.
-// Frame sets: d = 1280 x 720, m = 720 x 405, p = 540 x 960 (the centre of the picture,
+// Frame sets: d = 1600 x 900, m = 960 x 540, p = 608 x 1080 (the middle of the picture,
 // for portrait phones, so the footage is not enlarged until it goes soft).
 const SETS = ['d', 'm', 'p'];
 const CAPTION_FADE = 0.025;
 const FLOAT_FADE = 0.05; // floating text takes longer to arrive and leave
-const drift = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const EASE_PER_SECOND = 9; // how quickly the film catches up with the scroll position
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const drift = !reducedMotion;
 
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const pad = (n) => String(n).padStart(3, '0');
@@ -35,14 +41,17 @@ function initFilm(section) {
     to: Number(el.dataset.to),
   }));
 
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
   const portrait = window.innerWidth / window.innerHeight < 0.8;
-  const wide = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 900;
-  const set = portrait ? 'p' : wide ? 'd' : 'm';
+  const set = portrait ? 'p' : window.innerWidth * ratio > 1100 ? 'd' : 'm';
   const url = (i) => `${section.dataset.film}/${set}/f-${pad(first + i)}.webp?v=${__ASSET_VERSION__}`;
   const frames = new Array(count);
-  let progress = 0;
+  let target = 0; // where the scroll says the film should be
+  let progress = 0; // where the film is, easing toward the target
   let drawnKey = '';
   let started = false;
+
+  const positionOf = (p) => clamp01(p / filmEnd) * (count - 1);
 
   function nearest(index) {
     for (let d = 0; d < count; d++) {
@@ -61,10 +70,10 @@ function initFilm(section) {
   }
 
   function draw() {
-    const position = clamp01(progress / filmEnd) * (count - 1);
+    const position = positionOf(progress);
     const a = Math.floor(position);
     const b = Math.min(a + 1, count - 1);
-    const mixAmount = Math.round((position - a) * 20) / 20;
+    const mixAmount = Math.round((position - a) * 16) / 16;
     if (frames[a]?.ready && frames[b]?.ready) {
       const key = `${a}:${mixAmount}`;
       if (key === drawnKey) return;
@@ -83,42 +92,51 @@ function initFilm(section) {
   }
 
   function resize() {
-    const ratio = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(canvas.clientWidth * ratio);
-    canvas.height = Math.round(canvas.clientHeight * ratio);
+    // Sharp on dense screens, but never larger than is useful for the footage.
+    const width = Math.min(Math.round(canvas.clientWidth * ratio), 2400);
+    canvas.width = width;
+    canvas.height = Math.round((width * canvas.clientHeight) / Math.max(1, canvas.clientWidth));
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     drawnKey = '';
     draw();
   }
 
   function load(i) {
-    if (frames[i]) return;
+    if (i < 0 || i >= count || frames[i]) return;
     const img = new Image();
     img.decoding = 'async';
-    frames[i] = { img, ready: false };
-    img.onload = () => {
-      frames[i].ready = true;
+    const frame = { img, ready: false };
+    frames[i] = frame;
+    img.src = url(i);
+    // Decode off the main thread before the frame is used, so drawing it never stalls.
+    const done = () => {
+      frame.ready = true;
       drawnKey = '';
       draw();
     };
-    img.src = url(i);
+    if (img.decode) img.decode().then(done, () => (img.complete && img.naturalWidth ? done() : null));
+    else img.onload = done;
   }
 
-  // A coarse pass first so scrubbing works early, then the frames in between.
+  // A coarse pass first so scrubbing works early, then the frames in between. Whatever
+  // is just ahead of the visitor is always fetched before the rest.
+  const order = [];
+  for (const step of [16, 8, 4, 2, 1]) for (let i = 0; i < count; i += step) if (!frames[i] && !order.includes(i)) order.push(i);
+  let next = 0;
   function loadAll() {
     if (started) return;
     started = true;
-    const order = [];
-    for (const step of [8, 4, 2, 1]) for (let i = 0; i < count; i += step) if (!order.includes(i)) order.push(i);
-    let next = 0;
     const pump = () => {
-      for (let n = 0; n < 6 && next < order.length; n++) load(order[next++]);
-      if (next < order.length) setTimeout(pump, 100);
+      const here = Math.round(positionOf(target));
+      for (let i = here - 4; i <= here + 14; i++) load(i);
+      for (let n = 0; n < 8 && next < order.length; n++) load(order[next++]);
+      if (next < order.length) setTimeout(pump, 80);
     };
     pump();
   }
 
-  function apply() {
-    draw();
+  function applyCaptions() {
     let strongest = 0;
     for (const { el, from, to } of captions) {
       // A caption that starts at 0 is already there on load; one that ends at 1 stays.
@@ -145,13 +163,39 @@ function initFilm(section) {
       if (!el.classList.contains('film__tag')) strongest = Math.max(strongest, opacity);
     }
     if (scrim) scrim.style.opacity = strongest;
+  }
+
+  function apply() {
+    draw();
+    applyCaptions();
     // Past the film's end the section holds on its last frame; anything layered there can open.
     section.classList.toggle('is-film-done', progress >= filmEnd - 0.004);
     section.dispatchEvent(new CustomEvent('film:progress', { detail: { progress, filmEnd } }));
     if (rail) rail.style.transform = `scaleY(${clamp01(progress / filmEnd)})`;
   }
 
-  // The hero film starts loading at once; a film further down waits until it is near.
+  // Ease the film toward the scroll position, one step per display frame, and stop when
+  // it has arrived. With reduced motion it follows the scroll exactly.
+  let running = false;
+  let last = 0;
+  function step(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    const gap = target - progress;
+    if (reducedMotion || Math.abs(gap) < 0.00015) progress = target;
+    else progress += gap * (1 - Math.exp(-EASE_PER_SECOND * dt));
+    apply();
+    if (progress !== target) requestAnimationFrame(step);
+    else running = false;
+  }
+  function follow() {
+    if (running) return;
+    running = true;
+    last = performance.now();
+    requestAnimationFrame(step);
+  }
+
+  // The first film starts loading at once; one further down waits until it is near.
   load(0);
   if (section.getBoundingClientRect().top < window.innerHeight * 1.5) loadAll();
   else {
@@ -162,7 +206,7 @@ function initFilm(section) {
           near.disconnect();
         }
       },
-      { rootMargin: '150% 0px' },
+      { rootMargin: '200% 0px' },
     );
     near.observe(section);
   }
@@ -171,10 +215,9 @@ function initFilm(section) {
     trigger: section,
     start: 'top top',
     end: 'bottom bottom',
-    scrub: true,
     onUpdate: (self) => {
-      progress = self.progress;
-      apply();
+      target = self.progress;
+      follow();
     },
   });
 

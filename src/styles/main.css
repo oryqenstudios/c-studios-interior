@@ -2279,3 +2279,18 @@ body {
 .content {
   overflow-x: clip;
 }
+
+/* ---------- Smoothness: let the browser move these layers without repainting them ---------- */
+.film__canvas,
+.film__video,
+.cfg__view,
+.cfg__canvas {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.film__float,
+.film__title,
+.film__text {
+  will-change: transform, opacity;
+}

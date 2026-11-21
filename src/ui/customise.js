@@ -237,22 +237,14 @@ export async function initCustomiser() {
     );
   }
 
-  // Choose a surface. With `closer`, the camera pushes in on it so its detail can be seen.
+  // Choose a surface. With `closer`, the camera pushes in on it so its detail can be seen
+  // (the move itself shows which surface was picked, so nothing needs redrawing).
   function select(index, closer = false) {
     active = index;
     drawSwatches();
     const tab = tabs.children[index];
     if (tab) tabs.scrollTo({ left: tab.offsetLeft - 16, behavior: reducedMotion ? 'auto' : 'smooth' });
     if (closer) zoomTo(room.meta.surfaces[index]);
-    // Flash the chosen surface so it is clear what the finishes will change.
-    highlight = index;
-    render();
-    setTimeout(() => {
-      if (highlight === index) {
-        highlight = -1;
-        render();
-      }
-    }, 650);
   }
 
   // Which surface is under the pointer (the canvas is drawn with object-fit: cover).
@@ -425,10 +417,23 @@ export async function initCustomiser() {
   await goTo('living');
   applyCamera();
   root.classList.add('is-ready');
-  // Fetch the other rooms quietly so moving between them is instant.
-  const rest = ROOMS.slice(1).map((r) => r.id);
-  (async () => {
-    for (const id of rest) await loadRoom(id).catch(() => {});
-  })();
+  // Prepare the other rooms shortly before they are needed, one at a time and in idle
+  // moments, so the work never interrupts the film above.
+  let preparing = false;
+  const idle = window.requestIdleCallback ? (fn) => window.requestIdleCallback(fn, { timeout: 1500 }) : (fn) => setTimeout(fn, 300);
+  function prepareRest() {
+    if (preparing) return;
+    preparing = true;
+    const rest = ROOMS.slice(1).map((r) => r.id);
+    const nextOne = () => {
+      const id = rest.shift();
+      if (!id) return;
+      idle(() => loadRoom(id).catch(() => {}).then(nextOne));
+    };
+    nextOne();
+  }
+  section?.addEventListener('film:progress', (event) => {
+    if (event.detail.progress > event.detail.filmEnd * 0.82) prepareRest();
+  });
   return { root, chosen };
 }
