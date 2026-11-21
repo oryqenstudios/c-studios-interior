@@ -127,7 +127,7 @@ export function createStory({ apartment, furniture, lights, mats, rig, ui, reduc
   // Smooth scrolling, unless reduced motion is requested.
   let lenis = null;
   if (!reducedMotion) {
-    lenis = new Lenis();
+    lenis = new Lenis({ anchors: true });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
@@ -188,6 +188,14 @@ export function createStory({ apartment, furniture, lights, mats, rig, ui, reduc
     // The closing panel stays until the story scrolls away.
     if (to < 100) master.to(panel, { opacity: 0, duration: FADE }, to - FADE);
   }
+
+  // Once the story has scrolled away, the header gets a solid background.
+  ScrollTrigger.create({
+    trigger: story,
+    start: 'bottom 96px',
+    end: 'max',
+    toggleClass: { targets: document.documentElement, className: 'is-past-story' },
+  });
 
   // Thin brass line along the bottom edge: progress through the whole page.
   if (progressBar) {

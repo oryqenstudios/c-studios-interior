@@ -6,12 +6,18 @@ Every placeholder and every decision made without input is listed here.
 
 | Placeholder | Where | Status |
 | --- | --- | --- |
-| `[PHONE]` | Footer, structured data | Not yet used (phase 6) |
-| `[EMAIL]` | Footer, form failure fallback, form endpoint | Not yet used (phase 6) |
-| `[ADDRESS]` | Footer, structured data | Not yet used (phase 6) |
-| `[SOCIAL LINKS]` | Footer | Not yet used (phase 6) |
+| `[PHONE]` | Footer (`index.html`); later structured data | In the page, awaiting content |
+| `[EMAIL]` | Footer (`index.html`) and the form failure message (`src/ui/form.js`, `FALLBACK_EMAIL`) | In the page, awaiting content |
+| `[ADDRESS]` | Footer (`index.html`); later structured data | In the page, awaiting content |
+| `[SOCIAL LINKS]` | Footer (`index.html`) | In the page, awaiting content |
+| `[ABOUT STATEMENT]` | About section (`index.html`), about 80 words | In the page, awaiting content |
+| `[BUDGET RANGE 1]` to `[BUDGET RANGE 4]` | Budget select in the form (`index.html`) | In the page, awaiting content |
+| `[FORM ENDPOINT]` | `src/ui/form.js`, `ENDPOINT`, and the form's `action` | Connected in phase 8 |
 | `[DOMAIN]` | Canonical URL, Open Graph tags | Not yet used (phase 7) |
-| `[ABOUT STATEMENT]` | About section, about 80 words | Not yet used (phase 6) |
+
+Draft copy written without input, for the studio to confirm or replace: the four service
+descriptions and their bullets, the five process steps, the section headings, the room
+card lines, and the footer line "Interior design in Singapore."
 
 ## Answered by the studio
 
@@ -19,6 +25,33 @@ Every placeholder and every decision made without input is listed here.
   (confirmed 21 Nov 2026).
 
 ## Decisions made without input
+
+### Phase 6
+
+- **Service and process copy.** Written in the agreed voice as drafts. They describe
+  common studio practice and make no claims about numbers, timings or past work. Please
+  confirm each line matches what the studio actually offers.
+- **Section headings.** "What we do", "Five steps, in the order you just scrolled",
+  "A studio in Singapore" and "Tell us about your space" were chosen without input.
+- **Budget ranges.** Left as placeholders rather than invented figures.
+- **Project type options.** The four services plus "Not sure yet".
+- **Reply promise.** The form says "We reply by email" and gives no reply time, since none
+  was supplied.
+- **Validation.** Name, email, project type and message are required. Errors appear under
+  each field on submit, the first invalid field takes focus, and each error clears as the
+  field is corrected.
+- **Form states until phase 8.** With no endpoint connected, a valid submission shows the
+  success state with a visible "[DEMO: nothing was sent]" note. The failure state can be
+  seen in development by adding `?form=fail` to the address.
+- **Spam trap.** A hidden "website" field; if it is filled the form shows success and
+  sends nothing.
+- **Privacy note.** A short paragraph in the footer, linked from under the submit button.
+- **Without WebGL or JavaScript.** The story's text panels are laid out as plain stacked
+  text above the content sections, the 3D controls are hidden, and the form still works.
+  The hero line still says "Scroll to build a home", which reads oddly there; to revisit
+  in phase 7.
+- **Header.** Gets a solid background and a hairline once the story has scrolled away.
+- **Footer year.** Set from the visitor's clock, with 2026 as the static fallback.
 
 ### Phase 5
 

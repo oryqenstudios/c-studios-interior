@@ -24,6 +24,11 @@
       type="font/woff2"
       crossorigin
     />
+    <script>
+      // Assume the 3D view will work so the page does not flash its fallback layout.
+      // main.js removes this class if WebGL turns out to be unavailable.
+      if (window.WebGLRenderingContext) document.documentElement.classList.add('has-webgl');
+    </script>
     <link rel="stylesheet" href="/src/styles/tokens.css" />
     <link rel="stylesheet" href="/src/styles/main.css" />
   </head>
@@ -142,7 +147,194 @@
           </div>
         </div>
       </section>
+
+      <div class="content">
+        <section id="services" class="section" aria-labelledby="services-title">
+          <header class="section__head">
+            <p class="label">Services</p>
+            <h2 id="services-title">What we do</h2>
+          </header>
+          <ul class="cards">
+            <li class="card">
+              <h3>Residential</h3>
+              <p>Homes planned around the way you live.</p>
+              <ul class="ticks">
+                <li>Layouts and space planning</li>
+                <li>Materials, lighting and joinery</li>
+                <li>Furniture and fittings</li>
+              </ul>
+            </li>
+            <li class="card">
+              <h3>Commercial</h3>
+              <p>Shops, offices and studios that work for staff and visitors.</p>
+              <ul class="ticks">
+                <li>Layouts planned around how you operate</li>
+                <li>Fit-out drawings and specifications</li>
+                <li>Lighting and display</li>
+              </ul>
+            </li>
+            <li class="card">
+              <h3>Styling</h3>
+              <p>The last layer: the pieces you see and touch every day.</p>
+              <ul class="ticks">
+                <li>Furniture and rugs</li>
+                <li>Art, objects and plants</li>
+                <li>Soft furnishings</li>
+              </ul>
+            </li>
+            <li class="card">
+              <h3>Renovation management</h3>
+              <p>One point of contact from the first quote to the final clean.</p>
+              <ul class="ticks">
+                <li>Contractor quotes and scheduling</li>
+                <li>Site visits and progress updates</li>
+                <li>Snag list and handover</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+
+        <section id="process" class="section" aria-labelledby="process-title">
+          <header class="section__head">
+            <p class="label">Process</p>
+            <h2 id="process-title">Five steps, in the order you just scrolled</h2>
+          </header>
+          <ol class="steps">
+            <li class="step">
+              <span class="step__number" aria-hidden="true">01</span>
+              <h3>Brief</h3>
+              <p>We start with how you use the space, what you already own and what you want to change. You leave with a clear scope.</p>
+            </li>
+            <li class="step">
+              <span class="step__number" aria-hidden="true">02</span>
+              <h3>Plan</h3>
+              <p>We draw the layout, then choose materials and lighting. Nothing is ordered until you have approved the drawings.</p>
+            </li>
+            <li class="step">
+              <span class="step__number" aria-hidden="true">03</span>
+              <h3>Build</h3>
+              <p>Walls, floors and joinery go in. We coordinate the trades and keep you up to date.</p>
+            </li>
+            <li class="step">
+              <span class="step__number" aria-hidden="true">04</span>
+              <h3>Style</h3>
+              <p>Furniture, lamps and the smaller pieces arrive and are put in place.</p>
+            </li>
+            <li class="step">
+              <span class="step__number" aria-hidden="true">05</span>
+              <h3>Handover</h3>
+              <p>We walk through the finished space with you and note anything to adjust.</p>
+            </li>
+          </ol>
+        </section>
+
+        <section id="about" class="section section--split" aria-labelledby="about-title">
+          <header class="section__head">
+            <p class="label">About</p>
+            <h2 id="about-title">A studio in Singapore</h2>
+          </header>
+          <div class="section__body">
+            <p class="placeholder">[ABOUT STATEMENT: about 80 words on who runs the studio, how it works and the kind of projects it takes on. To be supplied.]</p>
+          </div>
+        </section>
+
+        <section id="consultation" class="section section--split" aria-labelledby="consultation-title">
+          <header class="section__head">
+            <p class="label">Consultation</p>
+            <h2 id="consultation-title">Tell us about your space</h2>
+            <p>A few details are enough to start. We reply by email.</p>
+          </header>
+          <div class="section__body">
+            <form class="form" id="enquiry" method="post" action="" novalidate>
+              <div class="field">
+                <label for="f-name">Name</label>
+                <input id="f-name" name="name" type="text" autocomplete="name" required />
+              </div>
+              <div class="field">
+                <label for="f-email">Email</label>
+                <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required />
+              </div>
+              <div class="field">
+                <label for="f-phone">Phone <span class="field__optional">(optional)</span></label>
+                <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" />
+              </div>
+              <div class="field">
+                <label for="f-type">Project type</label>
+                <select id="f-type" name="project_type" required>
+                  <option value="">Choose one</option>
+                  <option>Residential</option>
+                  <option>Commercial</option>
+                  <option>Styling</option>
+                  <option>Renovation management</option>
+                  <option>Not sure yet</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="f-budget">Budget range <span class="field__optional">(optional)</span></label>
+                <select id="f-budget" name="budget">
+                  <option value="">Prefer not to say</option>
+                  <option>[BUDGET RANGE 1]</option>
+                  <option>[BUDGET RANGE 2]</option>
+                  <option>[BUDGET RANGE 3]</option>
+                  <option>[BUDGET RANGE 4]</option>
+                </select>
+              </div>
+              <div class="field field--wide">
+                <label for="f-message">Message</label>
+                <textarea id="f-message" name="message" rows="5" required></textarea>
+              </div>
+              <!-- Spam trap: hidden from people, left empty by them -->
+              <div class="form__trap" aria-hidden="true">
+                <label for="f-website">Leave this field empty</label>
+                <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+              </div>
+              <div class="form__foot field--wide">
+                <p class="form__status" role="alert" hidden></p>
+                <button class="button button--primary" type="submit">Book a consultation</button>
+                <p class="form__privacy">We use these details only to reply to your enquiry. <a href="#privacy">Privacy note</a></p>
+              </div>
+            </form>
+            <div class="form-success" id="enquiry-success" role="status" tabindex="-1" hidden>
+              <p class="label">Sent</p>
+              <h3>Thank you. Your enquiry is with us.</h3>
+              <p>We will reply to the email address you gave.</p>
+              <p class="placeholder" data-demo-note hidden>[DEMO: nothing was sent. The form endpoint is connected in phase 8.]</p>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
+
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <div class="site-footer__brand">
+          <a class="logo" href="#top" aria-label="C Studios Interior, back to top">
+            <span class="logo__mark" aria-hidden="true">C</span>
+            <span class="logo__word logo__word--always" aria-hidden="true">Studios Interior</span>
+          </a>
+          <p>Interior design in Singapore.</p>
+        </div>
+        <div>
+          <h2 class="label">Contact</h2>
+          <ul class="plain">
+            <li>[PHONE]</li>
+            <li>[EMAIL]</li>
+            <li>[ADDRESS]</li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="label">Follow</h2>
+          <ul class="plain">
+            <li>[SOCIAL LINKS]</li>
+          </ul>
+        </div>
+        <div id="privacy" class="site-footer__privacy">
+          <h2 class="label">Privacy note</h2>
+          <p>The enquiry form collects your name, email address, phone number if you give one, project type, budget range if you give one, and your message. We use them only to reply to your enquiry.</p>
+        </div>
+      </div>
+      <p class="site-footer__legal">&copy; <span data-year>2026</span> C Studios Interior</p>
+    </footer>
 
     <div class="room-tip" aria-hidden="true"></div>
     <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>

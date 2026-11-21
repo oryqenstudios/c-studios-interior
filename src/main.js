@@ -10,10 +10,15 @@ import { initDayNight } from './ui/daynight.js';
 import { initPointer } from './ui/pointer.js';
 import { initPlanNav } from './ui/plannav.js';
 import { initMagnetic } from './ui/magnetic.js';
+import { initForm } from './ui/form.js';
 
 const canvas = document.getElementById('scene');
 const stage = createStage(canvas);
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// These work with or without the 3D view.
+initForm();
+for (const el of document.querySelectorAll('[data-year]')) el.textContent = new Date().getFullYear();
 
 if (stage) {
   document.documentElement.classList.add('has-webgl');
@@ -63,7 +68,8 @@ if (stage) {
 
   if (!document.hidden) stage.start();
 } else {
-  // Full static fallback arrives in phase 7. For now the page stays readable without the canvas.
+  // No WebGL: the stylesheet lays the story out as plain stacked text above the content sections.
+  document.documentElement.classList.remove('has-webgl');
   document.documentElement.classList.add('no-webgl');
   canvas.hidden = true;
 }

@@ -17,6 +17,10 @@ const MAX_PIXEL_RATIO = 2;
  * Returns null if WebGL is unavailable so the caller can fall back to static content.
  */
 export function createStage(canvas) {
+  // Probe first: the renderer logs a console error if it cannot get a context.
+  const probe = document.createElement('canvas');
+  if (!window.WebGL2RenderingContext || !probe.getContext('webgl2')) return null;
+
   let renderer;
   try {
     renderer = new WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });

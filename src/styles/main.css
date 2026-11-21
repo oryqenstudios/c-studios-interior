@@ -566,6 +566,337 @@ a {
   transform-origin: left center;
 }
 
+/* ---------- Content sections: solid ink, above the canvas ---------- */
+.content,
+.site-footer {
+  position: relative;
+  z-index: 2;
+  background: var(--ink);
+}
+
+/* Header gets a solid background once the 3D story is behind it */
+.is-past-story .site-header,
+html:not(.has-webgl) .site-header {
+  background: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+
+.section {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: var(--space-9) var(--gutter) var(--space-8);
+  scroll-margin-top: var(--header-height);
+}
+
+.section__head {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  margin-bottom: var(--space-7);
+}
+
+.section__head h2 {
+  font-size: var(--text-title);
+  max-width: 18ch;
+  text-wrap: balance;
+}
+
+.section p:not(.label, .field__error, .placeholder, .form__status) {
+  color: var(--muted);
+}
+
+.section h3 {
+  font-size: 1.625rem;
+  line-height: 1.15;
+}
+
+.plain,
+.cards,
+.steps,
+.ticks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Services */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--space-6);
+}
+
+.card {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--brass);
+}
+
+.ticks {
+  display: grid;
+  gap: var(--space-2);
+  color: var(--plaster);
+  font-size: var(--text-small);
+}
+
+.ticks li {
+  position: relative;
+  padding-left: var(--space-5);
+}
+
+.ticks li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 0.75rem;
+  height: 1px;
+  background: var(--brass);
+}
+
+/* Process */
+.step {
+  display: grid;
+  gap: var(--space-2) var(--space-6);
+  padding: var(--space-5) 0;
+  border-top: 1px solid var(--line);
+}
+
+.step:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.step__number {
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  color: var(--brass);
+}
+
+@media (min-width: 48rem) {
+  .step {
+    grid-template-columns: 4rem 12rem 1fr;
+    align-items: baseline;
+  }
+
+  .section--split {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-8);
+  }
+}
+
+.placeholder {
+  padding: var(--space-4);
+  border: 1px dashed var(--brass);
+  color: var(--plaster);
+  font-size: var(--text-small);
+}
+
+/* Form */
+.form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-5) var(--space-6);
+  color-scheme: dark;
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+}
+
+.field--wide {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--plaster);
+}
+
+.field__optional {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: var(--tap);
+  padding: var(--space-3);
+  border: 1px solid var(--muted);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--plaster);
+  font: inherit; /* 16px, so iOS does not zoom on focus */
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field select option {
+  background: var(--ink);
+  color: var(--plaster);
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 1px;
+  border-color: var(--brass);
+}
+
+.field [aria-invalid='true'] {
+  border-color: #e39a86;
+}
+
+.field__error {
+  font-size: var(--text-small);
+  color: #e9a996; /* 4.5:1 or better on ink */
+}
+
+.form__trap {
+  position: absolute;
+  left: -100vw;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form__foot {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
+}
+
+.form__status {
+  padding: var(--space-3) var(--space-4);
+  border-left: 2px solid #e39a86;
+  color: var(--plaster);
+}
+
+.form__status[hidden],
+.form-success[hidden],
+.form[hidden],
+[data-demo-note][hidden] {
+  display: none;
+}
+
+.form__privacy {
+  font-size: var(--text-small);
+}
+
+.form__privacy a {
+  color: var(--plaster);
+  text-underline-offset: 0.2em;
+}
+
+.button[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.form-success {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-top: 1px solid var(--brass);
+}
+
+/* Footer */
+.site-footer {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--text-small);
+}
+
+.site-footer__inner {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: var(--space-8) var(--gutter) var(--space-6);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--space-6);
+}
+
+.site-footer__brand {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+}
+
+.site-footer .label {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-body);
+  line-height: var(--leading-body);
+}
+
+.site-footer .plain {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.site-footer__privacy {
+  scroll-margin-top: var(--header-height);
+}
+
+.site-footer__legal {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: var(--space-4) var(--gutter) var(--space-6);
+}
+
+.logo__word--always {
+  display: inline !important;
+}
+
+/* ---------- Without WebGL (or without JavaScript) the story is plain stacked text ---------- */
+html:not(.has-webgl) .scene,
+html:not(.has-webgl) .site-header__tools,
+html:not(.has-webgl) .room-links,
+html:not(.has-webgl) .scroll-cue,
+html:not(.has-webgl) .progress,
+html:not(.has-webgl) .story__stage::after {
+  display: none;
+}
+
+html:not(.has-webgl) .story {
+  height: auto;
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: calc(var(--header-height) + var(--space-8)) var(--gutter) 0;
+}
+
+html:not(.has-webgl) .story__stage {
+  position: static;
+  height: auto;
+  display: grid;
+  gap: var(--space-7);
+  pointer-events: auto;
+}
+
+html:not(.has-webgl) .panel {
+  position: static;
+  width: auto;
+  transform: none;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+html:not(.has-webgl) .panel h2 {
+  font-size: var(--text-title);
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition-duration: 0.01ms !important;
