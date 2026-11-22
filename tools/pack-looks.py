@@ -38,3 +38,16 @@ for room, r in spec['rooms'].items():
     print('packed', room)
 json.dump({'rooms': rooms, 'looks': [{k: look[k] for k in ('id', 'label', 'line', 'swatch', 'spec')} for look in spec['looks']]},
           open(os.path.join(out, 'looks.json'), 'w'), indent=1)
+
+# ---- close-up photographs of every option (tools/rooms/options.json) ----
+options = json.load(open(os.path.join(here, 'rooms', 'options.json')))
+opts_src = os.path.join(os.path.dirname(os.path.abspath(src)), 'opts')
+os.makedirs(os.path.join(out, 'opts'), exist_ok=True)
+for gid, group in options['groups'].items():
+    for n, option in enumerate(group['options'], 1):
+        img = Image.open(os.path.join(opts_src, f'{gid}-{n}.png')).convert('RGB')
+        img.resize((1920, 1080), Image.LANCZOS).save(os.path.join(out, 'opts', f'{gid}-{n}.webp'), 'WEBP', quality=86, method=6)
+        img.resize((960, 540), Image.LANCZOS).save(os.path.join(out, 'opts', f'{gid}-{n}-s.webp'), 'WEBP', quality=84, method=6)
+        option.pop('desc', None)
+json.dump(options, open(os.path.join(out, 'options.json'), 'w'), indent=1)
+print('packed options')

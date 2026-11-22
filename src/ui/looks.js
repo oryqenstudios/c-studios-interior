@@ -28,6 +28,14 @@ export async function initLooks() {
   const data = await fetch(`${base}/looks.json?v=${__ASSET_VERSION__}`).then((r) => r.json());
   const rooms = data.rooms; // [{ id, label, fixtures: [names], furniture: [names] }]
   const looks = data.looks; // [{ id, label, line, spec: { Flooring, Walls, ... } }]
+  // Every item and material, each with its options: { groups: { id: { label, kind, options:
+  // [{ label, spec }] } }, rooms: { room id: { stage: [group ids] } } }
+  const catalogue = await fetch(`${base}/options.json?v=${__ASSET_VERSION__}`).then((r) => r.json());
+  const picks = {}; // 'room:group' for things in a room, 'group' for materials -> option index
+  const pickKey = (gid) => (catalogue.groups[gid].kind === 'item' ? `${rooms[roomIndex].id}:${gid}` : gid);
+  // What the look itself uses, shown until the visitor chooses otherwise.
+  const lookDefault = (gid, look) => ({ flooring: look.spec.Flooring, wallfinish: look.spec.Walls, wallcolour: look.spec.Walls, joinery: look.spec.Joinery, stone: look.spec.Stone, metal: look.spec.Metal, fabric: look.spec.Fabric, glass: 'Clear' })[gid];
+  const optionShot = (gid, n) => `${base}/opts/${gid}-${n + 1}`;
 
   let roomIndex = 0;
   let lookIndex = 0; // one look runs through the whole home
@@ -39,6 +47,7 @@ export async function initLooks() {
   let shown = null;
   const urlOf = (r, l, s) => `${base}/${rooms[r].id}/${s === 0 ? 'empty' : `${looks[l].id}-${s}`}`;
   function shot(key) {
+    const [small, large] = key.includes('/opts/') ? [960, 1920] : [1408, 2816];
     let img = shots.get(key);
     if (!img) {
       img = new Image();
@@ -46,7 +55,7 @@ export async function initLooks() {
       img.alt = '';
       img.decoding = 'async';
       img.sizes = '(max-aspect-ratio: 16/9) 178vh, 100vw';
-      img.srcset = `${key}-s.webp?v=${__ASSET_VERSION__} 1408w, ${key}.webp?v=${__ASSET_VERSION__} 2816w`;
+      img.srcset = `${key}-s.webp?v=${__ASSET_VERSION__} ${small}w, ${key}.webp?v=${__ASSET_VERSION__} ${large}w`;
       img.src = `${key}.webp?v=${__ASSET_VERSION__}`;
       img.ready = img.decode().catch(() => {});
       view.append(img);
@@ -139,6 +148,7 @@ export async function initLooks() {
         button.setAttribute('role', 'menuitem');
         if (item.current) button.setAttribute('aria-current', 'true');
         if (item.plain) button.classList.add('lsc__row--plain');
+        if (item.chosen) button.classList.add('lsc__row--chosen');
         if (item.swatch) {
           // floor and wall of the look, as a two-tone sample
           const swatch = document.createElement('i');
@@ -185,6 +195,7 @@ export async function initLooks() {
     for (const [i, li] of [...list.children].entries()) li.lastChild.classList.toggle('is-current', i === index);
     counter.textContent = `${index + 1} / ${rows.length}`;
     note.textContent = rows[index]?.note ?? '';
+    rows[index]?.over?.();
     const button = list.children[index]?.lastChild;
     if (moveFocus) button?.focus({ preventScroll: true });
     // Keep the row in view inside the list only. (scrollIntoView would also scroll the
@@ -224,27 +235,76 @@ export async function initLooks() {
           else showStage(i);
         },
       })),
+      { stage: 'Your specification', label: 'Your choices', value: `${Object.keys(picks).length} chosen`, more: true, note: 'Everything you have chosen so far. It is sent with your enquiry.', select: showSpecification },
     ], { focusIndex });
   }
-  // What a stage puts into the room, in this look.
-  function showStage(stage) {
+  // The enquiry form carries the visitor's choices with it.
+  const field = document.querySelector('input[name="specification"]');
+  function chosen() {
+    return Object.entries(picks).map(([key, n]) => {
+      const [a, b] = key.split(':');
+      const group = catalogue.groups[b ?? a];
+      return { key, where: b ? rooms.find((r) => r.id === a).label : 'Whole home', label: group.label, value: group.options[n].label };
+    });
+  }
+  function record() {
+    if (field) field.value = [`Look: ${looks[lookIndex].label}`, ...chosen().map((c) => `${c.where} - ${c.label}: ${c.value}`)].join('\n');
+  }
+
+  // What a stage puts into the room. Every item and material opens its own options.
+  function showStage(stage, focusIndex = null) {
     const room = rooms[roomIndex];
     const look = looks[lookIndex];
-    const spec = look.spec;
-    const items =
-      stage === 1
-        ? [
-            { label: 'Flooring', value: spec.Flooring },
-            { label: 'Walls', value: spec.Walls },
-          ]
-        : stage === 2
-          ? [...room.fixtures.map((name) => ({ label: name })), { label: 'Joinery', value: spec.Joinery }, { label: 'Stone', value: spec.Stone }, { label: 'Metal', value: spec.Metal }]
-          : [...room.furniture.map((name) => ({ label: name })), { label: 'Fabric', value: spec.Fabric }];
-    const next = stage < 3 ? [{ stage: 'Next', label: `${pad(stage + 1)}  ${STAGES[stage + 1].label}`, more: true, note: STAGES[stage + 1].note, select: () => (setStage(stage + 1), showStage(stage + 1)) }] : [];
-    draw(`${pad(stage)}  ${STAGES[stage].label}`, [...items.map((item) => ({ ...item, plain: true, note: `${look.label}. ${look.line}` })), ...next], {
-      back: () => showRoot(2 + stage),
-      focusIndex: next.length ? items.length : 0,
+    const ids = catalogue.rooms[room.id][stage];
+    const items = ids.map((gid, i) => {
+      const group = catalogue.groups[gid];
+      const picked = picks[pickKey(gid)];
+      return {
+        label: group.label,
+        value: picked != null ? group.options[picked].label : (lookDefault(gid, look) ?? 'Choose'),
+        chosen: picked != null,
+        more: true,
+        note: `${group.options.length} options. Select to see each one up close.`,
+        select: () => showOptions(gid, stage, i),
+      };
     });
+    const next = stage < 3 ? [{ stage: 'Next', label: `${pad(stage + 1)}  ${STAGES[stage + 1].label}`, more: true, note: STAGES[stage + 1].note, select: () => (setStage(stage + 1), showStage(stage + 1)) }] : [];
+    draw(`${pad(stage)}  ${STAGES[stage].label}`, [...items, ...next], { back: () => showRoot(2 + stage), focusIndex: focusIndex ?? 0 });
+  }
+  // One item's options. Moving through them brings up each one's own photograph; selecting
+  // keeps it. Going back returns to the room.
+  function showOptions(gid, stage, rowIndex) {
+    const group = catalogue.groups[gid];
+    const key = pickKey(gid);
+    const back = () => {
+      showNow();
+      showStage(stage, rowIndex);
+    };
+    draw(group.label, group.options.map((option, n) => ({
+      label: option.label,
+      swatch: gid === 'wallcolour' ? [option.spec, option.spec] : null,
+      current: picks[key] === n,
+      note: option.spec,
+      over: () => show(optionShot(gid, n)),
+      select: () => {
+        if (picks[key] === n) delete picks[key];
+        else picks[key] = n;
+        record();
+        showOptions(gid, stage, rowIndex);
+        highlight(n, true);
+      },
+    })), { back, focusIndex: picks[key] ?? 0 });
+  }
+  function showSpecification() {
+    const list = chosen();
+    draw('Your specification', [
+      { label: 'Look', value: looks[lookIndex].label, plain: true, note: looks[lookIndex].line },
+      ...list.map((c) => ({ label: c.label, value: c.value, plain: true, note: c.where })),
+      ...(list.length
+        ? [{ stage: 'Start again', label: 'Clear my choices', more: true, note: 'Removes every choice; the look stays.', select: () => { for (const k of Object.keys(picks)) delete picks[k]; record(); showSpecification(); } }]
+        : []),
+    ], { back: () => showRoot(6) });
+    note.textContent = list.length ? 'These choices are sent with your enquiry.' : 'Nothing chosen yet. Open a stage and choose from any item.';
   }
   function showLooks() {
     warmLooks();
@@ -255,6 +315,7 @@ export async function initLooks() {
       note: look.line,
       select: () => {
         lookIndex = i;
+        record();
         // a look is only visible once something is in the room
         if (stageOf[roomIndex] === 0) stageOf[roomIndex] = 1;
         showNow();
@@ -330,6 +391,7 @@ export async function initLooks() {
   }
   window.addEventListener('resize', applyCamera);
 
+  record();
   roomIndex = -1;
   goTo(0);
   await shot(urlOf(0, 0, 0)).ready;

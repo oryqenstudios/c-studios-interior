@@ -3609,3 +3609,8 @@ body {
     background 500ms var(--ease),
     border-color 500ms var(--ease);
 }
+
+/* an item the visitor has chosen for themselves */
+.lsc__row--chosen .lsc__value {
+  color: var(--brass);
+}

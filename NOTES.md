@@ -683,3 +683,26 @@ second except the model film and the board, which show occasional 50 ms frames.
   tapping or tabbing to a card selects it. On phones the others fold their points away.
 - **Bug fixed in the board**: its menu used `scrollIntoView`, which also scrolled the
   page, pulling the visitor back up to the board when rooms changed on the way past.
+
+## Options for every item on the material board
+
+The studio asked for every item to offer choices (style, finish, colour). Agreed
+approach: **close-up samples**. The room photograph stays in the chosen look; it does
+not redraw per item (that would need layered cut-outs, which were rejected for quality).
+
+- Every row in a stage now opens its options. Moving through them brings up each
+  option's own full-screen close-up photograph; selecting ticks it; back returns to the
+  room. 35 groups, 137 options, one photograph each (`tools/rooms/options.json`, packed
+  by `tools/pack-looks.py` to `public/cfg/opts/` at 1920 and 960 wide).
+- **Materials** (whole home), from the studio's catalogue as supplied: Flooring 9, Wall
+  finish 6, Wall colour 8, Joinery 7, Stone 7, Glass 6, Metal 6, Fabric 7. Until the
+  visitor chooses, the row shows what the look uses.
+- **Items** (per room), three options each: 27 items such as cabinetry, island, pendant
+  lights, bar stools, sofas, bed, bath, vanity, mirror, towel rail. DRAFT: the option
+  names and the short specifications (sizes, constructions, lamp types) are mine, written
+  generically with no brands; the studio should replace them with real products.
+- **Your choices**: a row on the board lists everything chosen, with "Clear my choices".
+  The look and choices are written into a hidden `specification` field of the enquiry
+  form, and the privacy note says so. (The form is still in demo mode.)
+- LIMIT to tell visitors' expectations: a chosen item is shown in its own photograph and
+  in the list, not placed into the room photograph.

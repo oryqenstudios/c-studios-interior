@@ -332,6 +332,7 @@
             </header>
             <div class="consult__panel">
               <form class="form" id="enquiry" method="post" action="%VITE_FORM_ENDPOINT%" novalidate>
+                <input type="hidden" name="specification" value="" />
                 <p class="form__progress" aria-live="polite">Step <span data-step-now>1</span> of 2</p>
                 <fieldset class="form__step" data-step="1">
                   <legend class="form__legend">The project</legend>
@@ -424,7 +425,7 @@
         </div>
         <div id="privacy" class="site-footer__privacy">
           <h2 class="label">Privacy note</h2>
-          <p>The enquiry form collects your name, email address, phone number if you give one, project type, budget range if you give one, and your message. We use them only to reply to your enquiry.</p>
+          <p>The enquiry form collects your name, email address, phone number if you give one, project type, budget range if you give one, your message, and any look and choices you made on the material board. We use them only to reply to your enquiry.</p>
         </div>
       </div>
       <p class="site-footer__legal">&copy; <span data-year>2026</span> C Studio Interior</p>

@@ -1,0 +1,989 @@
+{
+ "groups": {
+  "flooring": {
+   "label": "Flooring",
+   "kind": "floor",
+   "options": [
+    {
+     "label": "Light oak",
+     "spec": "Matte. Straight, herringbone or chevron.",
+     "desc": "light oak timber floorboards laid in a herringbone pattern, matte finish"
+    },
+    {
+     "label": "Natural walnut",
+     "spec": "Satin. Straight, herringbone or chevron.",
+     "desc": "natural walnut timber floorboards laid in a herringbone pattern, satin finish"
+    },
+    {
+     "label": "Smoked oak",
+     "spec": "Matte. Straight or herringbone.",
+     "desc": "dark smoked oak timber floorboards laid straight, matte finish"
+    },
+    {
+     "label": "Whitewashed ash",
+     "spec": "Matte. Straight.",
+     "desc": "pale whitewashed ash timber floorboards laid straight, matte finish"
+    },
+    {
+     "label": "White marble",
+     "spec": "Polished, grey veins. Large slab or 60 cm tile.",
+     "desc": "polished white marble floor slabs with soft grey veins"
+    },
+    {
+     "label": "Beige travertine",
+     "spec": "Honed. Large slab or 60 cm tile.",
+     "desc": "honed beige travertine floor slabs"
+    },
+    {
+     "label": "Grey porcelain",
+     "spec": "Matte. 60 cm tile or large slab.",
+     "desc": "matte grey porcelain floor tiles, 60 cm square, fine joints"
+    },
+    {
+     "label": "Terrazzo",
+     "spec": "Polished, speckled. Seamless.",
+     "desc": "seamless polished pale terrazzo floor with fine stone speckles"
+    },
+    {
+     "label": "Microcement",
+     "spec": "Matte. Seamless.",
+     "desc": "seamless matte grey microcement floor"
+    }
+   ]
+  },
+  "wallfinish": {
+   "label": "Wall finish",
+   "kind": "wall",
+   "options": [
+    {
+     "label": "Matte paint",
+     "spec": "Flat, even colour.",
+     "desc": "a wall in flat matte warm white paint, perfectly even"
+    },
+    {
+     "label": "Limewash",
+     "spec": "Soft, cloudy variation.",
+     "desc": "a wall in warm white limewash with soft cloudy brushed variation"
+    },
+    {
+     "label": "Venetian plaster",
+     "spec": "Subtle polished sheen.",
+     "desc": "a wall in greige Venetian plaster with a subtle polished sheen"
+    },
+    {
+     "label": "Timber slats",
+     "spec": "Vertical ribs in the chosen wood.",
+     "desc": "a wall clad in fine vertical walnut timber slats"
+    },
+    {
+     "label": "Fluted panel",
+     "spec": "Painted vertical grooves.",
+     "desc": "a wall of painted fluted panelling with fine vertical grooves, warm white"
+    },
+    {
+     "label": "Stone cladding",
+     "spec": "Marble or travertine slab.",
+     "desc": "a wall clad in large honed travertine slabs with fine joints"
+    }
+   ]
+  },
+  "wallcolour": {
+   "label": "Wall colour",
+   "kind": "wall",
+   "options": [
+    {
+     "label": "Warm white",
+     "spec": "#F2EDE4",
+     "desc": "a smooth plaster wall painted in warm white matte paint"
+    },
+    {
+     "label": "Greige",
+     "spec": "#CFC6B8",
+     "desc": "a smooth plaster wall painted in greige matte paint"
+    },
+    {
+     "label": "Sand",
+     "spec": "#B7A68C",
+     "desc": "a smooth plaster wall painted in sand beige matte paint"
+    },
+    {
+     "label": "Sage",
+     "spec": "#9BA58E",
+     "desc": "a smooth plaster wall painted in soft sage green matte paint"
+    },
+    {
+     "label": "Deep olive",
+     "spec": "#46503F",
+     "desc": "a smooth plaster wall painted in deep olive green matte paint"
+    },
+    {
+     "label": "Terracotta",
+     "spec": "#B5694A",
+     "desc": "a smooth plaster wall painted in terracotta matte paint"
+    },
+    {
+     "label": "Dusty blue",
+     "spec": "#7F93A3",
+     "desc": "a smooth plaster wall painted in dusty blue matte paint"
+    },
+    {
+     "label": "Charcoal",
+     "spec": "#2F2F31",
+     "desc": "a smooth plaster wall painted in charcoal matte paint"
+    }
+   ]
+  },
+  "joinery": {
+   "label": "Joinery",
+   "kind": "sample",
+   "options": [
+    {
+     "label": "Oak veneer",
+     "spec": "Matte, visible grain.",
+     "desc": "oak veneer cabinet fronts, matte, visible grain"
+    },
+    {
+     "label": "Walnut veneer",
+     "spec": "Satin, visible grain.",
+     "desc": "walnut veneer cabinet fronts, satin, visible grain"
+    },
+    {
+     "label": "Black-stained ash",
+     "spec": "Matte, visible grain.",
+     "desc": "black-stained ash cabinet fronts, matte, open visible grain"
+    },
+    {
+     "label": "Matte white lacquer",
+     "spec": "Smooth matte.",
+     "desc": "matte white lacquered cabinet fronts, smooth"
+    },
+    {
+     "label": "Coloured lacquer",
+     "spec": "Smooth matte. Follows the wall colour.",
+     "desc": "sage green matte lacquered cabinet fronts, smooth"
+    },
+    {
+     "label": "High-gloss lacquer",
+     "spec": "Mirror-like.",
+     "desc": "high-gloss deep charcoal lacquered cabinet fronts with mirror-like reflections"
+    },
+    {
+     "label": "Rattan or cane inset",
+     "spec": "Woven texture.",
+     "desc": "cabinet doors with woven rattan cane inset panels in pale timber frames"
+    }
+   ]
+  },
+  "stone": {
+   "label": "Stone",
+   "kind": "sample",
+   "options": [
+    {
+     "label": "White quartz",
+     "spec": "Polished.",
+     "desc": "a polished white quartz kitchen worktop edge and surface"
+    },
+    {
+     "label": "Calacatta marble",
+     "spec": "Polished, bold veins.",
+     "desc": "a polished calacatta marble worktop with bold grey and gold veins"
+    },
+    {
+     "label": "Nero marquina",
+     "spec": "Polished, white veins.",
+     "desc": "a polished nero marquina black marble worktop with white veins"
+    },
+    {
+     "label": "Grey sintered stone",
+     "spec": "Matte.",
+     "desc": "a matte grey sintered stone worktop"
+    },
+    {
+     "label": "Travertine",
+     "spec": "Honed.",
+     "desc": "a honed beige travertine worktop with natural pitting"
+    },
+    {
+     "label": "Butcher block",
+     "spec": "Oiled.",
+     "desc": "an oiled timber butcher-block worktop"
+    },
+    {
+     "label": "Concrete",
+     "spec": "Matte.",
+     "desc": "a matte cast concrete worktop"
+    }
+   ]
+  },
+  "glass": {
+   "label": "Glass",
+   "kind": "sample",
+   "options": [
+    {
+     "label": "Clear",
+     "spec": "Fully transparent.",
+     "desc": "a clear frameless glass screen panel"
+    },
+    {
+     "label": "Frosted",
+     "spec": "Translucent, soft blur.",
+     "desc": "a frosted translucent glass screen panel"
+    },
+    {
+     "label": "Fluted",
+     "spec": "Vertical ribs, distorted view.",
+     "desc": "a fluted reeded glass screen panel with vertical ribs"
+    },
+    {
+     "label": "Grey tinted",
+     "spec": "Smoky transparent.",
+     "desc": "a grey smoked tinted glass screen panel"
+    },
+    {
+     "label": "Bronze tinted",
+     "spec": "Warm transparent.",
+     "desc": "a bronze tinted glass screen panel"
+    },
+    {
+     "label": "Mirror",
+     "spec": "Reflective.",
+     "desc": "a mirrored glass panel reflecting a warm room"
+    }
+   ]
+  },
+  "metal": {
+   "label": "Metal",
+   "kind": "sample",
+   "options": [
+    {
+     "label": "Brushed brass",
+     "spec": "Satin.",
+     "desc": "a brushed brass tap and cabinet handle"
+    },
+    {
+     "label": "Matte black",
+     "spec": "Matte.",
+     "desc": "a matte black tap and cabinet handle"
+    },
+    {
+     "label": "Brushed nickel",
+     "spec": "Satin.",
+     "desc": "a brushed nickel tap and cabinet handle"
+    },
+    {
+     "label": "Polished chrome",
+     "spec": "Mirror.",
+     "desc": "a polished chrome tap and cabinet handle"
+    },
+    {
+     "label": "Aged bronze",
+     "spec": "Satin.",
+     "desc": "a aged dark bronze tap and cabinet handle"
+    },
+    {
+     "label": "Copper",
+     "spec": "Satin.",
+     "desc": "a satin copper tap and cabinet handle"
+    }
+   ]
+  },
+  "fabric": {
+   "label": "Fabric",
+   "kind": "sample",
+   "options": [
+    {
+     "label": "Ivory linen",
+     "spec": "Fine weave.",
+     "desc": "ivory linen upholstery on a sofa cushion"
+    },
+    {
+     "label": "Cream boucle",
+     "spec": "Looped, nubby.",
+     "desc": "cream boucle upholstery on a sofa cushion"
+    },
+    {
+     "label": "Olive velvet",
+     "spec": "Soft sheen.",
+     "desc": "olive green velvet upholstery on a sofa cushion"
+    },
+    {
+     "label": "Rust velvet",
+     "spec": "Soft sheen.",
+     "desc": "rust velvet upholstery on a sofa cushion"
+    },
+    {
+     "label": "Charcoal wool",
+     "spec": "Flat weave.",
+     "desc": "charcoal wool flat-weave upholstery on a sofa cushion"
+    },
+    {
+     "label": "Tan leather",
+     "spec": "Smooth.",
+     "desc": "smooth tan leather upholstery on a sofa cushion"
+    },
+    {
+     "label": "Stone grey linen",
+     "spec": "Fine weave.",
+     "desc": "stone grey linen upholstery on a sofa cushion"
+    }
+   ]
+  },
+  "panelling": {
+   "label": "Wall panelling and shelving",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Veneered wall with open shelving",
+     "spec": "Full height, book-matched veneer. Concealed LED to each shelf.",
+     "desc": "a full-height timber veneer wall with open shelving and warm concealed LED strip lighting, a few ceramics and books"
+    },
+    {
+     "label": "Fluted timber panelling",
+     "spec": "Full height. Solid ribs on a black backing, hidden door.",
+     "desc": "a full-height wall of fine fluted vertical timber panelling"
+    },
+    {
+     "label": "Lacquered wall with niches",
+     "spec": "Matte lacquer. Arched niches, lit from above.",
+     "desc": "a matte lacquered wall with softly lit arched display niches holding ceramics"
+    }
+   ]
+  },
+  "pendant_linear": {
+   "label": "Linear pendant",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Slim bar",
+     "spec": "1.8 m. Dimmable LED, warm white.",
+     "desc": "a slim linear bar pendant light in brushed brass hanging from a plaster ceiling, switched on"
+    },
+    {
+     "label": "Tube on wires",
+     "spec": "1.5 m. Adjustable drop, dimmable.",
+     "desc": "a slender tube pendant light in matte black suspended on two fine wires, switched on"
+    },
+    {
+     "label": "Alabaster bar",
+     "spec": "1.2 m. Stone diffuser, soft glow.",
+     "desc": "a linear pendant light made of translucent alabaster stone with brass fixings, softly glowing"
+    }
+   ]
+  },
+  "curtain": {
+   "label": "Curtains",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Sheer linen",
+     "spec": "Wave heading on a recessed track. Unlined.",
+     "desc": "floor-to-ceiling sheer ivory linen curtains with soft wave folds at a large window, sunlight glowing through"
+    },
+    {
+     "label": "Lined velvet",
+     "spec": "Pinch pleat on a recessed track. Blackout lined.",
+     "desc": "floor-to-ceiling heavy olive velvet curtains with pinch pleats at a large window"
+    },
+    {
+     "label": "Timber venetian blinds",
+     "spec": "50 mm slats. Cord-free tilt.",
+     "desc": "timber venetian blinds with wide slats at a large window, bands of sunlight coming through"
+    }
+   ]
+  },
+  "sofa": {
+   "label": "Sofas",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Low modular sectional",
+     "spec": "Feather-wrapped foam. Loose covers.",
+     "desc": "a low deep modular sectional sofa in cream boucle"
+    },
+    {
+     "label": "Curved sofa",
+     "spec": "Sprung seat. Fixed upholstery.",
+     "desc": "an elegant curved sofa in olive velvet"
+    },
+    {
+     "label": "Tailored three-seater",
+     "spec": "Slim arms on a metal base.",
+     "desc": "a tailored three-seater sofa in tan leather with slim arms on a slim dark metal base"
+    }
+   ]
+  },
+  "coffee": {
+   "label": "Coffee table",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Stone block",
+     "spec": "Honed stone, 120 x 80 cm.",
+     "desc": "a low rectangular coffee table carved from a solid block of veined marble"
+    },
+    {
+     "label": "Timber drum",
+     "spec": "Solid timber, 100 cm round.",
+     "desc": "a low round solid walnut drum coffee table"
+    },
+    {
+     "label": "Glass and metal",
+     "spec": "Tinted glass on a metal frame.",
+     "desc": "a low coffee table with a bronze tinted glass top on a slim brass frame"
+    }
+   ]
+  },
+  "rug": {
+   "label": "Rug",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Wool flatweave",
+     "spec": "Hand-loomed. Made to size.",
+     "desc": "a large hand-loomed natural wool flatweave rug on a timber floor, corner detail"
+    },
+    {
+     "label": "Round jute",
+     "spec": "Braided. 2.4 m.",
+     "desc": "a large round braided jute rug on a stone floor"
+    },
+    {
+     "label": "Silk-blend cut pile",
+     "spec": "Hand-knotted. Made to size.",
+     "desc": "a hand-knotted silk-blend cut-pile rug in soft grey with a subtle sheen, corner detail"
+    }
+   ]
+  },
+  "floorlamp": {
+   "label": "Floor lamp",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Arc lamp",
+     "spec": "Metal dome, marble base. Dimmable.",
+     "desc": "a brushed brass arc floor lamp with a dome shade and marble base beside a sofa, switched on"
+    },
+    {
+     "label": "Reading lamp",
+     "spec": "Slim stem, adjustable head.",
+     "desc": "a slim matte black reading floor lamp with a small adjustable head beside an armchair, switched on"
+    },
+    {
+     "label": "Paper lantern",
+     "spec": "Washi shade on a timber tripod.",
+     "desc": "a tall paper lantern floor lamp with a washi shade on a slender timber tripod, softly glowing"
+    }
+   ]
+  },
+  "cabinetry": {
+   "label": "Cabinetry and oven",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Handleless flat fronts",
+     "spec": "Push-to-open. Integrated oven column.",
+     "desc": "handleless flat-fronted full-height kitchen cabinetry in walnut veneer with an integrated black glass oven"
+    },
+    {
+     "label": "Framed shaker fronts",
+     "spec": "In-frame doors. Integrated oven column.",
+     "desc": "framed shaker-style kitchen cabinetry painted sage green with an integrated oven and small brass knobs"
+    },
+    {
+     "label": "Fluted fronts with pulls",
+     "spec": "Ribbed doors, edge pulls.",
+     "desc": "kitchen cabinetry with fluted ribbed oak fronts and slim brass edge pulls, with an integrated oven"
+    }
+   ]
+  },
+  "island": {
+   "label": "Island, sink and tap",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Waterfall stone island",
+     "spec": "Mitred stone to the floor. Undermounted sink.",
+     "desc": "a kitchen island with a veined marble waterfall top running to the floor, an undermounted sink and a brushed brass tap"
+    },
+    {
+     "label": "Timber island, stone top",
+     "spec": "Veneered base, 20 mm top. Undermounted sink.",
+     "desc": "a kitchen island with an oak veneer base and a slim honed stone top, an undermounted sink and a matte black tap"
+    },
+    {
+     "label": "Rounded plinth island",
+     "spec": "Curved ends, recessed plinth.",
+     "desc": "a sculptural kitchen island with rounded ends in travertine on a recessed plinth, with a sink and an aged bronze tap"
+    }
+   ]
+  },
+  "splash": {
+   "label": "Worktop and splashback",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Full-height slab",
+     "spec": "One slab from worktop to wall cabinets.",
+     "desc": "a kitchen worktop and full-height splashback in one slab of veined marble with warm under-cabinet lighting"
+    },
+    {
+     "label": "Glazed tile",
+     "spec": "Handmade tiles, stacked vertically.",
+     "desc": "a kitchen splashback of handmade glossy zellige tiles in soft white stacked vertically above a stone worktop, under-cabinet lighting"
+    },
+    {
+     "label": "Upstand and ledge",
+     "spec": "100 mm upstand with a display ledge.",
+     "desc": "a stone kitchen worktop with a low stone upstand and a slim stone ledge shelf holding a few ceramics, plaster wall above"
+    }
+   ]
+  },
+  "pendant_k": {
+   "label": "Pendant lights",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Spun metal domes",
+     "spec": "Pair, 35 cm. Dimmable.",
+     "desc": "two spun brushed brass dome pendant lights hanging over a kitchen island, switched on"
+    },
+    {
+     "label": "Glass globes",
+     "spec": "Set of three, 25 cm.",
+     "desc": "three clear glass globe pendant lights on slim brass stems hanging over a kitchen island, switched on"
+    },
+    {
+     "label": "Ceramic domes",
+     "spec": "Pair, 40 cm. Matte glaze.",
+     "desc": "two large matte off-white ceramic dome pendant lights hanging over a kitchen island, switched on"
+    }
+   ]
+  },
+  "stool": {
+   "label": "Bar stools",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Upholstered, low back",
+     "spec": "Counter height, 65 cm. Metal frame.",
+     "desc": "a row of counter stools with low backs upholstered in cream boucle on slim brass frames at a kitchen island"
+    },
+    {
+     "label": "Solid timber saddle",
+     "spec": "Counter height, 65 cm. Oiled.",
+     "desc": "a row of solid oak saddle-seat counter stools at a kitchen island"
+    },
+    {
+     "label": "Woven cord seat",
+     "spec": "Counter height, 65 cm. Steel frame.",
+     "desc": "a row of counter stools with woven paper-cord seats on slim black steel frames at a kitchen island"
+    }
+   ]
+  },
+  "styling_k": {
+   "label": "Styling",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Ceramics and branches",
+     "spec": "A tall vase of branches, two bowls.",
+     "desc": "a tall ceramic vase of flowering branches and two handmade ceramic bowls on a stone kitchen island"
+    },
+    {
+     "label": "Fruit and boards",
+     "spec": "A fruit bowl, stacked timber boards.",
+     "desc": "a ceramic bowl of fruit and stacked timber chopping boards leaning on a stone kitchen worktop"
+    },
+    {
+     "label": "Books and brass",
+     "spec": "Cookbooks, a brass pepper mill, a candle.",
+     "desc": "a small stack of cookbooks, a brass pepper mill and a candle on a stone kitchen worktop"
+    }
+   ]
+  },
+  "headboard": {
+   "label": "Headboard wall",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Upholstered panels",
+     "spec": "Full width, tall vertical panels.",
+     "desc": "a full-width headboard wall of tall upholstered vertical panels in ivory linen behind a bed"
+    },
+    {
+     "label": "Timber slat wall",
+     "spec": "Full width, with an integrated ledge.",
+     "desc": "a full-width headboard wall of fine vertical walnut slats with an integrated ledge behind a bed"
+    },
+    {
+     "label": "Plaster niche",
+     "spec": "Limewash, with a lit recessed ledge.",
+     "desc": "a limewashed plaster headboard wall with a long softly lit recessed niche ledge behind a bed"
+    }
+   ]
+  },
+  "walllight": {
+   "label": "Wall lights",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Cylinder, up and down",
+     "spec": "Solid metal. Dimmable.",
+     "desc": "a brushed brass cylinder wall light casting light up and down on a plaster wall beside a bed"
+    },
+    {
+     "label": "Swing-arm reading",
+     "spec": "Adjustable arm, own switch.",
+     "desc": "a matte black swing-arm reading wall light beside a bed, switched on"
+    },
+    {
+     "label": "Alabaster disc",
+     "spec": "Stone diffuser, soft glow.",
+     "desc": "a round alabaster disc wall light softly glowing on a plaster wall beside a bed"
+    }
+   ]
+  },
+  "bed": {
+   "label": "Bed and bedding",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Low platform bed",
+     "spec": "Timber platform. Linen bedding.",
+     "desc": "a low walnut platform bed dressed in crisp white and ivory linen bedding"
+    },
+    {
+     "label": "Upholstered bed",
+     "spec": "Rounded headboard. Cotton percale.",
+     "desc": "an upholstered bed with a rounded boucle headboard dressed in soft white bedding with a wool throw"
+    },
+    {
+     "label": "Four-poster",
+     "spec": "Slim steel frame. Linen bedding.",
+     "desc": "a slim black steel four-poster bed dressed in white linen bedding"
+    }
+   ]
+  },
+  "bedside": {
+   "label": "Bedside tables",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Floating drawer",
+     "spec": "Wall-hung, push-to-open.",
+     "desc": "a wall-hung floating walnut bedside drawer beside a bed, with a small vase"
+    },
+    {
+     "label": "Stone pedestal",
+     "spec": "Solid travertine.",
+     "desc": "a round travertine pedestal bedside table beside a bed, with a book"
+    },
+    {
+     "label": "Timber on turned legs",
+     "spec": "One drawer, solid oak.",
+     "desc": "a small oak bedside table with one drawer on turned legs beside a bed"
+    }
+   ]
+  },
+  "bench": {
+   "label": "Bench",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Upholstered bench",
+     "spec": "Timber base, fixed cushion.",
+     "desc": "an upholstered bench in ivory boucle on a low timber base at the foot of a bed"
+    },
+    {
+     "label": "Solid timber bench",
+     "spec": "Oiled, with a carved seat.",
+     "desc": "a solid walnut bench with a gently carved seat at the foot of a bed"
+    },
+    {
+     "label": "Leather pad on steel",
+     "spec": "Saddle leather, slim frame.",
+     "desc": "a bench with a tan saddle leather pad on a slim black steel frame at the foot of a bed"
+    }
+   ]
+  },
+  "bath": {
+   "label": "Bath and filler",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Oval freestanding",
+     "spec": "Stone composite, matte. Floor-standing filler.",
+     "desc": "an oval freestanding matte white stone composite bathtub with a floor-standing brushed brass bath filler"
+    },
+    {
+     "label": "Rectangular freestanding",
+     "spec": "Solid surface, thin rim. Wall filler.",
+     "desc": "a rectangular freestanding white solid-surface bathtub with a thin rim and a wall-mounted matte black filler"
+    },
+    {
+     "label": "Round soaking tub",
+     "spec": "Timber, deep. Floor-standing filler.",
+     "desc": "a deep round timber soaking tub with a floor-standing aged bronze bath filler"
+    }
+   ]
+  },
+  "shower": {
+   "label": "Rain shower",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Round rain head",
+     "spec": "30 cm, wall arm. Concealed thermostatic mixer.",
+     "desc": "a round brushed brass rain shower head on a wall arm with a concealed mixer on a plaster wall"
+    },
+    {
+     "label": "Square rain head",
+     "spec": "30 cm, wall arm. Concealed thermostatic mixer.",
+     "desc": "a square matte black rain shower head on a wall arm with a concealed mixer on a plaster wall"
+    },
+    {
+     "label": "Exposed column",
+     "spec": "Rain head, hand shower, thermostatic.",
+     "desc": "an exposed thermostatic shower column in brushed nickel with a rain head and a hand shower on a plaster wall"
+    }
+   ]
+  },
+  "vanity": {
+   "label": "Vanity, basins and taps",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Floating, vessel basins",
+     "spec": "Timber drawers, stone top. Wall taps.",
+     "desc": "a floating walnut vanity with a stone top, two round stone vessel basins and wall-mounted brass taps"
+    },
+    {
+     "label": "Stone trough",
+     "spec": "One long integrated basin. Wall taps.",
+     "desc": "a floating vanity with a long integrated marble trough basin and wall-mounted matte black taps"
+    },
+    {
+     "label": "Pedestal pair",
+     "spec": "Two carved stone pedestals. Wall taps.",
+     "desc": "a pair of carved travertine pedestal basins with wall-mounted aged bronze taps"
+    }
+   ]
+  },
+  "mirror": {
+   "label": "Mirror",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Backlit rectangle",
+     "spec": "LED halo, demister pad.",
+     "desc": "a large rectangular bathroom mirror with a soft warm backlit halo above a vanity"
+    },
+    {
+     "label": "Round, metal frame",
+     "spec": "90 cm. Slim frame.",
+     "desc": "a large round bathroom mirror with a slim brushed brass frame above a vanity"
+    },
+    {
+     "label": "Arched, dark frame",
+     "spec": "Full height. Slim frame.",
+     "desc": "a tall arched bathroom mirror with a slim black frame leaning on a plaster wall"
+    }
+   ]
+  },
+  "rail": {
+   "label": "Heated towel rail",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Ladder rail",
+     "spec": "Electric, timer. 50 x 120 cm.",
+     "desc": "a brushed brass heated ladder towel rail on a plaster wall with white towels"
+    },
+    {
+     "label": "Single bars",
+     "spec": "Electric, concealed wiring.",
+     "desc": "two matte black heated single-bar towel rails on a plaster wall with white towels"
+    },
+    {
+     "label": "Leaning ladder",
+     "spec": "Oak, unheated.",
+     "desc": "a leaning oak towel ladder against a plaster wall with linen towels"
+    }
+   ]
+  },
+  "towels": {
+   "label": "Towels",
+   "kind": "item",
+   "options": [
+    {
+     "label": "White terry",
+     "spec": "Long-staple cotton, 700 gsm.",
+     "desc": "a neat stack of thick white cotton terry towels on a stone surface"
+    },
+    {
+     "label": "Waffle linen",
+     "spec": "Stone grey, quick drying.",
+     "desc": "a stack of stone grey waffle-weave linen towels on a timber stool"
+    },
+    {
+     "label": "Striped hammam",
+     "spec": "Flat-woven cotton, olive stripe.",
+     "desc": "folded flat-woven cotton hammam towels with olive stripes on a stone surface"
+    }
+   ]
+  },
+  "stool_b": {
+   "label": "Stool",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Timber step stool",
+     "spec": "Solid oak.",
+     "desc": "a small solid oak step stool beside a bathtub with a candle on it"
+    },
+    {
+     "label": "Stone drum",
+     "spec": "Honed travertine.",
+     "desc": "a small honed travertine drum stool beside a bathtub with a folded towel"
+    },
+    {
+     "label": "Slatted teak",
+     "spec": "Oiled teak, water resistant.",
+     "desc": "a small slatted teak stool beside a bathtub with a bar of soap in a dish"
+    }
+   ]
+  },
+  "mat": {
+   "label": "Bath mat",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Woven jute",
+     "spec": "Natural, bound edge.",
+     "desc": "a woven natural jute bath mat on a stone bathroom floor beside a bathtub"
+    },
+    {
+     "label": "Teak duckboard",
+     "spec": "Slatted, oiled.",
+     "desc": "a slatted teak duckboard bath mat on a stone bathroom floor beside a bathtub"
+    },
+    {
+     "label": "Tufted cotton",
+     "spec": "Ivory, 1,800 gsm.",
+     "desc": "a thick ivory tufted cotton bath mat on a stone bathroom floor beside a bathtub"
+    }
+   ]
+  },
+  "plant": {
+   "label": "Planting",
+   "kind": "item",
+   "options": [
+    {
+     "label": "Olive tree",
+     "spec": "In a stone planter.",
+     "desc": "a small olive tree in a round stone planter in a sunlit bathroom corner"
+    },
+    {
+     "label": "Kentia palm",
+     "spec": "In a woven basket.",
+     "desc": "a kentia palm in a woven basket in a sunlit bathroom corner"
+    },
+    {
+     "label": "Fern",
+     "spec": "In a low stone bowl.",
+     "desc": "a lush fern in a low stone bowl on a ledge in a sunlit bathroom"
+    }
+   ]
+  }
+ },
+ "rooms": {
+  "living": {
+   "2": [
+    "panelling",
+    "pendant_linear",
+    "curtain",
+    "joinery",
+    "metal"
+   ],
+   "3": [
+    "sofa",
+    "coffee",
+    "rug",
+    "floorlamp",
+    "fabric"
+   ],
+   "1": [
+    "flooring",
+    "wallfinish",
+    "wallcolour"
+   ]
+  },
+  "kitchen": {
+   "2": [
+    "cabinetry",
+    "island",
+    "splash",
+    "pendant_k",
+    "joinery",
+    "stone",
+    "glass",
+    "metal"
+   ],
+   "3": [
+    "stool",
+    "curtain",
+    "styling_k",
+    "fabric"
+   ],
+   "1": [
+    "flooring",
+    "wallfinish",
+    "wallcolour"
+   ]
+  },
+  "bedroom": {
+   "2": [
+    "headboard",
+    "walllight",
+    "curtain",
+    "joinery",
+    "metal"
+   ],
+   "3": [
+    "bed",
+    "bedside",
+    "rug",
+    "bench",
+    "fabric"
+   ],
+   "1": [
+    "flooring",
+    "wallfinish",
+    "wallcolour"
+   ]
+  },
+  "bath": {
+   "2": [
+    "bath",
+    "shower",
+    "vanity",
+    "mirror",
+    "rail",
+    "stone",
+    "glass",
+    "metal"
+   ],
+   "3": [
+    "towels",
+    "stool_b",
+    "mat",
+    "plant"
+   ],
+   "1": [
+    "flooring",
+    "wallfinish",
+    "wallcolour"
+   ]
+  }
+ }
+}
