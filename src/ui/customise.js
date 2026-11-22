@@ -8,6 +8,8 @@
 // light and shadow are kept. Choices are stored per surface type, so walls, floors,
 // joinery, stone, curtains and metal carry from room to room.
 
+import { CLADDING_STONE, FLOORING, LAYOUTS, SLAT_TIMBER, WALL_COLOURS, WALL_FINISHES, contrastOf, floorPattern, wallPattern } from './catalogue.js';
+
 const ROOMS = [
   { id: 'living', label: 'Living', labels: { timber: 'Joinery', stone: 'Coffee table' } },
   { id: 'kitchen', label: 'Kitchen', labels: { timber: 'Cabinetry', stone: 'Island' } },
@@ -89,6 +91,17 @@ export async function initCustomiser() {
   let previewItem = null; // { group, option } (option null = none)
   let focusGroup = null;
   const placedIn = (r) => (placed[r.id] ??= {});
+  // Catalogue choices for surfaces, shared by every room that is built up from empty.
+  const spec = { flooring: null, layout: null, wallFinish: 'paint', wallColour: null };
+  let trial = null; // catalogue choices being tried out: any of the keys of `spec`
+  const specNow = (key) => (trial && key in trial ? trial[key] : spec[key]);
+  const flooringNow = () => FLOORING.find((f) => f.id === specNow('flooring')) ?? null;
+  const layoutNow = () => {
+    const flooring = flooringNow();
+    if (!flooring) return null;
+    const layout = specNow('layout');
+    return flooring.layouts.includes(layout) ? layout : flooring.layouts[0];
+  };
   const optionOf = (r, group) => (r === room && previewItem?.group === group.id ? previewItem.option : placedIn(r)[group.id]) ?? null;
 
   const finishOf = (key) => (preview && key in preview ? preview[key] : chosen[key]) ?? null;
@@ -195,6 +208,8 @@ export async function initCustomiser() {
       dir,
       layers: {}, // option id -> image, for rooms that are built up from empty
       mattes: {}, // option id -> the thing's outline
+      shades: {}, // option id -> the shadow it throws
+      glows: {}, // option id -> the light it adds
     };
     if (meta.build) {
       // Working canvases: the room with things placed (before recolouring), the outlines of
@@ -217,7 +232,10 @@ export async function initCustomiser() {
       const group = groupAt(data, event);
       if (group) return openGroup(group);
       const index = surfaceAt(data, event);
-      if (index >= 0) openSurface(data.meta.surfaces[index]);
+      if (index < 0) return;
+      const key = data.meta.surfaces[index];
+      if (data.meta.build) (key === 'floor' ? openFlooring : openWallColour)();
+      else openSurface(key);
     });
     canvas.addEventListener('pointermove', (event) => {
       if (event.pointerType === 'mouse') canvas.style.cursor = surfaceAt(data, event) >= 0 ? 'zoom-in' : 'default';
@@ -240,6 +258,16 @@ export async function initCustomiser() {
       matte.onload = () => r === room && requestRender();
       matte.src = `${r.dir}/${id}-p.webp?v=${__ASSET_VERSION__}`;
       r.mattes[id] = matte;
+      // The shadow it throws on the room (drawn by multiplying) and any light it adds.
+      const extra = (suffix) => {
+        const picture = new Image();
+        picture.decoding = 'async';
+        picture.onload = () => r === room && requestRender();
+        picture.src = `${r.dir}/${id}-${suffix}.webp?v=${__ASSET_VERSION__}`;
+        return picture;
+      };
+      r.shades[id] = extra('s');
+      if (r.meta.groups.some((group) => group.options.some((option) => option.id === id && option.glow))) r.glows[id] = extra('g');
     }
     return r.layers[id];
   }
@@ -283,6 +311,35 @@ export async function initCustomiser() {
       return [0, 1, 2].map((k) => Math.min(3.2, (target[k] / avg[k]) * tint + even * (1 - tint)));
     });
 
+    // Catalogue surfaces (rooms built up from empty): colour, then layout or finish type.
+    let floorFx = null;
+    let wallFx = null;
+    if (meta.build) {
+      const gainFor = (key, hex, i) => {
+        const target = hexToRgb(hex);
+        const avg = meta.average[key];
+        const even = lum(target) / lum(avg);
+        const tint = even > 1.6 ? 0.55 : 0.8;
+        gains[i] = [0, 1, 2].map((k) => Math.min(3.2, (target[k] / avg[k]) * tint + even * (1 - tint)));
+      };
+      const fi = meta.surfaces.indexOf('floor');
+      const wi = meta.surfaces.indexOf('walls');
+      const flooring = flooringNow();
+      if (flooring && fi >= 0) {
+        gainFor('floor', flooring.hex, fi);
+        if (meta.floorH) floorFx = { i: fi, kind: flooring.kind, layout: layoutNow(), contrast: contrastOf(flooring.finish), mid: lum(hexToRgb(flooring.hex)), h: meta.floorH };
+      }
+      const finish = specNow('wallFinish');
+      const colour = finish === 'slats' ? SLAT_TIMBER : finish === 'stone' ? CLADDING_STONE : specNow('wallColour');
+      if (wi >= 0) {
+        if (colour) gainFor('walls', colour, wi);
+        else gains[wi] = null;
+        if (finish !== 'paint' && (colour || finish === 'limewash' || finish === 'venetian' || finish === 'fluted')) {
+          wallFx = { i: wi, finish, contrast: finish === 'venetian' ? 1.14 : 1, mid: lum(colour ? hexToRgb(colour) : meta.average.walls) };
+        }
+      }
+    }
+
     // In a room built up from empty, everything placed goes in first (with the light and
     // shadow it throws), and the surfaces are recoloured around it afterwards.
     let src = r.src;
@@ -301,6 +358,18 @@ export async function initCustomiser() {
         const img = layerOf(r, id);
         const matte = r.mattes[id];
         if (!img.complete || !img.naturalWidth || !matte?.complete || !matte.naturalWidth) continue;
+        // Its shadow darkens whatever is already there (floor, rug, another piece), its
+        // light is added, and then the thing itself goes on top.
+        const ok = (picture) => picture?.complete && picture.naturalWidth;
+        if (ok(r.shades[id])) {
+          r.placedCtx.globalCompositeOperation = 'multiply';
+          r.placedCtx.drawImage(r.shades[id], 0, 0, w, h);
+        }
+        if (ok(r.glows[id])) {
+          r.placedCtx.globalCompositeOperation = 'lighter';
+          r.placedCtx.drawImage(r.glows[id], 0, 0, w, h);
+        }
+        r.placedCtx.globalCompositeOperation = 'source-over';
         r.placedCtx.drawImage(img, 0, 0, w, h);
         r.matteCtx.drawImage(matte, 0, 0, w, h);
         any = true;
@@ -314,7 +383,15 @@ export async function initCustomiser() {
 
     const spot = r === room && focusKey ? meta.surfaces.indexOf(focusKey) : -1;
     const data = out.data;
+    const width = meta.width;
+    const height = meta.height;
+    let px = -1;
+    let py = 0;
     for (let p = 0; p < src.length; p += 4) {
+      if (++px === width) {
+        px = 0;
+        py++;
+      }
       let red = src[p];
       let green = src[p + 1];
       let blue = src[p + 2];
@@ -329,6 +406,30 @@ export async function initCustomiser() {
           red += (Math.min(255, src[p] * gain[0]) - src[p]) * a;
           green += (Math.min(255, src[p + 1] * gain[1]) - src[p + 1]) * a;
           blue += (Math.min(255, src[p + 2] * gain[2]) - src[p + 2]) * a;
+        }
+        // Layout, veining and finish, drawn over the tinted surface.
+        const fx = floorFx && maskAt(r, floorFx.i, p) > 60 ? floorFx : wallFx && maskAt(r, wallFx.i, p) > 60 ? wallFx : null;
+        if (fx) {
+          const a = (maskAt(r, fx.i, p) / 255) * open;
+          let m;
+          if (fx === floorFx) {
+            const x = px / width;
+            const y = py / height;
+            const h = fx.h;
+            const w = h[6] * x + h[7] * y + h[8];
+            m = floorPattern((h[0] * x + h[1] * y + h[2]) / w, (h[3] * x + h[4] * y + h[5]) / w, fx.kind, fx.layout);
+          } else {
+            m = wallPattern(px / width, py / width, fx.finish);
+          }
+          if (fx.contrast !== 1) {
+            // polished finishes show light and shade more strongly, matte ones less
+            const l = 0.3 * red + 0.59 * green + 0.11 * blue;
+            m *= 1 + ((l - fx.mid) / Math.max(fx.mid, 30)) * (fx.contrast - 1);
+          }
+          const k = 1 + (m - 1) * a;
+          red *= k;
+          green *= k;
+          blue *= k;
         }
       }
       if (spot >= 0) {
@@ -525,6 +626,7 @@ export async function initCustomiser() {
   function showRoot(focusIndex = 0) {
     preview = null;
     previewItem = null;
+    trial = null;
     if (focusKey || focusGroup) focusOn(null);
     const config = roomConfig();
     const build = room.meta.build;
@@ -543,18 +645,27 @@ export async function initCustomiser() {
     const done = groups.filter((group) => placedIn(room)[group.id]).length;
     draw(config.label === 'Living' ? 'Living room' : config.label, [
       { label: 'Room', value: config.label, more: true, note: 'Move to another room. Scrolling also takes you through them.', select: () => showRooms() },
-      ...room.meta.surfaces.map((key, i) => ({
-        stage: build && i === 0 ? '01  Surface selections' : null,
-        label: labelFor(key),
-        value: nameOf(key, chosen[key]),
-        more: true,
-        note: 'Select to look closer and choose a finish.',
-        select: () => openSurface(key),
-      })),
+      ...(build
+        ? [
+            { stage: '01  Surface selections', label: 'Flooring', value: flooringNow()?.label ?? 'Limestone', more: true, note: 'Nine floors, in timber, stone and poured finishes.', select: () => openFlooring() },
+            ...(flooringNow() && flooringNow().layouts.length > 1 && room.meta.floorH
+              ? [{ label: 'Floor layout', value: LAYOUTS[layoutNow()], more: true, note: 'How the boards or tiles are laid.', select: () => openLayout() }]
+              : []),
+            { label: 'Wall finish', value: WALL_FINISHES.find((f) => f.id === spec.wallFinish).label, more: true, note: 'Paint, plaster, panelling or stone.', select: () => openWallFinish() },
+            { label: 'Wall colour', value: WALL_COLOURS.find((c) => c[1] === spec.wallColour)?.[0] ?? 'Lime plaster', more: true, note: 'Eight colours.', select: () => openWallColour() },
+          ]
+        : room.meta.surfaces.map((key) => ({
+            label: labelFor(key),
+            value: nameOf(key, chosen[key]),
+            more: true,
+            note: 'Select to look closer and choose a finish.',
+            select: () => openSurface(key),
+          }))),
       ...stageRows(2),
       ...stageRows(3),
-      { stage: build ? `${done} of ${groups.length} placed` : null, label: 'Themes', more: true, note: 'Set every surface in the home at once.', select: () => showThemes() },
+      ...(build ? [] : [{ label: 'Themes', more: true, note: 'Set every surface in the home at once.', select: () => showThemes() }]),
       {
+        stage: build ? `${done} of ${groups.length} placed` : null,
         label: build ? 'The studio\u2019s version' : 'Compare',
         value: comparing ? (build ? 'Showing' : 'Original') : build ? '' : 'Yours',
         note: build ? 'See how the studio finished this room, then switch back to yours.' : 'Switch between the room as designed and your version.',
@@ -569,19 +680,72 @@ export async function initCustomiser() {
         select: () => {
           for (const key of Object.keys(FINISHES)) delete chosen[key];
           placed[room.id] = {};
+          if (build) Object.assign(spec, { flooring: null, layout: null, wallFinish: 'paint', wallColour: null });
           setComparing(false);
           requestRender();
           showRoot(current);
         },
       },
     ], { focusIndex });
-    if (build && done === 0 && !Object.keys(chosen).length) note.textContent = 'An empty room. Begin with the surfaces, then place the fixtures.';
+    if (build && done === 0 && !spec.flooring && !spec.wallColour) note.textContent = 'An empty room. Begin with the surfaces, then place the fixtures.';
   }
+
+  // One catalogue choice: a list or a board of tiles; moving over an option tries it in
+  // the room, selecting keeps it.
+  function openChoice({ title, key, surface, options, backTo }) {
+    setComparing(false);
+    focusOn(surface);
+    const applied = spec[key];
+    const items = options.map((option) => ({
+      label: option.label,
+      chip: option.chip,
+      current: option.id === applied,
+      note: option.note,
+      over: () => {
+        trial = { [key]: option.id };
+        requestRender();
+      },
+      select: () => {
+        spec[key] = option.id;
+        trial = null;
+        requestRender();
+        openChoice({ title, key, surface, options, backTo });
+      },
+    }));
+    draw(title, items, { back: () => showRoot(backTo), focusIndex: Math.max(0, options.findIndex((o) => o.id === applied)) });
+  }
+  const openFlooring = () =>
+    openChoice({
+      title: 'Flooring',
+      key: 'flooring',
+      surface: 'floor',
+      backTo: 1,
+      options: [{ id: null, label: 'Limestone', chip: `rgb(${room.meta.average.floor.join(' ')})`, note: 'As designed. Honed limestone tile.' },
+        ...FLOORING.map((f) => ({ id: f.id, label: f.label, chip: f.hex, note: `${f.finish}. ${f.layouts.map((l) => LAYOUTS[l]).join(', ')}.` }))],
+    });
+  const openLayout = () =>
+    openChoice({
+      title: 'Floor layout',
+      key: 'layout',
+      surface: 'floor',
+      backTo: 2,
+      options: flooringNow().layouts.map((l) => ({ id: l, label: LAYOUTS[l], note: `${flooringNow().label}, laid ${LAYOUTS[l].toLowerCase()}.` })),
+    });
+  const openWallFinish = () =>
+    openChoice({ title: 'Wall finish', key: 'wallFinish', surface: 'walls', backTo: 2, options: WALL_FINISHES.map((f) => ({ id: f.id, label: f.label, note: f.look })) });
+  const openWallColour = () =>
+    openChoice({
+      title: 'Wall colour',
+      key: 'wallColour',
+      surface: 'walls',
+      backTo: 3,
+      options: [{ id: null, label: 'Lime plaster', chip: `rgb(${room.meta.average.walls.join(' ')})`, note: 'As designed.' }, ...WALL_COLOURS.map(([label, hex]) => ({ id: hex, label, chip: hex, note: hex }))],
+    });
 
   // The options for one kind of fixture or furniture: try them in the room, place one.
   function openGroup(group) {
     setComparing(false);
-    const index = room.meta.surfaces.length + 1 + room.meta.groups.indexOf(group);
+    const index = list.children.length ? Math.max(0, [...list.querySelectorAll('.lsc__label')].findIndex((el) => el.textContent === group.label)) : 0;
     const applied = placedIn(room)[group.id] ?? null;
     const look = (option) => focusOnThing(group.id, (option ?? group.options.find((o) => o.id === applied) ?? group.options[0]).focus);
     look(null);
@@ -694,7 +858,8 @@ export async function initCustomiser() {
   });
   // Leaving the menu drops any finish that was only being previewed.
   panel.addEventListener('pointerleave', (event) => {
-    if (event.pointerType !== 'mouse' || (!preview && !previewItem)) return;
+    if (event.pointerType !== 'mouse' || (!preview && !previewItem && !trial)) return;
+    trial = null;
     preview = null;
     previewItem = null;
     requestRender();

@@ -57,7 +57,8 @@
           "label": "Timber blinds",
           "spec": "Slatted timber venetian blinds. Motorised option.",
           "add": "slatted natural timber venetian blinds half lowered over the glass at the far end of the room.",
-          "thing": "all of the timber blinds."
+          "thing": "all of the timber blinds.",
+          "image": "curtainB"
         }
       ]
     },
@@ -66,7 +67,6 @@
       "label": "Lighting",
       "stage": 2,
       "z": 3,
-      "open": true,
       "options": [
         {
           "label": "Brass arc floor lamp",
@@ -170,5 +170,63 @@
   "surfaces_desc": {
     "walls": "all the plaster walls and the ceiling (not the timber door, not the glass, not the garden).",
     "floor": "the entire stone floor indoors (not the door, not the garden)."
-  }
+  },
+  "floor": {
+    "quad": [
+      [
+        0.41,
+        0.667
+      ],
+      [
+        0.85,
+        0.667
+      ],
+      [
+        1.17,
+        1.0
+      ],
+      [
+        0.275,
+        1.0
+      ]
+    ],
+    "size": [
+      6.0,
+      7.0
+    ]
+  },
+  "ceiling": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0.2
+    ],
+    [
+      0.3,
+      0.2
+    ],
+    [
+      0.44,
+      0.34
+    ],
+    [
+      0.85,
+      0.34
+    ],
+    [
+      0.85,
+      0.29
+    ],
+    [
+      1,
+      0.21
+    ],
+    [
+      1,
+      0
+    ]
+  ]
 }

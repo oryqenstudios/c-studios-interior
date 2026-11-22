@@ -511,3 +511,44 @@ None at the moment.
   phase 7.
 - **Structure.** `src/scroll/` and `src/ui/` exist as folders but their modules are
   created in the phases that need them, rather than as empty stubs now.
+
+## All four rooms built up from empty, and the studio's materials catalogue
+
+- **Living room, kitchen and bedroom** now work like the bathroom: each starts empty and is
+  built up in three stages (surface selections, fixtures and fittings, furniture and
+  styling). Their options are described in `tools/rooms/<room>.json`.
+- **Catalogue, sections 1 and 2 (as supplied by the studio)** are in `src/ui/catalogue.js`:
+  nine floors with their colours, finishes and permitted layouts; six wall finish types
+  and eight wall colours. In the board these are four rows: Flooring, Floor layout (only
+  the layouts that floor allows), Wall finish, Wall colour. The choice is shared by all
+  four rooms. "Themes" is gone from these rooms.
+- **How layouts are drawn.** Each room description gives the four corners of its floor
+  (`floor.quad`) and its rough size in metres; the packer turns that into a matrix
+  (`floorH` in `meta.json`) so boards and tiles are drawn in true perspective. Straight,
+  herringbone, chevron, 60 cm tile, large slab and seamless are drawn; marble gets veins,
+  terrazzo speckles, microcement a soft mottle. Polished finishes show light more
+  strongly than matte ones. These are drawn approximations over a photograph, not
+  samples of real products.
+- **Wall finish types.** Limewash clouds the colour, Venetian plaster adds sheen, fluted
+  panel and timber slats draw vertical ribs, stone cladding draws travertine slabs.
+  Timber slats and stone cladding use their own material colour (walnut, travertine)
+  instead of the wall colour. DECISION OF MINE: the studio's table says slats come "in
+  the chosen wood" and cladding in "marble or travertine"; a second choice for those is
+  not built yet.
+- **Ceilings** are cut out of the wall area (`ceiling` polygon in the room description)
+  so a wall finish never paints the ceiling.
+- **Catalogue sections 3 to 7** (cabinetry, countertops, glass, metal accents, fabrics)
+  are NOT built yet. They need each placed piece split into parts (fronts, worktop,
+  handles, upholstery), which means more generated outline pictures. To be agreed first.
+
+## Quality pass on the built-up rooms
+
+- Each piece is now three pictures: the piece alone, the **shadow** it throws (drawn by
+  multiplying, so it falls on whatever is under it: floor, rug or another piece) and the
+  **light** it adds (lamps, backlit mirror). Before, a patch of the picture around the
+  piece was pasted in, which smeared over neighbours and left furniture floating on rugs.
+- Outlines are mended where the image model left bites in them; stray specks are dropped.
+- "See-through" handling is now only for clear glass (`open: true`) or, in the bathroom,
+  gaps seen in shadow (`open: "loose"`). It had been eating into paper shades and slats.
+- The empty living room, kitchen and bedroom were regenerated **without curtains**
+  (`empty2.png`), and their blinds redone on that, so nothing shows under the blinds.

@@ -57,7 +57,27 @@
           "label": "Black stone",
           "spec": "Leathered black granite. Sink and matte black mixer.",
           "add": "a long kitchen island in leathered black granite with waterfall ends, with a sink and a matte black tap, standing in the centre of the room.",
-          "thing": "the whole kitchen island including its sink and tap."
+          "thing": "the whole kitchen island including its sink and tap.",
+          "through": [
+            [
+              [
+                0.302,
+                0.652
+              ],
+              [
+                0.708,
+                0.652
+              ],
+              [
+                0.708,
+                0.815
+              ],
+              [
+                0.302,
+                0.815
+              ]
+            ]
+          ]
         }
       ]
     },
@@ -66,13 +86,13 @@
       "label": "Lighting",
       "stage": 2,
       "z": 2,
-      "open": true,
       "options": [
         {
           "label": "Glass globe pendants",
           "spec": "Three clear glass globes on brass rods. Dimmable.",
           "add": "three clear glass globe pendant lights on slim brass rods hanging in a row from the ceiling over the centre of the room, switched on.",
-          "thing": "all three pendant lights with their rods."
+          "thing": "all three pendant lights with their rods.",
+          "open": true
         },
         {
           "label": "Linear brass pendant",
@@ -112,7 +132,8 @@
           "add": "four counter-height slim black steel bar stools with woven cord seats standing in a row on the floor in the centre foreground of the room.",
           "thing": "all four bar stools."
         }
-      ]
+      ],
+      "legs": true
     },
     {
       "id": "curtain",
@@ -136,7 +157,8 @@
           "label": "Woven blinds",
           "spec": "Natural woven roman blinds. Chain or motorised.",
           "add": "natural woven grass roman blinds half lowered over the glass wall on the left.",
-          "thing": "all of the blinds."
+          "thing": "all of the blinds.",
+          "image": "curtainB"
         }
       ]
     }
@@ -144,5 +166,67 @@
   "surfaces_desc": {
     "walls": "all the plaster walls and the ceiling (not the glass, not the garden).",
     "floor": "the entire stone floor (not the garden)."
-  }
+  },
+  "floor": {
+    "quad": [
+      [
+        0.29,
+        0.729
+      ],
+      [
+        0.84,
+        0.735
+      ],
+      [
+        1.177,
+        1.0
+      ],
+      [
+        -0.09,
+        1.0
+      ]
+    ],
+    "size": [
+      5.5,
+      5.0
+    ]
+  },
+  "ceiling": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0.3
+    ],
+    [
+      0.24,
+      0.3
+    ],
+    [
+      0.24,
+      0.169
+    ],
+    [
+      0.29,
+      0.222
+    ],
+    [
+      0.72,
+      0.222
+    ],
+    [
+      0.84,
+      0.191
+    ],
+    [
+      1,
+      0.04
+    ],
+    [
+      1,
+      0
+    ]
+  ]
 }

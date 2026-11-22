@@ -88,13 +88,11 @@
         },
         {
           "label": "Brass tube sconces",
-          "spec": "Wall-mounted pair. Brushed brass. Warm white, dimmable.",
-          "open": true
+          "spec": "Wall-mounted pair. Brushed brass. Warm white, dimmable."
         },
         {
           "label": "Pleated linen pendant",
-          "spec": "Ceiling-hung. Linen shade. For a zone away from water.",
-          "open": true
+          "spec": "Ceiling-hung. Linen shade. For a zone away from water."
         }
       ],
       "z": 2,
@@ -108,17 +106,17 @@
         {
           "label": "Round rain head, brass",
           "spec": "Concealed thermostatic valve. Brushed brass. 250 mm rain head.",
-          "open": true
+          "open": "loose"
         },
         {
           "label": "Square rain head, black",
           "spec": "Concealed thermostatic valve. Matte black. 250 mm square head.",
-          "open": true
+          "open": "loose"
         },
         {
           "label": "Exposed column, nickel",
           "spec": "Exposed thermostatic riser. Polished nickel. Cross-handle valves.",
-          "open": true
+          "open": "loose"
         }
       ],
       "z": 3,
@@ -152,7 +150,7 @@
             ],
             [
               0.57,
-              0.675,
+              0.705,
               0.71,
               0.78
             ]
@@ -170,7 +168,7 @@
         {
           "label": "Olive tree",
           "spec": "Tall stone pot. Needs good daylight.",
-          "open": true
+          "open": "loose"
         },
         {
           "label": "Walnut stool and towels",
@@ -187,5 +185,29 @@
       "open": false
     }
   ],
-  "studio": "/home/user/.review/cfg-bath/base.png"
+  "studio": "/home/user/.review/cfg-bath/base.png",
+  "floor": {
+    "quad": [
+      [
+        0.247,
+        0.733
+      ],
+      [
+        0.712,
+        0.733
+      ],
+      [
+        1.0,
+        1.0
+      ],
+      [
+        -0.175,
+        1.0
+      ]
+    ],
+    "size": [
+      4.6,
+      4.2
+    ]
+  }
 }
