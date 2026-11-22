@@ -22,7 +22,7 @@ import numpy as np
 from PIL import Image, ImageFilter
 from scipy import ndimage
 
-W, H = 2240, 1260  # close to the generated size, so close-ups and large screens stay sharp
+W, H = 2816, 1584  # close to the generated size, so close-ups and large screens stay sharp
 src, room, spec_path = sys.argv[1:4]
 spec = json.load(open(spec_path))
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public', 'cfg', room)
@@ -143,6 +143,12 @@ for group in spec['groups']:
             print(f'  {room}: {name} outline came out empty, skipped')
             continue
         raw = np.clip((shift / np.percentile(strong, 85) - 0.3) / 0.35, 0, 1)
+        # Further outline pictures for parts the first one missed (each a separate generation).
+        for more in option.get('mattes', []):
+            extra_shift = magenta(load(more)) - magenta(a)
+            big = extra_shift[extra_shift > 25]
+            if big.size > 150:
+                raw = np.maximum(raw, np.clip((extra_shift / np.percentile(big, 85) - 0.3) / 0.35, 0, 1))
         # Safeguard: the outline may not reach beyond where the thing actually changed the
         # picture (the model occasionally paints a whole wall).
         allowed = ndimage.binary_fill_holes(ndimage.binary_closing(ndimage.binary_dilation(different, iterations=14), iterations=30))
@@ -164,7 +170,7 @@ for group in spec['groups']:
             continue
         labels, count = ndimage.label(keep)
         sizes = ndimage.sum(keep, labels, range(1, count + 1))
-        keep = np.isin(labels, [i + 1 for i, s in enumerate(sizes) if s > max(40, sizes.max() * 0.04)])
+        keep = np.isin(labels, [i + 1 for i, s in enumerate(sizes) if s > max(40, sizes.max() * option.get('small', 0.04))])
         # Mend bites in the outline: pixels right beside the thing that are clearly not the
         # empty room, and not merely the room in shadow (same colour, only darker).
         # (the outline picture shows them faintly magenta: painted, but shaded too dark to count)
@@ -172,7 +178,7 @@ for group in spec['groups']:
         keep = fill(ndimage.binary_closing(keep | ndimage.binary_opening(extra, iterations=2), iterations=3))
         labels, count = ndimage.label(keep)
         sizes = ndimage.sum(keep, labels, range(1, count + 1))
-        keep = np.isin(labels, [i + 1 for i, s in enumerate(sizes) if s > max(40, sizes.max() * 0.04)])
+        keep = np.isin(labels, [i + 1 for i, s in enumerate(sizes) if s > max(40, sizes.max() * option.get('small', 0.04))])
         # The layer: the thing, plus the light and shadow it throws on the room nearby.
         # The page places layers first and recolours walls and floor afterwards, so that
         # shade is recoloured with the surface it falls on; `protect` marks the thing
@@ -182,7 +188,7 @@ for group in spec['groups']:
         for x0, y0, x1, y1 in option.get('include', []):
             box = np.zeros((H, W), bool)
             box[int(y0 * H):int(y1 * H), int(x0 * W):int(x1 * W)] = True
-            keep |= ndimage.binary_fill_holes(ndimage.binary_closing(ndimage.binary_opening(box & (distance > 25), iterations=2), iterations=6))
+            keep |= ndimage.binary_fill_holes(ndimage.binary_closing(ndimage.binary_opening(box & (distance > option.get('include_min', 25)), iterations=4), iterations=6))
         # A sibling option that fills exactly the same place, with a cleaner outline.
         if option.get('shape_from') in shapes:
             keep = shapes[option['shape_from']].copy()
@@ -200,6 +206,12 @@ for group in spec['groups']:
             keep = padded[smooth + 2:-(smooth + 2), smooth + 2:-(smooth + 2)]
         if option.get('shrink'):
             keep = ndimage.binary_erosion(keep, iterations=option['shrink'])  # leave a soft halo to the glow layer
+        # Trim a fringe of the old floor or wall caught along the thing's edge: edge pixels
+        # that still look like the empty room.
+        if option.get('trim', group.get('trim')):
+            band = keep & ~ndimage.binary_erosion(keep, iterations=5)
+            unchanged = ndimage.gaussian_filter(distance, 1.2) < 38  # still the empty room, pixel for pixel
+            keep = ndimage.binary_closing(keep & ~(band & unchanged), iterations=2) & keep
         shapes[name] = keep.copy()
         solid = np.asarray(Image.fromarray((keep * 255).astype('uint8')).filter(ImageFilter.GaussianBlur(1.2))).astype(float) / 255
         # What must keep its own colour when the surfaces are recoloured. Pulled in by a
@@ -272,7 +284,9 @@ for group in spec['groups']:
         far = ndimage.binary_dilation(keep, iterations=200) & ~unstable
         far = blur(far.astype(float), 30) * (1 - solid)
         glow = np.clip(blur(a, 4) - blur(base, 4) - 7, 0, 255) * far[..., None]
-        has_glow = bool((glow.max(axis=2) > 12).mean() > 0.002)
+        # only things that really give light; on anything else a 'glow' is the image model's noise
+        gives_light = option.get('light', group.get('light', group['id'] in ('light', 'mirror')))
+        has_glow = bool(gives_light and (glow.max(axis=2) > 12).mean() > 0.002)
         if has_glow:
             Image.fromarray(glow.astype('uint8')).save(os.path.join(out, name + '-g.webp'), 'WEBP', quality=86, method=6)
         protect = np.dstack([np.full((H, W, 3), 255), guard * 255]).astype('uint8')

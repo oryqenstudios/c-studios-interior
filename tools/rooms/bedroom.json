@@ -116,7 +116,8 @@
           "add": "a pair of small pale oak bedside tables on tapered legs with one drawer each, standing against the back wall far apart, one well to the left and one well to the right of the centre, leaving the centre empty.",
           "thing": "both bedside tables."
         }
-      ]
+      ],
+      "smooth": 5
     },
     {
       "id": "bed",
@@ -216,7 +217,8 @@
             ]
           ]
         }
-      ]
+      ],
+      "smooth": 10
     },
     {
       "id": "bench",
@@ -242,7 +244,8 @@
           "add": "one long tan leather ottoman on a slim black steel base, standing on the floor in the centre foreground of the room.",
           "thing": "the whole ottoman."
         }
-      ]
+      ],
+      "trim": true
     }
   ],
   "surfaces_desc": {

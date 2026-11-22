@@ -348,6 +348,7 @@ export async function initCustomiser() {
     });
 
     // Catalogue surfaces (rooms built up from empty): colour, then layout or finish type.
+    const flats = [];
     let floorFx = null;
     let wallFx = null;
     if (meta.build) {
@@ -357,6 +358,7 @@ export async function initCustomiser() {
         const even = lum(target) / lum(avg);
         const tint = even > 1.6 ? 0.55 : 0.8;
         gains[i] = [0, 1, 2].map((k) => Math.min(3.2, (target[k] / avg[k]) * tint + even * (1 - tint)));
+        flats[i] = [...target, lum(avg)];
       };
       const fi = meta.surfaces.indexOf('floor');
       const wi = meta.surfaces.indexOf('walls');
@@ -445,14 +447,27 @@ export async function initCustomiser() {
           const m = maskAt(r, i, p);
           if (m < 8) continue;
           const a = (m / 255) * open;
-          red += (Math.min(255, src[p] * gain[0]) - src[p]) * a;
-          green += (Math.min(255, src[p + 1] * gain[1]) - src[p + 1]) * a;
-          blue += (Math.min(255, src[p + 2] * gain[2]) - src[p + 2]) * a;
+          let nr = src[p] * gain[0];
+          let ng = src[p + 1] * gain[1];
+          let nb = src[p + 2] * gain[2];
+          const flat = flats[i];
+          if (flat) {
+            // Catalogue colours: mostly the chosen colour shaded by the photograph's light,
+            // so warm sun patches on the old stone do not stain a cool floor or wall.
+            const l = (0.3 * src[p] + 0.59 * src[p + 1] + 0.11 * src[p + 2]) / flat[3];
+            nr = nr * 0.3 + flat[0] * l * 0.7;
+            ng = ng * 0.3 + flat[1] * l * 0.7;
+            nb = nb * 0.3 + flat[2] * l * 0.7;
+          }
+          red += (Math.min(255, nr) - src[p]) * a;
+          green += (Math.min(255, ng) - src[p + 1]) * a;
+          blue += (Math.min(255, nb) - src[p + 2]) * a;
         }
         // Layout, veining and finish, drawn over the tinted surface.
         const fx = floorFx && maskAt(r, floorFx.i, p) > 60 ? floorFx : wallFx && maskAt(r, wallFx.i, p) > 60 ? wallFx : null;
         if (fx) {
-          const a = (maskAt(r, fx.i, p) / 255) * open;
+          // only on the bare surface: never over a mirror's glass or a piece's soft edge
+          const a = open < 0.85 ? 0 : (maskAt(r, fx.i, p) / 255) * open;
           let m;
           if (fx === floorFx) {
             const x = px / width;

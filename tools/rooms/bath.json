@@ -26,7 +26,8 @@
         }
       ],
       "z": 6,
-      "open": false
+      "open": false,
+      "trim": true
     },
     {
       "id": "vanity",
@@ -36,7 +37,12 @@
         {
           "label": "Walnut, stone vessels",
           "spec": "Wall-hung. Walnut veneer, travertine top. Two vessel basins, wall-mounted mixers.",
-          "open": false
+          "open": false,
+          "mattes": [
+            "matte2-vanity-1",
+            "matte3-vanity-1"
+          ],
+          "small": 0.002
         },
         {
           "label": "Oak, integrated basin",
@@ -50,7 +56,8 @@
         }
       ],
       "z": 4,
-      "open": false
+      "open": false,
+      "smooth": 8
     },
     {
       "id": "mirror",
@@ -62,7 +69,10 @@
           "spec": "Wall-mounted. LED halo, warm white. Needs a switched supply behind.",
           "open": false,
           "smooth": 34,
-          "shrink": 16
+          "shrink": 16,
+          "mattes": [
+            "matte2-mirror-1"
+          ]
         },
         {
           "label": "Round, brass frame",

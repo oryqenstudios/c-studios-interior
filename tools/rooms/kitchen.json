@@ -134,7 +134,8 @@
           "thing": "all four bar stools."
         }
       ],
-      "legs": true
+      "legs": true,
+      "trim": true
     },
     {
       "id": "curtain",

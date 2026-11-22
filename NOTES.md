@@ -584,3 +584,25 @@ descriptions and `src/ui/customise.js`:
 Known small leftovers: a speck of unrecoloured wall beside the towel on the heated rail,
 and a slightly uneven right edge on the backlit mirror's halo. Both would need those two
 pictures regenerated.
+
+## Full 2K rooms and second defect pass
+
+- Rooms are packed at the generated size, **2816 x 1584** (was 2240 x 1260). Sharper
+  close-ups; `public/cfg` is now about 15 MB. NOT TESTED on a real phone: four rooms at
+  this size use a lot of picture memory, so check an older iPhone before launch.
+- Catalogue colours are now mostly the chosen colour shaded by the photograph's light
+  (70%), so warm sun patches no longer stain grey floors or cool walls.
+- Wall patterns are never drawn over a mirror's glass or a piece's soft edge.
+- Only real lights and mirrors carry a glow layer (the stone wall had a false strip of
+  light at its foot).
+- Fringe trim (`trim`) removes the old floor caught along the edge of tubs, stools,
+  sofas, tables and the bench; pale pieces are smoothed instead (`smooth`).
+- A piece can take extra outline pictures (`mattes`) for parts the first missed: the
+  stone-vessel vanity now has its basins and taps; the backlit mirror has a clean one.
+  Three extra Higgsfield images were generated for this.
+- Marble is soft clouding with faint streaks, no drawn vein lines.
+- Review method: every option photographed on a grey porcelain floor with dark walls,
+  the hardest case for leftovers of the original cream room.
+
+Known leftovers: a speck beside the towel on the heated rail; a slightly uneven halo on
+the backlit mirror's right edge; one ceramic dome has a small nick near its top.

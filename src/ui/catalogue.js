@@ -117,8 +117,11 @@ export function floorPattern(u, v, kind, layout) {
   }
   if (kind === 'marble') {
     // long, wandering grey veins
-    const vein = Math.abs(Math.sin(u * 1.1 + v * 0.7 + noise(u * 0.5, v * 0.5) * 2.2));
-    if (vein < 0.02) m *= 0.9 + vein * 4;
+    // soft grey clouding with the odd faint streak, different on every tile
+    const tile = hash(Math.floor(u / 0.6) + 11, Math.floor(v / 0.6) + 5) * 40;
+    const streak = Math.abs(noise(u * 1.3 + tile, v * 0.45 + tile) * 2 - 1);
+    if (streak < 0.05) m *= 0.95 + streak;
+    m *= 0.965 + noise(u * 0.9 + tile, v * 0.9) * 0.05;
     m *= 0.98 + noise(u * 3, v * 3) * 0.04;
   } else if (kind === 'terrazzo') {
     const chip = hash(Math.floor(u / 0.022), Math.floor(v / 0.022));
