@@ -3660,3 +3660,56 @@ body {
   grid-column: 2;
   grid-row: 1 / span 2;
 }
+
+/* the option up close, beside the room */
+.cfg__inset {
+  position: absolute;
+  z-index: 3;
+  right: var(--gutter);
+  bottom: 4.5rem;
+  width: clamp(13rem, 21vw, 21rem);
+  margin: 0;
+  border: 1px solid rgb(237 230 218 / 0.28);
+  background: var(--ink);
+  box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.35);
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition:
+    opacity 400ms var(--ease),
+    transform 400ms var(--ease);
+  pointer-events: none;
+}
+
+.cfg__inset.is-on {
+  opacity: 1;
+  transform: none;
+}
+
+.cfg__inset img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: 80% 50%;
+}
+
+.cfg__inset figcaption {
+  padding: 0.5rem 0.75rem;
+  font-size: var(--text-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+@media (max-width: 47.99rem) {
+  .cfg__inset {
+    right: 0.75rem;
+    top: 4.5rem;
+    bottom: auto;
+    width: 38vw;
+  }
+
+  .cfg__inset figcaption {
+    display: none;
+  }
+}

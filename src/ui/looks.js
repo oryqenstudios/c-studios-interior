@@ -42,6 +42,19 @@ export async function initLooks() {
   const inRoom = () => Boolean(data.pre?.includes(looks[lookIndex].id));
   const roomShot = (gid, n, stage) => `${base}/${rooms[roomIndex].id}/pre/${looks[lookIndex].id}-${stage}-${gid}-${n + 1}`;
   const latest = {}; // 'room:stage' -> the choice made most recently there: { gid, n }
+  // Beside the room, the option's own close-up photograph: a wide view of a room cannot
+  // show a tap or a towel rail sharply.
+  const inset = document.createElement('figure');
+  inset.className = 'cfg__inset';
+  inset.innerHTML = '<img alt="" decoding="async" /><figcaption>Up close</figcaption>';
+  root.append(inset);
+  function setInset(key) {
+    if (!key) return inset.classList.remove('is-on');
+    const img = inset.firstChild;
+    const url = `${key}-s.webp?v=${__ASSET_VERSION__}`;
+    if (!img.src.endsWith(url)) img.src = url;
+    inset.classList.add('is-on');
+  }
   const optionShot = (gid, n) => `${base}/opts/${gid}${catalogue.groups[gid].rooms?.includes(rooms[roomIndex].id) ? `-${rooms[roomIndex].id}` : ''}-${n + 1}`;
 
   let roomIndex = 0;
@@ -59,7 +72,7 @@ export async function initLooks() {
     let shown = null;
     let wanted = null; // the photograph being brought up
     function shot(key) {
-      const [small, large] = key.includes('/pre/') ? [960, 1920] : [1408, 2816];
+      const [small, large] = [1408, 2816];
       let img = shots.get(key);
       if (!img) {
         img = new Image();
@@ -67,6 +80,7 @@ export async function initLooks() {
         img.alt = '';
         img.decoding = 'async';
         if (key.startsWith('http')) img.src = key; // a photograph rendered for this visitor
+        else if (key.includes('/pre/')) img.src = `${key}.webp?v=${__ASSET_VERSION__}`; // one size only
         else {
           img.sizes = '(max-aspect-ratio: 16/9) 178vh, 100vw';
           img.srcset = `${key}-s.webp?v=${__ASSET_VERSION__} ${small}w, ${key}.webp?v=${__ASSET_VERSION__} ${large}w`;
@@ -276,6 +290,7 @@ export async function initLooks() {
   let menuBack = null;
   let current = 0;
   function draw(title, items, { back = null, focusIndex = 0 } = {}) {
+    setInset(null);
     rows = items;
     menuBack = back;
     panel.classList.toggle('has-back', Boolean(back));
@@ -474,6 +489,7 @@ export async function initLooks() {
       current: picks[key] === n,
       note: surface || shownInRoom ? `${option.spec} Shown in the room.` : `${option.spec} Shown up close.`,
       over: () => {
+        if (shownInRoom) setInset(optionShot(gid, n));
         if (!surface) return show(shownInRoom ? roomShot(gid, n, stage) : optionShot(gid, n));
         // floors and walls are tried in the room itself
         trial = { [gid]: n };

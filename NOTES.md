@@ -797,3 +797,16 @@ So every option of every item is now its own photograph of the room.
 - The other seven looks need 182 photographs each (1,274 in all). Not started.
 - Hosting: the studio's Vercel plan showed 3.98 GB of 10 GB deployment storage. Publish
   to `main` only (feature branches each create a preview copy of the site).
+
+## Option photographs: full size, used whole, with a close-up inset
+
+The studio rejected the quality of the in-room option photographs. Two faults, both mine:
+- They were packed at 1920 wide to save hosting space; small pieces looked soft. Now
+  2816 x 1584, the size they were generated at (one file each, no half-size copy).
+- Each was blended into the look's own photograph to hold the garden still; where the
+  blend missed, the replaced item showed through (a brass rail behind an oak ladder).
+  They are now published whole, exactly as generated. The garden may differ slightly
+  from one option to the next; that is accepted in exchange for clean pictures.
+- While an item's options are open, the option's own close-up photograph is shown as an
+  inset beside the room ("Up close"), since a wide view cannot show a tap sharply.
+- Size: about 100 MB per look (182 files). Eight looks will be roughly 800 MB.
