@@ -810,3 +810,7 @@ The studio rejected the quality of the in-room option photographs. Two faults, b
 - While an item's options are open, the option's own close-up photograph is shown as an
   inset beside the room ("Up close"), since a wide view cannot show a tap sharply.
 - Size: about 100 MB per look (182 files). Eight looks will be roughly 800 MB.
+
+## Quiet stone has in-room options too
+
+Quiet stone: 170 option photographs (no glass), packed like Warm walnut. The other six looks were paused by the studio before they started; they still show close-ups. To add one: `genpre.py <look>` (scratch script, see NOTES above), then `python3 tools/pack-pre.py .review/looks .review/pre <all looks to include>`.
