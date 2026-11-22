@@ -96,27 +96,24 @@
           <div class="film__float film__float--side" data-from="0.219" data-to="0.274"><p class="film__index">04 Furnishing</p><h2>Nothing arrives by accident.</h2></div>
           <div class="film__float film__float--side" data-from="0.294" data-to="0.351"><p class="film__index">05 Evening</p><h2>Dusk is designed too.</h2></div>
           <div class="film__float film__float--side" data-from="0.38" data-to="0.461"><p class="film__index">06 Arrival</p><h2>Now open the door.</h2></div>
-          <div class="cfg" data-customiser="/cfg" aria-label="Customise the home, room by room">
+          <div class="cfg" data-customiser="/cfg">
             <div class="cfg__view">
-              <img class="cfg__original" src="/cfg/living/base.webp?v=11211816" width="1600" height="900" alt="" loading="lazy" />
+              <img class="cfg__original" src="/cfg/living/base.webp" width="1600" height="900" alt="" loading="lazy" />
             </div>
-            <div class="cfg__divider" aria-hidden="true"></div>
-            <button type="button" class="cfg__handle" role="slider" aria-label="Compare with the original: drag right to reveal it" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span aria-hidden="true">Compare</span></button>
-            <div class="cfg__head">
-              <p class="film__index">07 Yours</p>
-              <h2>Make it yours.</h2>
-              <p class="cfg__hint">Tap any surface to look closer, then choose a finish. Scroll for the next room.</p>
-            </div>
-            <div class="cfg__rooms" role="group" aria-label="Room"></div>
-            <div class="cfg__panel">
-              <div class="cfg__tabs" role="tablist" aria-label="Surface"></div>
-              <div class="cfg__swatches" role="group" aria-label="Finish"></div>
-              <div class="cfg__row">
-                <div class="cfg__themes" role="group" aria-label="Whole-home themes"></div>
-                <button type="button" class="cfg__reset" data-zoom aria-pressed="false">Look closer</button>
-                <button type="button" class="cfg__reset" data-reset>Reset</button>
+            <aside class="lsc" aria-label="Customise the home">
+              <header class="lsc__banner">
+                <span class="lsc__studio">The material board</span>
+                <h2>Make it yours</h2>
+              </header>
+              <div class="lsc__sub">
+                <button type="button" class="lsc__back" data-back aria-label="Back"></button>
+                <span class="lsc__crumb"></span>
+                <span class="lsc__count" aria-hidden="true"></span>
               </div>
-            </div>
+              <ul class="lsc__list" role="menu" aria-label="Options"></ul>
+              <p class="lsc__desc" aria-live="polite"></p>
+            </aside>
+            <p class="lsc__keys" aria-hidden="true">Tap any surface to look closer <span>·</span> Scroll for the next room</p>
           </div>
           <span class="film__note" aria-hidden="true">Concept visual</span>
         </div>

@@ -83,13 +83,22 @@ for key, m in masks.items():
     masks[key] = m
     keys.append(key)
     average[key] = [round(float(x), 1) for x in b[core].mean(axis=0)]
-    # Where the camera goes to look closer: the middle of the surface, zoomed so that it
-    # fills a good part of the frame (more for small things, less for walls and floors).
+    # Where the camera goes to look closer: the densest part of the surface (so a wall
+    # close-up shows wall, not what stands in front of it) and how big that part is. The
+    # page chooses the zoom from the size, because it knows how much of the screen its
+    # menu leaves free.
     ys, xs = np.nonzero(core)
-    x0, x1, y0, y1 = np.percentile(xs, 3), np.percentile(xs, 97), np.percentile(ys, 3), np.percentile(ys, 97)
-    span = max((x1 - x0) / W, (y1 - y0) / H)
-    zoom = float(np.clip(0.62 / max(span, 0.05), 1.25, 2.6))
-    focus[key] = [round(float((x0 + x1) / 2 / W), 3), round(float((y0 + y1) / 2 / H), 3), round(zoom, 2)]
+    span_x = (np.percentile(xs, 97) - np.percentile(xs, 3)) / W
+    span_y = (np.percentile(ys, 97) - np.percentile(ys, 3)) / H
+    ww, wh = int(W * min(0.5, max(0.14, span_x))), int(H * min(0.5, max(0.14, span_y)))
+    integral = np.pad(m.cumsum(0).cumsum(1), ((1, 0), (1, 0)))
+    best, bx, by = -1.0, 0, 0
+    for yy in range(0, H - wh + 1, 10):
+        for xx in range(0, W - ww + 1, 10):
+            total = integral[yy + wh, xx + ww] - integral[yy, xx + ww] - integral[yy + wh, xx] + integral[yy, xx]
+            if total > best:
+                best, bx, by = total, xx, yy
+    focus[key] = [round((bx + ww / 2) / W, 3), round((by + wh / 2) / H, 3), round(ww / W, 3), round(wh / H, 3)]
     print(f'  {room}: {key:9s} {100 * m.mean():5.1f}% of the picture')
 
 for i in range(0, len(keys), 3):

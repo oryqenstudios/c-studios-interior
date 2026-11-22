@@ -1,4 +1,8 @@
-// Interactive rooms: tap a surface in the photograph and choose its colour or material
+// Interactive rooms, driven by a material board: pick a part of the room from the list (or
+// tap it in the photograph), and the camera pushes in on just that part while the rest of
+// the room dims; move through the finishes to preview them and select one to apply it.
+//
+// Tap a surface in the photograph and choose its colour or material
 // tone. Each room stays a photograph; a soft mask per surface says where a finish applies,
 // and each pixel there is multiplied toward the chosen colour, so the photograph's own
 // light and shadow are kept. Choices are stored per surface type, so walls, floors,
@@ -64,54 +68,88 @@ export async function initCustomiser() {
   if (!root) return null;
   const view = root.querySelector('.cfg__view');
   const original = root.querySelector('.cfg__original');
-  const roomNav = root.querySelector('.cfg__rooms');
-  const tabs = root.querySelector('.cfg__tabs');
-  const swatches = root.querySelector('.cfg__swatches');
-  const themes = root.querySelector('.cfg__themes');
-  const divider = root.querySelector('.cfg__divider');
-  const handle = root.querySelector('.cfg__handle');
-  const hint = root.querySelector('.cfg__hint');
-  const zoomButton = root.querySelector('[data-zoom]');
+  const panel = root.querySelector('.lsc');
+  const list = root.querySelector('.lsc__list');
+  const crumb = root.querySelector('.lsc__crumb');
+  const counter = root.querySelector('.lsc__count');
+  const note = root.querySelector('.lsc__desc');
   const base = root.dataset.customiser; // folder holding one sub-folder per room
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   const chosen = {}; // surface type -> hex (absent = as photographed)
+  let preview = null; // finishes being tried out but not yet applied: { key: hex | null }
   const loaded = {}; // room id -> { meta, src, masks, canvas, ctx, out }
   let room = null;
-  let active = 0;
-  let highlight = -1;
+  let focusKey = null; // the surface the camera is on; everything else is dimmed
+  let comparing = false;
 
-  // The camera: a zoom level and the point it is centred on (0 to 1 across the picture),
-  // plus a slight drift with the cursor while the whole room is shown.
+  const finishOf = (key) => (preview && key in preview ? preview[key] : chosen[key]) ?? null;
+  const nameOf = (key, hex) => FINISHES[key].options.find((o) => o[1] === (hex ?? null))?.[0] ?? 'Custom';
+  const roomConfig = () => ROOMS.find((x) => x.id === room.id);
+  const labelFor = (key) => roomConfig().labels[key] ?? FINISHES[key].label;
+
+  /* ---------- camera ---------- */
+
+  // A zoom level and the point it is centred on (0 to 1 across the picture), plus a
+  // slight drift with the cursor while the whole room is shown. The point is placed in
+  // the middle of the part of the screen the menu leaves free.
   const cam = { zoom: 1, x: 0.5, y: 0.5, driftX: 0, driftY: 0 };
+  cam.w = 0.3; // size of the thing being looked at, as a share of the picture
+  cam.h = 0.3;
+  // The part of the screen the menu leaves free: its centre (relative to the middle of
+  // the screen) and its size, all as shares of the screen.
+  function freeArea() {
+    const box = root.getBoundingClientRect();
+    const menu = panel.getBoundingClientRect();
+    if (menu.width < box.width * 0.7) {
+      const left = menu.right - box.left; // menu at the side
+      return { cx: (left + box.width) / 2 / box.width - 0.5, cy: 0, w: (box.width - left) / box.width, h: 1 };
+    }
+    const top = menu.top - box.top; // menu along the bottom
+    return { cx: 0, cy: top / 2 / box.height - 0.5, w: 1, h: top / box.height };
+  }
   function applyCamera() {
-    const z = cam.zoom;
-    if (z > 1.01) {
-      // keep the picture's edges outside the frame
-      const limit = ((z - 1) / (2 * z)) * 100;
-      const tx = Math.max(-limit, Math.min(limit, (0.5 - cam.x) * 100));
-      const ty = Math.max(-limit, Math.min(limit, (0.5 - cam.y) * 100));
-      view.style.transform = `scale(${z}) translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%)`;
+    if (cam.zoom > 1.01) {
+      const box = root.getBoundingClientRect();
+      const free = freeArea();
+      // The picture covers the screen (object-fit: cover), so work in screen pixels.
+      const pictureRatio = room.meta.width / room.meta.height;
+      const cover = Math.max(box.width / pictureRatio, box.height);
+      const pw = cover * pictureRatio;
+      const ph = cover;
+      // Zoom until the thing fills about two thirds of the free area, within limits.
+      const z = Math.max(1.5, Math.min(3, Math.min((free.w * box.width * 0.68) / (cam.w * pw), (free.h * box.height * 0.68) / (cam.h * ph))));
+      cam.zoom = z;
+      // Move the thing's centre to the centre of the free area, without showing an edge.
+      const want = (c, size, screen, centre) => {
+        const offset = (0.5 - c) * size * z + centre * screen;
+        const limit = (size * z - screen) / 2;
+        return Math.max(-limit, Math.min(limit, offset));
+      };
+      const tx = want(cam.x, pw, box.width, free.cx);
+      const ty = want(cam.y, ph, box.height, free.cy);
+      view.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px) scale(${z.toFixed(3)})`;
+      // Only the room on show may be visible while the camera is in close.
+      root.classList.add('is-close');
     } else {
       view.style.transform = `scale(1.035) translate(${(-cam.driftX * 1.4).toFixed(2)}%, ${(-cam.driftY * 1.4).toFixed(2)}%)`;
+      root.classList.remove('is-close');
     }
-    root.classList.toggle('is-zoomed', z > 1.01);
-    if (zoomButton) {
-      zoomButton.textContent = z > 1.01 ? 'Whole room' : 'Look closer';
-      zoomButton.setAttribute('aria-pressed', String(z > 1.01));
-    }
+    root.classList.toggle('is-zoomed', cam.zoom > 1.01);
   }
-  function zoomTo(key) {
-    const focus = room.meta.focus?.[key];
-    if (!focus) return;
-    [cam.x, cam.y, cam.zoom] = focus;
+  function focusOn(key) {
+    focusKey = key;
+    const focus = key && room.meta.focus?.[key];
+    if (focus) {
+      [cam.x, cam.y, cam.w, cam.h] = focus;
+      cam.zoom = 2; // any value above 1: the real zoom is worked out from the screen
+    } else cam.zoom = 1;
     applyCamera();
+    requestRender();
   }
-  function zoomOut() {
-    cam.zoom = 1;
-    applyCamera();
-  }
+
+  /* ---------- rooms ---------- */
 
   async function loadRoom(id) {
     if (loaded[id]) return loaded[id];
@@ -138,9 +176,10 @@ export async function initCustomiser() {
       out: ctx.createImageData(meta.width, meta.height),
       baseUrl: `${dir}/base.webp?v=${__ASSET_VERSION__}`,
     };
+    // Tapping a part of the room opens that part's finishes.
     canvas.addEventListener('click', (event) => {
       const index = surfaceAt(data, event);
-      if (index >= 0) select(index, true);
+      if (index >= 0) openSurface(data.meta.surfaces[index]);
     });
     canvas.addEventListener('pointermove', (event) => {
       if (event.pointerType === 'mouse') canvas.style.cursor = surfaceAt(data, event) >= 0 ? 'zoom-in' : 'default';
@@ -156,7 +195,7 @@ export async function initCustomiser() {
     const { meta, src, out } = r;
     const count = meta.surfaces.length;
     const gains = meta.surfaces.map((key) => {
-      const hex = chosen[key];
+      const hex = finishOf(key);
       if (!hex) return null;
       const target = hexToRgb(hex);
       const avg = meta.average[key];
@@ -167,27 +206,28 @@ export async function initCustomiser() {
       const tint = even > 1.6 ? 0.55 : 0.8;
       return [0, 1, 2].map((k) => Math.min(3.2, (target[k] / avg[k]) * tint + even * (1 - tint)));
     });
+    const spot = r === room && focusKey ? meta.surfaces.indexOf(focusKey) : -1;
     const data = out.data;
-    const flash = r === room ? highlight : -1;
     for (let p = 0; p < src.length; p += 4) {
       let red = src[p];
       let green = src[p + 1];
       let blue = src[p + 2];
       for (let i = 0; i < count; i++) {
+        const gain = gains[i];
+        if (!gain) continue;
         const m = maskAt(r, i, p);
         if (m < 8) continue;
         const a = m / 255;
-        const gain = gains[i];
-        if (gain) {
-          red += (Math.min(255, src[p] * gain[0]) - src[p]) * a;
-          green += (Math.min(255, src[p + 1] * gain[1]) - src[p + 1]) * a;
-          blue += (Math.min(255, src[p + 2] * gain[2]) - src[p + 2]) * a;
-        }
-        if (i === flash) {
-          red += (255 - red) * 0.14 * a;
-          green += (255 - green) * 0.14 * a;
-          blue += (255 - blue) * 0.14 * a;
-        }
+        red += (Math.min(255, src[p] * gain[0]) - src[p]) * a;
+        green += (Math.min(255, src[p + 1] * gain[1]) - src[p + 1]) * a;
+        blue += (Math.min(255, src[p + 2] * gain[2]) - src[p + 2]) * a;
+      }
+      if (spot >= 0) {
+        // Spotlight: everything that is not the chosen surface falls back into shadow.
+        const keep = 0.34 + 0.66 * (maskAt(r, spot, p) / 255);
+        red *= keep;
+        green *= keep;
+        blue *= keep;
       }
       data[p] = red;
       data[p + 1] = green;
@@ -197,63 +237,23 @@ export async function initCustomiser() {
     r.ctx.putImageData(out, 0, 0);
   }
 
-  const roomConfig = () => ROOMS.find((x) => x.id === room.id);
-  const labelFor = (key) => roomConfig().labels[key] ?? FINISHES[key].label;
-
-  function drawSwatches() {
-    const key = room.meta.surfaces[active];
-    const avg = room.meta.average[key];
-    swatches.replaceChildren(
-      ...FINISHES[key].options.map(([name, hex]) => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'cfg__swatch';
-        button.setAttribute('aria-pressed', String((chosen[key] ?? null) === hex));
-        button.innerHTML = `<i style="--c: ${hex ?? `rgb(${avg.join(' ')})`}"></i><span>${name}</span>`;
-        button.addEventListener('click', () => {
-          if (hex) chosen[key] = hex;
-          else delete chosen[key];
-          hint?.classList.add('is-used');
-          render();
-          drawSwatches();
-        });
-        return button;
-      }),
-    );
-    for (const [i, tab] of [...tabs.children].entries()) tab.setAttribute('aria-selected', String(i === active));
+  // Redraw at most once per display frame, however fast the visitor moves through options.
+  let pending = false;
+  function requestRender() {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => {
+      pending = false;
+      render();
+    });
   }
 
-  function drawTabs() {
-    tabs.replaceChildren(
-      ...room.meta.surfaces.map((key, i) => {
-        const tab = document.createElement('button');
-        tab.type = 'button';
-        tab.className = 'cfg__tab';
-        tab.setAttribute('role', 'tab');
-        tab.textContent = labelFor(key);
-        tab.addEventListener('click', () => select(i, true));
-        return tab;
-      }),
-    );
-  }
-
-  // Choose a surface. With `closer`, the camera pushes in on it so its detail can be seen
-  // (the move itself shows which surface was picked, so nothing needs redrawing).
-  function select(index, closer = false) {
-    active = index;
-    drawSwatches();
-    const tab = tabs.children[index];
-    if (tab) tabs.scrollTo({ left: tab.offsetLeft - 16, behavior: reducedMotion ? 'auto' : 'smooth' });
-    if (closer) zoomTo(room.meta.surfaces[index]);
-  }
-
-  // Which surface is under the pointer (the canvas is drawn with object-fit: cover).
+  // Which surface is under the pointer (the canvas fills its layer, however it is zoomed).
   function surfaceAt(r, event) {
     const box = r.canvas.getBoundingClientRect();
     const { width: W, height: H } = r.meta;
-    const scale = Math.max(box.width / W, box.height / H);
-    const x = Math.floor((event.clientX - box.left - (box.width - W * scale) / 2) / scale);
-    const y = Math.floor((event.clientY - box.top - (box.height - H * scale) / 2) / scale);
+    const x = Math.floor(((event.clientX - box.left) / box.width) * W);
+    const y = Math.floor(((event.clientY - box.top) / box.height) * H);
     if (x < 0 || y < 0 || x >= W || y >= H) return -1;
     const p = (y * W + x) * 4;
     let best = -1;
@@ -279,33 +279,28 @@ export async function initCustomiser() {
       return;
     }
     switching = true;
-    const button = roomNav.querySelector(`[data-room="${id}"]`);
-    button?.classList.add('is-loading');
     let next;
     try {
       next = await loadRoom(id);
     } catch {
-      button?.classList.remove('is-loading');
       switching = false;
       return;
     }
-    button?.classList.remove('is-loading');
-    render(next);
     const previous = room;
     room = next;
-    active = 0;
-    highlight = -1;
-    setSplit(0);
-    zoomOut();
+    preview = null;
+    focusKey = null;
+    cam.zoom = 1;
+    setComparing(false);
+    render(next);
+    applyCamera();
     original.src = next.baseUrl;
     previous?.canvas.classList.remove('is-active');
     previous?.canvas.classList.add('is-leaving');
     next.canvas.classList.remove('is-leaving');
     next.canvas.classList.add('is-active');
     setTimeout(() => previous?.canvas.classList.remove('is-leaving'), 1300);
-    for (const b of roomNav.children) b.setAttribute('aria-pressed', String(b.dataset.room === id));
-    drawTabs();
-    drawSwatches();
+    showRoot();
     setTimeout(() => {
       switching = false;
       if (wanted && wanted !== room.id) goTo(wanted);
@@ -323,7 +318,7 @@ export async function initCustomiser() {
     if (!room || event.detail.progress < filmEnd) return;
     goTo(ROOMS[bandOf(event.detail.progress)].id);
   });
-  // A room button scrolls to the middle of that room's band, so scroll and buttons agree.
+  // Choosing a room scrolls to the middle of its band, so scroll and menu always agree.
   function scrollToRoom(index) {
     if (!section || filmEnd >= 1) return goTo(ROOMS[index].id);
     const progress = filmEnd + ((index + 0.5) / ROOMS.length) * (1 - filmEnd);
@@ -332,73 +327,190 @@ export async function initCustomiser() {
     else window.scrollTo(0, top);
   }
 
-  roomNav.replaceChildren(
-    ...ROOMS.map((r) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'cfg__room';
-      button.dataset.room = r.id;
-      button.textContent = r.label;
-      button.addEventListener('click', () => scrollToRoom(ROOMS.indexOf(r)));
-      return button;
-    }),
-  );
+  function setComparing(value) {
+    comparing = value;
+    original.style.opacity = value ? 1 : 0;
+  }
 
-  themes.replaceChildren(
-    ...Object.entries(THEMES).map(([name, set]) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'cfg__theme';
-      button.textContent = name;
-      button.addEventListener('click', () => {
+  /* ---------- the menu ---------- */
+
+  // A menu is a title and rows. A row has a label, an optional value shown at the right,
+  // an optional colour chip, and what happens when it is highlighted, left, or selected.
+  let rows = [];
+  let menuBack = null; // what "back" does in the current menu (null at the top level)
+  let samples = false; // the current menu is a board of sample tiles
+
+  function draw(title, items, { back = null, focusIndex = 0 } = {}) {
+    rows = items;
+    menuBack = back;
+    panel.classList.toggle('has-back', Boolean(back));
+    // Finishes are laid out as a board of sample tiles; everything else is a list.
+    samples = Boolean(items[0]?.chip);
+    list.classList.toggle('lsc__list--samples', samples);
+    crumb.textContent = title;
+    list.replaceChildren(
+      ...items.map((item, i) => {
+        const li = document.createElement('li');
+        li.setAttribute('role', 'none');
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'lsc__row';
+        button.setAttribute('role', 'menuitem');
+        if (item.current) button.setAttribute('aria-current', 'true');
+        const chip = item.chip ? `<i class="lsc__chip" style="--c: ${item.chip}"></i>` : '';
+        const value = item.value ? `<span class="lsc__value">${item.value}</span>` : '';
+        const mark = item.current ? '<span class="lsc__tick" aria-hidden="true"></span>' : item.more ? '<span class="lsc__more" aria-hidden="true"></span>' : '';
+        button.innerHTML = `${chip}<span class="lsc__label">${item.label}</span>${value}${mark}`;
+        button.addEventListener('click', () => item.select?.());
+        const over = () => highlight(i, false);
+        button.addEventListener('pointerenter', (event) => event.pointerType === 'mouse' && over());
+        button.addEventListener('focus', over);
+        li.append(button);
+        return li;
+      }),
+    );
+    highlight(Math.min(focusIndex, items.length - 1), false);
+  }
+
+  let current = 0;
+  function highlight(index, moveFocus = true) {
+    current = index;
+    for (const [i, li] of [...list.children].entries()) li.firstChild.classList.toggle('is-current', i === index);
+    counter.textContent = `${index + 1} / ${rows.length}`;
+    note.textContent = rows[index]?.note ?? '';
+    rows[index]?.over?.();
+    const button = list.children[index]?.firstChild;
+    if (moveFocus) button?.focus({ preventScroll: true });
+    button?.scrollIntoView({ block: 'nearest' });
+  }
+
+  function showRoot(focusIndex = 0) {
+    preview = null;
+    if (focusKey) focusOn(null);
+    const config = roomConfig();
+    draw(config.label === 'Living' ? 'Living room' : config.label, [
+      { label: 'Room', value: config.label, more: true, note: 'Move to another room. Scrolling also takes you through them.', select: () => showRooms() },
+      ...room.meta.surfaces.map((key) => ({
+        label: labelFor(key),
+        value: nameOf(key, chosen[key]),
+        more: true,
+        note: 'Select to look closer and choose a finish.',
+        select: () => openSurface(key),
+      })),
+      { label: 'Themes', more: true, note: 'Set every surface in the home at once.', select: () => showThemes() },
+      {
+        label: 'Compare',
+        value: comparing ? 'Original' : 'Yours',
+        note: 'Switch between the room as designed and your version.',
+        select: () => {
+          setComparing(!comparing);
+          showRoot(current);
+        },
+      },
+      {
+        label: 'Reset',
+        note: 'Return every surface to the original design.',
+        select: () => {
+          for (const key of Object.keys(FINISHES)) delete chosen[key];
+          setComparing(false);
+          requestRender();
+          showRoot(current);
+        },
+      },
+    ], { focusIndex });
+  }
+
+  function showRooms() {
+    draw('Room', ROOMS.map((r, i) => ({
+      label: r.label === 'Living' ? 'Living room' : r.label,
+      current: r.id === room.id,
+      note: r.id === room.id ? 'You are here.' : 'Select to go there.',
+      select: () => {
+        if (r.id === room.id) showRoot();
+        else scrollToRoom(i);
+      },
+    })), { back: () => showRoot(0), focusIndex: ROOMS.findIndex((r) => r.id === room.id) });
+  }
+
+  function openSurface(key) {
+    setComparing(false);
+    focusOn(key);
+    const index = room.meta.surfaces.indexOf(key);
+    const avg = room.meta.average[key];
+    const applied = chosen[key] ?? null;
+    const options = FINISHES[key].options;
+    draw(labelFor(key), options.map(([name, hex]) => ({
+      label: name,
+      chip: hex ?? `rgb(${avg.join(' ')})`,
+      current: hex === applied,
+      note: hex === applied ? 'Applied.' : hex ? 'Previewing. Select to apply.' : 'The original design. Select to apply.',
+      over: () => {
+        preview = { [key]: hex };
+        requestRender();
+      },
+      select: () => {
+        if (hex) chosen[key] = hex;
+        else delete chosen[key];
+        preview = null;
+        requestRender();
+        openSurface(key); // redraw the list with the new tick, staying on this surface
+      },
+    })), { back: () => showRoot(index + 1), focusIndex: Math.max(0, options.findIndex((o) => o[1] === (preview && key in preview ? preview[key] : applied))) });
+  }
+
+  function showThemes() {
+    draw('Themes', Object.entries(THEMES).map(([name, set]) => ({
+      label: name,
+      note: 'Previewing in this room. Select to apply to the whole home.',
+      over: () => {
+        preview = Object.fromEntries(Object.keys(FINISHES).map((k) => [k, set[k] ?? null]));
+        requestRender();
+      },
+      select: () => {
         for (const key of Object.keys(FINISHES)) delete chosen[key];
         Object.assign(chosen, set);
-        hint?.classList.add('is-used');
-        zoomOut();
-        render();
-        drawSwatches();
-      });
-      return button;
-    }),
-  );
-
-  zoomButton?.addEventListener('click', () => {
-    if (cam.zoom > 1.01) zoomOut();
-    else zoomTo(room.meta.surfaces[active]);
-  });
-
-  // Compare: drag the handle to reveal the room as photographed on the left.
-  let split = 0;
-  function setSplit(value) {
-    split = Math.max(0, Math.min(1, value));
-    original.style.clipPath = `inset(0 ${(1 - split) * 100}% 0 0)`;
-    divider.style.left = `${split * 100}%`;
-    handle.style.left = `${split * 100}%`;
-    handle.setAttribute('aria-valuenow', String(Math.round(split * 100)));
+        preview = null;
+        requestRender();
+        showRoot(room.meta.surfaces.length + 1);
+      },
+    })), { back: () => showRoot(room.meta.surfaces.length + 1) });
   }
-  let dragging = false;
-  handle.addEventListener('pointerdown', (event) => {
-    dragging = true;
-    zoomOut(); // the comparison is of the whole room
-    handle.setPointerCapture(event.pointerId);
-  });
-  handle.addEventListener('pointermove', (event) => {
-    if (!dragging) return;
-    const box = root.getBoundingClientRect();
-    setSplit((event.clientX - box.left) / box.width);
-  });
-  handle.addEventListener('pointerup', () => (dragging = false));
-  handle.addEventListener('pointercancel', () => (dragging = false));
-  handle.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft') setSplit(split - 0.05);
-    if (event.key === 'ArrowRight') setSplit(split + 0.05);
-  });
 
-  root.querySelector('[data-reset]')?.addEventListener('click', () => {
-    for (const key of Object.keys(FINISHES)) delete chosen[key];
-    zoomOut();
-    render();
-    drawSwatches();
+  root.querySelector('[data-back]')?.addEventListener('click', () => menuBack?.());
+
+  // Keys, while the menu has focus: up and down move, Enter selects (it is a button), and
+  // Escape, Backspace or the left arrow go back.
+  panel.addEventListener('keydown', (event) => {
+    const move = (by) => {
+      event.preventDefault();
+      highlight(Math.max(0, Math.min(rows.length - 1, current + by)));
+    };
+    if (samples) {
+      // A board of tiles: arrows move across and down it.
+      const columns = Math.max(1, Math.round(list.clientWidth / (list.children[0]?.offsetWidth || list.clientWidth)));
+      if (event.key === 'ArrowRight') return move(1);
+      if (event.key === 'ArrowLeft') return move(-1);
+      if (event.key === 'ArrowDown') return move(columns);
+      if (event.key === 'ArrowUp') return move(-columns);
+    } else {
+      if (event.key === 'ArrowDown') return move(current === rows.length - 1 ? -current : 1);
+      if (event.key === 'ArrowUp') return move(current === 0 ? rows.length - 1 : -1);
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        return rows[current]?.select?.();
+      }
+    }
+    if ((event.key === 'Escape' || event.key === 'Backspace' || (!samples && event.key === 'ArrowLeft')) && menuBack) {
+      event.preventDefault();
+      menuBack();
+      list.children[current]?.firstChild.focus({ preventScroll: true });
+    }
+  });
+  // Leaving the menu drops any finish that was only being previewed.
+  panel.addEventListener('pointerleave', (event) => {
+    if (event.pointerType !== 'mouse' || !preview) return;
+    preview = null;
+    requestRender();
   });
 
   // A slight drift with the cursor gives the wide view some depth. Mouse only.
@@ -410,13 +522,12 @@ export async function initCustomiser() {
       if (cam.zoom <= 1.01) applyCamera();
     });
   }
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && cam.zoom > 1.01) zoomOut();
-  });
+  window.addEventListener('resize', applyCamera);
 
   await goTo('living');
   applyCamera();
   root.classList.add('is-ready');
+
   // Prepare the other rooms shortly before they are needed, one at a time and in idle
   // moments, so the work never interrupts the film above.
   let preparing = false;
