@@ -3629,3 +3629,34 @@ body {
 .lsc__row[data-render] .lsc__label {
   color: var(--brass);
 }
+
+/* Item rows: the name on one line and the choice beneath it, so neither is ever squeezed
+   into a narrow column or cut off. */
+.lsc__row--stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-3);
+  row-gap: 0.125rem;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+}
+
+.lsc__row--stack .lsc__label {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.lsc__row--stack .lsc__value {
+  grid-column: 1;
+  grid-row: 2;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.lsc__row--stack .lsc__more,
+.lsc__row--stack .lsc__tick {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}

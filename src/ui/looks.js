@@ -285,6 +285,7 @@ export async function initLooks() {
         if (item.plain) button.classList.add('lsc__row--plain');
         if (item.chosen) button.classList.add('lsc__row--chosen');
         if (item.id) button.dataset[item.id] = '';
+        if (item.stack) button.classList.add('lsc__row--stack');
         if (item.swatch) {
           // floor and wall of the look, as a two-tone sample
           const swatch = document.createElement('i');
@@ -436,6 +437,7 @@ export async function initLooks() {
                     ? group.options[look.surface.colour].label
                     : (lookDefault(gid, look) ?? 'Choose'),
         chosen: picked != null,
+        stack: true,
         stage: i === 0 ? heading : null,
         more: true,
         note: stage === 1 ? `${group.options.length} options. Each one is shown in the room.` : renderOn ? `${group.options.length} options, each shown up close. Render the room to see your choices in it.` : `${group.options.length} options, each shown up close. The room stays in the ${look.label} look.`,

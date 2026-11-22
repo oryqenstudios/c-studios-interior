@@ -767,3 +767,7 @@ items did not change the room, in any room. Agreed fix: **live render**.
   wall and floor photographs, so nothing but the surfaces changes from the empty shell on.
 - STILL DIFFERS: the looks' own photographs (stages 02 and 03) and rendered rooms each
   have their own garden, so trees shift when moving between stages or looks.
+
+## Board rows
+
+Item rows in the stages put the name on one line and the choice beneath it. Before, a long name and a long choice shared one line: the name wrapped into a narrow column and the choice was cut off.
