@@ -1,0 +1,107 @@
+{
+ "rooms": [
+  {
+   "id": "living",
+   "label": "Living room",
+   "fixtures": [
+    "Wall panelling and shelving",
+    "Linear pendant",
+    "Sheer linen curtains"
+   ],
+   "furniture": [
+    "Sofas",
+    "Coffee table",
+    "Rug",
+    "Floor lamp"
+   ]
+  },
+  {
+   "id": "kitchen",
+   "label": "Kitchen",
+   "fixtures": [
+    "Cabinetry and oven",
+    "Island, sink and tap",
+    "Worktop and splashback",
+    "Pendant lights"
+   ],
+   "furniture": [
+    "Bar stools",
+    "Curtains",
+    "Styling"
+   ]
+  },
+  {
+   "id": "bedroom",
+   "label": "Bedroom",
+   "fixtures": [
+    "Headboard wall",
+    "Wall lights",
+    "Sheer linen curtains"
+   ],
+   "furniture": [
+    "Bed and bedding",
+    "Bedside tables",
+    "Rug",
+    "Bench"
+   ]
+  },
+  {
+   "id": "bath",
+   "label": "Bathroom",
+   "fixtures": [
+    "Bath and filler",
+    "Rain shower",
+    "Vanity, basins and taps",
+    "Backlit mirror",
+    "Heated towel rail"
+   ],
+   "furniture": [
+    "Towels",
+    "Stool",
+    "Bath mat",
+    "Olive tree"
+   ]
+  }
+ ],
+ "looks": [
+  {
+   "id": "walnut",
+   "label": "Warm walnut",
+   "line": "Walnut, limewash and brushed brass.",
+   "spec": {
+    "Flooring": "Natural walnut, herringbone, satin",
+    "Walls": "Limewash, warm white",
+    "Joinery": "Walnut veneer",
+    "Stone": "Calacatta marble",
+    "Metal": "Brushed brass",
+    "Fabric": "Cream boucle, ivory linen"
+   }
+  },
+  {
+   "id": "stone",
+   "label": "Quiet stone",
+   "line": "Travertine, plaster and matte black.",
+   "spec": {
+    "Flooring": "Beige travertine, large slab, honed",
+    "Walls": "Venetian plaster, greige",
+    "Joinery": "Oak veneer",
+    "Stone": "Travertine",
+    "Metal": "Matte black",
+    "Fabric": "Stone grey linen, ivory linen"
+   }
+  },
+  {
+   "id": "olive",
+   "label": "Deep olive",
+   "line": "Smoked oak, olive and aged bronze.",
+   "spec": {
+    "Flooring": "Smoked oak, straight, matte",
+    "Walls": "Matte paint, deep olive",
+    "Joinery": "Black-stained ash",
+    "Stone": "Nero marquina",
+    "Metal": "Aged bronze",
+    "Fabric": "Olive velvet, tan leather"
+   }
+  }
+ ]
+}

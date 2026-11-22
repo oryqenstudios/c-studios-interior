@@ -3233,3 +3233,55 @@ body {
   background-position: center;
   background-repeat: no-repeat;
 }
+
+/* ---------- Material board: whole photographs ----------
+   Each view is one photograph. A new stage or look dissolves in over the last one; moving
+   to another room keeps the stronger push used before. */
+.cfg__canvas.cfg__shot {
+  object-fit: cover;
+  transform: scale(1.025);
+  transition:
+    opacity 1000ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 1600ms cubic-bezier(0.2, 0.7, 0.1, 1);
+  z-index: 0;
+}
+
+.cfg__canvas.cfg__shot.is-active {
+  transform: none;
+  z-index: 2;
+}
+
+/* the photograph underneath stays put until the new one has covered it */
+.cfg__canvas.cfg__shot.is-under {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  z-index: 1;
+}
+
+.cfg__canvas.cfg__shot.is-leaving {
+  z-index: 1;
+}
+
+/* rows that only state what is in the room */
+.lsc__row--plain {
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cfg__canvas.cfg__shot {
+    transition: opacity 200ms linear;
+    transform: none;
+  }
+}
+
+.lsc__row--plain {
+  align-items: baseline;
+}
+
+.lsc__row--plain .lsc__value {
+  white-space: normal;
+  text-align: right;
+  max-width: 62%;
+  line-height: 1.5;
+}

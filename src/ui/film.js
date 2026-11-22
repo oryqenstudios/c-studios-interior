@@ -14,7 +14,7 @@ gsap.registerPlugin(ScrollTrigger);
 // Markup: <section class="film" data-film="/film/plan" data-frames="325">, containing a
 // .film__canvas and any number of captions with data-from / data-to (0 to 1 of the
 // section's scroll) that fade in and out.
-// Frame sets: d = 1600 x 900, m = 960 x 540, p = 608 x 1080 (the middle of the picture,
+// Frame sets: d = 1920 x 1080, m = 960 x 540, p = 608 x 1080 (the middle of the picture,
 // for portrait phones, so the footage is not enlarged until it goes soft).
 const SETS = ['d', 'm', 'p'];
 const CAPTION_FADE = 0.025;

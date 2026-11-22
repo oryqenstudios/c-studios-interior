@@ -6,7 +6,7 @@ import { initFilms } from './ui/film.js';
 import { initHeroVideo } from './ui/herovideo.js';
 import { initMagnetic } from './ui/magnetic.js';
 import { initForm } from './ui/form.js';
-import { initCustomiser } from './ui/customise.js';
+import { initLooks } from './ui/looks.js';
 import { initFaq, initHeader, initReveals, initTilt, initWork } from './ui/sections.js';
 import { initProcess } from './ui/process.js';
 
@@ -34,7 +34,7 @@ initProcess({ reducedMotion });
 initWork();
 initFaq();
 initForm();
-initCustomiser().catch(() => {
+initLooks().catch(() => {
   /* the room simply stays as the photograph if its assets fail to load */
 });
 initMagnetic({ reducedMotion });

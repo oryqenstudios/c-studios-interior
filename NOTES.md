@@ -606,3 +606,43 @@ pictures regenerated.
 
 Known leftovers: a speck beside the towel on the heated rail; a slightly uneven halo on
 the backlit mirror's right edge; one ceramic dome has a small nick near its top.
+
+## Material board rebuilt on whole photographs (replaces the layered rooms)
+
+The studio asked for views with no joins at all. The board no longer lays separate
+pictures of furniture into a room or recolours surfaces in the browser. Instead:
+
+- Each room has an **empty shell** and **three looks** (Warm walnut, Quiet stone, Deep
+  olive). Each look is built up in the same three stages as before: 01 Surface
+  selections, 02 Fixtures and fittings, 03 Furniture and styling. Every stage of every
+  look is one whole generated photograph (4 rooms x 3 looks x 3 stages = 36 images, each
+  generated from the previous stage so the camera and room stay put).
+- One look runs through the whole home; each room remembers its own stage.
+- Choosing a stage or a look dissolves from one photograph to the next. Each stage lists
+  what it put into the room and the look's materials.
+- The looks and their materials are in `tools/rooms/looks.json` (prompts, labels, specs);
+  `tools/pack-looks.py` packs them to `public/cfg/<room>/` at 2816 x 1584 plus a half-size
+  copy for small screens, and writes `public/cfg/looks.json`. Code: `src/ui/looks.js`.
+- TRADE-OFF, agreed with the studio: visitors choose among complete looks rather than
+  mixing individual floors, wall colours and pieces. The studio's catalogue (nine floors,
+  wall finishes and colours, joinery, stone, metal, fabric) is represented by the three
+  looks' material lists, drawn from that catalogue; it is no longer selectable item by
+  item. The earlier layered version is in git history (commit 812e90f) if wanted again.
+- DRAFT: the three looks, their names, one-line descriptions and material pairings are
+  mine. To be confirmed or replaced by the studio.
+- The image model's top quality setting is "medium" at 2K; a higher one was refused.
+- Removed: `src/ui/customise.js`, `src/ui/catalogue.js`, `tools/pack-build-room.py`,
+  `tools/pack-room.py` and the per-room descriptions.
+
+## Animation audit (whole page)
+
+Measured with a steady 60-second scroll of the whole page in a headless browser
+(software rendering, so worse than a real machine): every section holds 60 frames a
+second except the model film and the board, which show occasional 50 ms frames.
+
+- Model film frames re-cut from the 1080p source at **1920 x 1080**, quality 80 (were
+  1600 x 900, quality 72). About 21 MB for the desktop set, loaded as the visitor scrolls.
+- Hero clip left as it is (1080p, the size it was generated at). Re-encoding at a higher
+  bitrate doubled the file for no visible gain; the clip's ceiling is the generated source.
+- NOT DONE: the hero and film are AI-generated clips at 1080p. Making them sharper than
+  that means regenerating or upscaling them, which needs a decision on cost.
