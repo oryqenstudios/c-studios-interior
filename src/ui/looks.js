@@ -43,58 +43,103 @@ export async function initLooks() {
 
   /* ---------- photographs ---------- */
 
-  const shots = new Map(); // url -> <img>, oldest first
-  let shown = null;
   const urlOf = (r, l, s) => `${base}/${rooms[r].id}/${s === 0 ? 'empty' : `${looks[l].id}-${s}`}`;
-  function shot(key) {
-    const [small, large] = key.includes('/opts/') ? [960, 1920] : [1408, 2816];
-    let img = shots.get(key);
-    if (!img) {
-      img = new Image();
-      img.className = 'cfg__canvas cfg__shot';
-      img.alt = '';
-      img.decoding = 'async';
-      img.sizes = '(max-aspect-ratio: 16/9) 178vh, 100vw';
-      img.srcset = `${key}-s.webp?v=${__ASSET_VERSION__} ${small}w, ${key}.webp?v=${__ASSET_VERSION__} ${large}w`;
-      img.src = `${key}.webp?v=${__ASSET_VERSION__}`;
-      img.ready = img.decode().catch(() => {});
-      view.append(img);
-      shots.set(key, img);
-    } else {
-      shots.delete(key); // most recently wanted goes to the back of the queue
-      shots.set(key, img);
+  // A stack of photographs of which one is on show, dissolving from one to the next.
+  // There are two: the room itself, and over it the floor of the visitor's choice (a
+  // photograph of the same room with only its floor kept).
+  function makeStack(extraClass, limit) {
+    const shots = new Map(); // url -> <img>, oldest first
+    let shown = null;
+    let wanted = null; // the photograph being brought up
+    function shot(key) {
+      const [small, large] = [1408, 2816];
+      let img = shots.get(key);
+      if (!img) {
+        img = new Image();
+        img.className = `cfg__canvas cfg__shot ${extraClass}`;
+        img.alt = '';
+        img.decoding = 'async';
+        img.sizes = '(max-aspect-ratio: 16/9) 178vh, 100vw';
+        img.srcset = `${key}-s.webp?v=${__ASSET_VERSION__} ${small}w, ${key}.webp?v=${__ASSET_VERSION__} ${large}w`;
+        img.src = `${key}.webp?v=${__ASSET_VERSION__}`;
+        img.ready = img.decode().catch(() => {});
+        view.append(img);
+        shots.set(key, img);
+      } else {
+        shots.delete(key); // most recently wanted goes to the back of the queue
+        shots.set(key, img);
+      }
+      // Large photographs are heavy to hold: let go of the ones wanted longest ago.
+      for (const [old, picture] of shots) {
+        if (shots.size <= limit) break;
+        if (picture === shown || old === wanted || old === key || picture.classList.contains('is-under') || picture.classList.contains('is-leaving')) continue;
+        picture.remove();
+        shots.delete(old);
+      }
+      return img;
     }
-    // Large photographs are heavy to hold: let go of the ones wanted longest ago.
-    for (const [old, picture] of shots) {
-      if (shots.size <= 10) break;
-      if (picture === shown || old === wanted || old === key || picture.classList.contains('is-under') || picture.classList.contains('is-leaving')) continue;
-      picture.remove();
-      shots.delete(old);
+    // Put a photograph on show (already decoded by the caller). `push` is the stronger
+    // move used between rooms. A null key takes the stack off show.
+    function put(key, push = false) {
+      wanted = key;
+      const next = key ? shot(key) : null;
+      if (next === shown) return;
+      const previous = shown;
+      shown = next;
+      for (const img of shots.values()) if (img !== next && img !== previous) img.classList.remove('is-active', 'is-under', 'is-leaving');
+      if (next) {
+        next.classList.remove('is-under', 'is-leaving');
+        next.classList.add('is-active');
+      }
+      if (previous) {
+        previous.classList.remove('is-active');
+        if (next) {
+          previous.classList.add(push ? 'is-leaving' : 'is-under');
+          setTimeout(() => previous !== shown && previous.classList.remove('is-under', 'is-leaving'), 1300);
+        }
+      }
     }
-    return img;
+    return { shot, put, isShown: () => Boolean(shown) };
+  }
+  const main = makeStack('', 10);
+  const floors = makeStack('cfg__shot--floor', 4);
+  const { shot } = main;
+
+  // Surfaces. Until the visitor chooses a floor or a wall, a room shows its look as
+  // photographed. Once they do, the surfaces stage shows the wall of their choice with the
+  // floor of their choice laid over it: two photographs of the same empty room.
+  const FINISHES = ['paint', 'limewash', 'venetian', 'slats', 'fluted', 'stone'];
+  let trial = null; // a surface being tried out: { flooring | wallfinish | wallcolour: option index }
+  const surfaceOf = (key) => (trial && key in trial ? trial[key] : picks[key]);
+  const customSurfaces = () => ['flooring', 'wallfinish', 'wallcolour'].some((key) => surfaceOf(key) != null);
+  function surfaceKeys(r) {
+    const from = looks[lookIndex].surface; // what the look itself has
+    const floor = surfaceOf('flooring') ?? from.floor;
+    const finish = FINISHES[surfaceOf('wallfinish') ?? FINISHES.indexOf(from.finish)];
+    const colour = surfaceOf('wallcolour') ?? from.colour;
+    const dir = `${base}/${rooms[r].id}`;
+    return { wall: finish === 'slats' || finish === 'stone' ? `${dir}/wall-${finish}` : `${dir}/wall-${finish}-${colour + 1}`, floor: `${dir}/floor-${floor + 1}` };
   }
 
   let ticket = 0;
-  let wanted = null; // the photograph being brought up
-  // Dissolve to a photograph. `push` is the stronger move used between rooms.
-  async function show(key, push = false) {
+  // Dissolve to a photograph, with or without a floor over it. Both are decoded first so
+  // they arrive together.
+  async function show(key, push = false, floorKey = null) {
     const mine = ++ticket;
-    wanted = key;
-    const next = shot(key);
-    await next.ready;
-    if (mine !== ticket || next === shown) return;
-    const previous = shown;
-    shown = next;
-    for (const img of shots.values()) if (img !== next && img !== previous) img.classList.remove('is-active', 'is-under', 'is-leaving');
-    next.classList.remove('is-under', 'is-leaving');
-    next.classList.add('is-active');
-    if (previous) {
-      previous.classList.remove('is-active');
-      previous.classList.add(push ? 'is-leaving' : 'is-under');
-      setTimeout(() => previous !== shown && previous.classList.remove('is-under', 'is-leaving'), 1300);
-    }
+    const pictures = [shot(key), ...(floorKey ? [floors.shot(floorKey)] : [])];
+    await Promise.all(pictures.map((picture) => picture.ready));
+    if (mine !== ticket) return;
+    main.put(key, push);
+    floors.put(floorKey, push);
   }
-  const showNow = (push) => show(urlOf(roomIndex, lookIndex, stageOf[roomIndex]), push);
+  function showNow(push) {
+    const stage = stageOf[roomIndex];
+    if (stage === 1 && customSurfaces()) {
+      const keys = surfaceKeys(roomIndex);
+      return show(keys.wall, push, keys.floor);
+    }
+    return show(urlOf(roomIndex, lookIndex, stage), push);
+  }
   // Have the likely next photograph ready: the next stage of this look.
   function warm() {
     const s = stageOf[roomIndex];
@@ -215,6 +260,7 @@ export async function initLooks() {
     warm();
   }
   function showRoot(focusIndex = 0) {
+    trial = null;
     warming++; // stop fetching other looks
     const room = rooms[roomIndex];
     const look = looks[lookIndex];
@@ -256,15 +302,28 @@ export async function initLooks() {
     const room = rooms[roomIndex];
     const look = looks[lookIndex];
     const ids = catalogue.rooms[room.id][stage];
+    const heading = stage === 1 ? 'Shown in the room' : `Shown up close · room in ${look.label}`;
     const items = ids.map((gid, i) => {
       const group = catalogue.groups[gid];
       const picked = picks[pickKey(gid)];
       return {
         label: group.label,
-        value: picked != null ? group.options[picked].label : (lookDefault(gid, look) ?? 'Choose'),
+        value:
+          gid === 'wallcolour' && ['slats', 'stone'].includes(FINISHES[picks.wallfinish ?? FINISHES.indexOf(look.surface.finish)])
+            ? 'Set by the finish'
+            : picked != null
+              ? group.options[picked].label
+              : gid === 'flooring'
+                ? group.options[look.surface.floor].label
+                : gid === 'wallfinish'
+                  ? group.options[FINISHES.indexOf(look.surface.finish)].label
+                  : gid === 'wallcolour'
+                    ? group.options[look.surface.colour].label
+                    : (lookDefault(gid, look) ?? 'Choose'),
         chosen: picked != null,
+        stage: i === 0 ? heading : null,
         more: true,
-        note: `${group.options.length} options. Select to see each one up close.`,
+        note: stage === 1 ? `${group.options.length} options. Each one is shown in the room.` : `${group.options.length} options, each shown up close. The room stays in the ${look.label} look.`,
         select: () => showOptions(gid, stage, i),
       };
     });
@@ -276,7 +335,9 @@ export async function initLooks() {
   function showOptions(gid, stage, rowIndex) {
     const group = catalogue.groups[gid];
     const key = pickKey(gid);
+    const surface = ['flooring', 'wallfinish', 'wallcolour'].includes(gid);
     const back = () => {
+      trial = null;
       showNow();
       showStage(stage, rowIndex);
     };
@@ -284,11 +345,21 @@ export async function initLooks() {
       label: option.label,
       swatch: gid === 'wallcolour' ? [option.spec, option.spec] : null,
       current: picks[key] === n,
-      note: option.spec,
-      over: () => show(optionShot(gid, n)),
+      note: surface ? `${option.spec} Shown in the room.` : `${option.spec} Shown up close.`,
+      over: () => {
+        if (!surface) return show(optionShot(gid, n));
+        // floors and walls are tried in the room itself
+        trial = { [gid]: n };
+        // a colour only shows on a painted or plastered wall
+        if (gid === 'wallcolour' && ['slats', 'stone'].includes(FINISHES[surfaceOf('wallfinish') ?? FINISHES.indexOf(looks[lookIndex].surface.finish)])) trial.wallfinish = 0;
+        showNow();
+      },
       select: () => {
         if (picks[key] === n) delete picks[key];
-        else picks[key] = n;
+        else {
+          picks[key] = n;
+          if (surface && trial?.wallfinish != null && gid === 'wallcolour') picks.wallfinish = trial.wallfinish;
+        }
         record();
         showOptions(gid, stage, rowIndex);
         highlight(n, true);
@@ -355,7 +426,7 @@ export async function initLooks() {
   /* ---------- rooms follow the scroll ---------- */
 
   function goTo(index) {
-    if (index === roomIndex && shown) return;
+    if (index === roomIndex && main.isShown()) return;
     roomIndex = index;
     showNow(true);
     warm();

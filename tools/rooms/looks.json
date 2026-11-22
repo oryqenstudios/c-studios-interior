@@ -21,7 +21,12 @@
    "swatch": [
     "#7A5638",
     "#F2EDE4"
-   ]
+   ],
+   "surface": {
+    "floor": 1,
+    "finish": "limewash",
+    "colour": 0
+   }
   },
   {
    "id": "stone",
@@ -44,7 +49,12 @@
    "swatch": [
     "#D8C7A8",
     "#CFC6B8"
-   ]
+   ],
+   "surface": {
+    "floor": 5,
+    "finish": "venetian",
+    "colour": 1
+   }
   },
   {
    "id": "olive",
@@ -67,7 +77,12 @@
    "swatch": [
     "#4E3B2C",
     "#46503F"
-   ]
+   ],
+   "surface": {
+    "floor": 2,
+    "finish": "paint",
+    "colour": 4
+   }
   },
   {
    "id": "sage",
@@ -90,6 +105,11 @@
     "Stone": "White quartz",
     "Metal": "Brushed nickel",
     "Fabric": "Ivory linen, stone grey linen"
+   },
+   "surface": {
+    "floor": 3,
+    "finish": "paint",
+    "colour": 3
    }
   },
   {
@@ -113,6 +133,11 @@
     "Stone": "Calacatta marble",
     "Metal": "Polished chrome",
     "Fabric": "Charcoal wool, cream boucle"
+   },
+   "surface": {
+    "floor": 4,
+    "finish": "fluted",
+    "colour": 7
    }
   },
   {
@@ -136,6 +161,11 @@
     "Stone": "Travertine",
     "Metal": "Copper",
     "Fabric": "Rust velvet, ivory linen"
+   },
+   "surface": {
+    "floor": 7,
+    "finish": "limewash",
+    "colour": 5
    }
   },
   {
@@ -159,6 +189,11 @@
     "Stone": "Concrete",
     "Metal": "Matte black",
     "Fabric": "Charcoal wool, stone grey linen"
+   },
+   "surface": {
+    "floor": 8,
+    "finish": "venetian",
+    "colour": 6
    }
   },
   {
@@ -182,6 +217,11 @@
     "Stone": "Butcher block, white quartz",
     "Metal": "Brushed brass",
     "Fabric": "Tan leather, ivory linen"
+   },
+   "surface": {
+    "floor": 0,
+    "finish": "slats",
+    "colour": 2
    }
   }
  ],

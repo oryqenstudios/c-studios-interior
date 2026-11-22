@@ -72,6 +72,11 @@
     "#7A5638",
     "#F2EDE4"
    ],
+   "surface": {
+    "floor": 1,
+    "finish": "limewash",
+    "colour": 0
+   },
    "spec": {
     "Flooring": "Natural walnut, herringbone, satin",
     "Walls": "Limewash, warm white",
@@ -89,6 +94,11 @@
     "#D8C7A8",
     "#CFC6B8"
    ],
+   "surface": {
+    "floor": 5,
+    "finish": "venetian",
+    "colour": 1
+   },
    "spec": {
     "Flooring": "Beige travertine, large slab, honed",
     "Walls": "Venetian plaster, greige",
@@ -106,6 +116,11 @@
     "#4E3B2C",
     "#46503F"
    ],
+   "surface": {
+    "floor": 2,
+    "finish": "paint",
+    "colour": 4
+   },
    "spec": {
     "Flooring": "Smoked oak, straight, matte",
     "Walls": "Matte paint, deep olive",
@@ -123,6 +138,11 @@
     "#D9CDB8",
     "#9BA58E"
    ],
+   "surface": {
+    "floor": 3,
+    "finish": "paint",
+    "colour": 3
+   },
    "spec": {
     "Flooring": "Whitewashed ash, straight, matte",
     "Walls": "Matte paint, sage",
@@ -140,6 +160,11 @@
     "#F1EEE8",
     "#2F2F31"
    ],
+   "surface": {
+    "floor": 4,
+    "finish": "fluted",
+    "colour": 7
+   },
    "spec": {
     "Flooring": "White marble, large slab, polished",
     "Walls": "Fluted panel, charcoal",
@@ -157,6 +182,11 @@
     "#E3DED3",
     "#B5694A"
    ],
+   "surface": {
+    "floor": 7,
+    "finish": "limewash",
+    "colour": 5
+   },
    "spec": {
     "Flooring": "Terrazzo, seamless, polished",
     "Walls": "Limewash, terracotta",
@@ -174,6 +204,11 @@
     "#B4AFA6",
     "#7F93A3"
    ],
+   "surface": {
+    "floor": 8,
+    "finish": "venetian",
+    "colour": 6
+   },
    "spec": {
     "Flooring": "Microcement, seamless, matte",
     "Walls": "Venetian plaster, dusty blue",
@@ -191,6 +226,11 @@
     "#C8A77A",
     "#B7A68C"
    ],
+   "surface": {
+    "floor": 0,
+    "finish": "slats",
+    "colour": 2
+   },
    "spec": {
     "Flooring": "Light oak, chevron, matte",
     "Walls": "Timber slats and sand plaster",

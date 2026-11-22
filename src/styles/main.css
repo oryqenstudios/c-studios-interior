@@ -3614,3 +3614,13 @@ body {
 .lsc__row--chosen .lsc__value {
   color: var(--brass);
 }
+
+/* the visitor's floor, laid over the room photograph */
+.cfg__canvas.cfg__shot.cfg__shot--floor.is-active {
+  z-index: 4;
+}
+
+.cfg__canvas.cfg__shot.cfg__shot--floor.is-under,
+.cfg__canvas.cfg__shot.cfg__shot--floor.is-leaving {
+  z-index: 3;
+}

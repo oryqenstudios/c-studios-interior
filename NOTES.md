@@ -706,3 +706,27 @@ not redraw per item (that would need layered cut-outs, which were rejected for q
   form, and the privacy note says so. (The form is still in demo mode.)
 - LIMIT to tell visitors' expectations: a chosen item is shown in its own photograph and
   in the list, not placed into the room photograph.
+
+## Floors and walls now change the room photograph
+
+Visitors reported that choosing a material did not change the room. Agreed fix
+("pre-rendered floors and walls only"):
+
+- Every floor (9) and every wall treatment (paint, limewash, Venetian plaster and fluted
+  panel in each of the 8 colours, plus timber slats and stone cladding: 34) was rendered
+  as its own photograph of each empty room: 172 images in `.review/surf` (not in git),
+  packed to `public/cfg/<room>/floor-N.webp` and `wall-<finish>[-N].webp`.
+- In stage 01 the room shows the chosen wall photograph with the chosen floor laid over
+  it. A floor photograph keeps only its floor; the floor area is found by comparing the
+  nine floor photographs of a room (`floor-mask.png`). Any floor combines with any wall:
+  9 x 34 = 306 combinations per room. Moving over an option previews it in the room.
+- Timber slats and stone cladding have no colour, so Wall colour reads "Set by the
+  finish"; choosing a colour while one of them is on switches the finish to matte paint.
+- STILL NOT IN THE ROOM PHOTOGRAPH: stage 02 and 03 choices (fixtures, furniture, joinery,
+  stone, glass, metal, fabric). Those stages show the room in the chosen look and each
+  option up close; the menus say so ("Shown up close · room in <look>"). Making them
+  change the room needs a render per combination (tested: accurate, about 36 s each, but
+  needs the studio's own Higgsfield key on the live site; the studio chose not to).
+- Close-up option photographs repacked at the full generated size (2816 x 1584), like
+  everything else on the board. `public/cfg` is now about 250 MB; a visitor only
+  downloads the photographs they look at.
