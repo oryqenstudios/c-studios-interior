@@ -461,6 +461,8 @@ export async function initLooks() {
     const group = catalogue.groups[gid];
     const key = pickKey(gid);
     const surface = ['flooring', 'wallfinish', 'wallcolour'].includes(gid);
+    // (these rooms have no glass screen to change, so glass is always shown up close)
+    const shownInRoom = inRoom() && gid !== 'glass';
     const back = () => {
       trial = null;
       showNow();
@@ -470,9 +472,9 @@ export async function initLooks() {
       label: option.label,
       swatch: gid === 'wallcolour' ? [option.spec, option.spec] : null,
       current: picks[key] === n,
-      note: surface || inRoom() ? `${option.spec} Shown in the room.` : `${option.spec} Shown up close.`,
+      note: surface || shownInRoom ? `${option.spec} Shown in the room.` : `${option.spec} Shown up close.`,
       over: () => {
-        if (!surface) return show(inRoom() ? roomShot(gid, n, stage) : optionShot(gid, n));
+        if (!surface) return show(shownInRoom ? roomShot(gid, n, stage) : optionShot(gid, n));
         // floors and walls are tried in the room itself
         trial = { [gid]: n };
         // a colour only shows on a painted or plastered wall
@@ -486,7 +488,7 @@ export async function initLooks() {
           if (latest[place]?.gid === gid) delete latest[place];
         } else {
           picks[key] = n;
-          if (!surface) latest[place] = { gid, n };
+          if (shownInRoom) latest[place] = { gid, n };
           if (surface && trial?.wallfinish != null && gid === 'wallcolour') picks.wallfinish = trial.wallfinish;
         }
         record();

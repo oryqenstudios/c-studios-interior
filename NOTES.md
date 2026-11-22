@@ -775,3 +775,25 @@ Item rows in the stages put the name on one line and the choice beneath it. Befo
 ## Render key
 
 The Higgsfield console gives one combined value. Put it in `HIGGSFIELD_API_KEY` alone (the secret variable is only for keys issued as two values). `/api/render?check` reports whether the image service accepts the key, at no cost.
+
+## Options change the room instantly (Warm walnut look so far)
+
+The studio wants visitors to see a change the moment they click, to compare options.
+So every option of every item is now its own photograph of the room.
+
+- Warm walnut only so far: 182 photographs (living 41, kitchen 54, bedroom 41, bathroom
+  46), generated from that look's stage 02 and 03 photographs with one thing changed.
+  `tools/pack-pre.py` keeps only the part that changed and takes the rest from the look's
+  photograph, so the garden and other pieces stay put. Packed at 1920 wide to
+  `public/cfg/<room>/pre/`; `looks.json` lists the looks that have them (`pre`).
+- In those looks, moving through an item's options swaps the room photograph at once,
+  and the room keeps showing the most recent choice. Other looks still show close-ups.
+- ONE AT A TIME: the room shows the latest choice only, not several combined (choose a
+  light, then curtains, and the light returns to the look's own). Combining needs a
+  render ("Render my room", only with the studio's key).
+- Glass is always shown up close: these rooms have no glass screen to change.
+- Instructions were tightened after review: metal changes only small fittings, joinery
+  never recolours doors, the bedroom's fittings stage stays without a bed.
+- The other seven looks need 182 photographs each (1,274 in all). Not started.
+- Hosting: the studio's Vercel plan showed 3.98 GB of 10 GB deployment storage. Publish
+  to `main` only (feature branches each create a preview copy of the site).
