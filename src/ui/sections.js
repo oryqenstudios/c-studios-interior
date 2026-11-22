@@ -108,41 +108,6 @@ export function initMoods() {
   });
 }
 
-// Process: on wide screens the section pins and its steps travel sideways while a
-// brass line fills. Elsewhere, and with reduced motion, it is a plain vertical list.
-export function initProcess({ reducedMotion }) {
-  const section = document.querySelector('.process');
-  if (!section || reducedMotion) return;
-  const media = gsap.matchMedia();
-  media.add('(min-width: 56.25rem) and (min-height: 34rem)', () => {
-    section.classList.add('is-sideways');
-    const track = section.querySelector('.process__track');
-    const fill = section.querySelector('.process__line-fill');
-    const distance = () => Math.max(0, track.scrollWidth - window.innerWidth);
-    const tween = gsap.to(track, {
-      x: () => -distance(),
-      ease: 'none',
-      scrollTrigger: {
-        trigger: section,
-        pin: section.querySelector('.process__pin'),
-        start: 'top top',
-        end: () => `+=${distance() + window.innerHeight * 0.6}`,
-        scrub: true,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          fill.style.transform = `scaleX(${self.progress})`;
-        },
-      },
-    });
-    return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
-      gsap.set(track, { clearProps: 'transform' });
-      section.classList.remove('is-sideways');
-    };
-  });
-}
-
 // Selected work: drag sideways with a mouse (touch and trackpads scroll natively);
 // a click opens a detail panel.
 const STUDIES = {

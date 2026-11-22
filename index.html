@@ -173,46 +173,72 @@
           </ul>
         </section>
 
-        <section id="process" class="process" aria-labelledby="process-title">
-          <div class="process__pin">
+        <section id="process" class="proc" aria-labelledby="process-title">
+          <div class="proc__stage" aria-hidden="true">
+            <img data-proc-img src="/src/assets/process/1-brief.webp" width="1600" height="900" alt="" loading="lazy" decoding="async" />
+            <img data-proc-img src="/src/assets/process/2-plan.webp" width="1600" height="900" alt="" loading="lazy" decoding="async" />
+            <img data-proc-img src="/src/assets/process/3-build.webp" width="1600" height="900" alt="" loading="lazy" decoding="async" />
+            <img data-proc-img src="/src/assets/process/4-style.webp" width="1600" height="900" alt="" loading="lazy" decoding="async" />
+            <img data-proc-img src="/src/assets/process/5-handover.webp" width="1600" height="900" alt="" loading="lazy" decoding="async" />
+            <div class="proc__notes">
+              <span style="--x: 44%; --y: 18%; --r: -3deg">Morning light in the kitchen.</span>
+              <span style="--x: 68%; --y: 27%; --r: 2deg">A table for eight.</span>
+              <span style="--x: 47%; --y: 38%; --r: -1.5deg">Somewhere quiet to read.</span>
+              <span style="--x: 72%; --y: 46%; --r: 3deg">Keep the old armchair.</span>
+            </div>
+            <p class="proc__welcome">Welcome home.</p>
+          </div>
+          <div class="proc__inner">
             <header class="section__head">
               <p class="label">Process</p>
               <h2 id="process-title">Five steps, from brief to handover</h2>
             </header>
-            <div class="process__viewport">
-              <div class="process__line" aria-hidden="true"><span class="process__line-fill"></span></div>
-              <ol class="process__track">
-              <li class="pstep">
+            <ol class="proc__steps">
+              <li class="pstep" data-step>
                 <span class="pstep__number" aria-hidden="true">01</span>
                 <h3>Brief</h3>
                 <p>We start with how you use the space, what you already own and what you want to change. You leave with a clear scope.</p>
                 <p class="pstep__time">About 1 to 2 weeks</p>
               </li>
-              <li class="pstep">
+              <li class="pstep" data-step>
                 <span class="pstep__number" aria-hidden="true">02</span>
                 <h3>Plan</h3>
                 <p>We draw the layout, then choose materials and lighting. Nothing is ordered until you have approved the drawings.</p>
                 <p class="pstep__time">About 3 to 6 weeks</p>
               </li>
-              <li class="pstep">
+              <li class="pstep" data-step>
                 <span class="pstep__number" aria-hidden="true">03</span>
                 <h3>Build</h3>
                 <p>Walls, floors and joinery go in. We coordinate the trades and keep you up to date.</p>
                 <p class="pstep__time">About 8 to 12 weeks</p>
               </li>
-              <li class="pstep">
+              <li class="pstep" data-step>
                 <span class="pstep__number" aria-hidden="true">04</span>
                 <h3>Style</h3>
                 <p>Furniture, lamps and the smaller pieces arrive and are put in place.</p>
                 <p class="pstep__time">About 1 to 2 weeks</p>
               </li>
-              <li class="pstep">
+              <li class="pstep" data-step>
                 <span class="pstep__number" aria-hidden="true">05</span>
                 <h3>Handover</h3>
                 <p>We walk through the finished space with you and note anything to adjust.</p>
                 <p class="pstep__time">About 1 week</p>
               </li>
-              </ol>
+            </ol>
+            <div class="proc__control">
+              <div class="proc__dial" role="slider" tabindex="0" aria-label="Project stage. Turn to move through the five steps." aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-valuetext="Step 1 of 5: Brief">
+                <svg viewBox="-110 -110 220 220" aria-hidden="true">
+                  <g class="proc__ticks"></g>
+                  <circle class="proc__ring" r="74" />
+                  <g class="proc__knob">
+                    <circle r="58" />
+                    <line x1="0" y1="-58" x2="0" y2="-40" />
+                  </g>
+                  <g class="proc__key"><circle r="7" /><path d="M-3.2 4 L-5.5 22 H5.5 L3.2 4 Z" /></g>
+                </svg>
+                <p class="proc__week"><span>Week</span><b data-week>01</b></p>
+              </div>
+              <p class="proc__hint">Turn the dial</p>
             </div>
           </div>
         </section>
