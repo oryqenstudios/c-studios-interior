@@ -771,3 +771,7 @@ items did not change the room, in any room. Agreed fix: **live render**.
 ## Board rows
 
 Item rows in the stages put the name on one line and the choice beneath it. Before, a long name and a long choice shared one line: the name wrapped into a narrow column and the choice was cut off.
+
+## Render key
+
+The Higgsfield console gives one combined value. Put it in `HIGGSFIELD_API_KEY` alone (the secret variable is only for keys issued as two values). `/api/render?check` reports whether the image service accepts the key, at no cost.

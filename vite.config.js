@@ -13,8 +13,9 @@ function renderApi() {
           const { execFileSync } = await import('node:child_process');
           fetchImpl = async (url, { method = 'GET', headers = {}, body } = {}) => {
             const args = ['-sS', '--max-time', '60', '-X', method, url, ...Object.entries(headers).flatMap(([k, v]) => ['-H', `${k}: ${v}`]), ...(body ? ['-d', body] : [])];
-            const text = execFileSync('curl', args, { encoding: 'utf8' });
-            return { json: async () => JSON.parse(text) };
+            const out = execFileSync('curl', [...args, '-w', '\n%{http_code}'], { encoding: 'utf8' });
+            const cut = out.lastIndexOf('\n');
+            return { status: Number(out.slice(cut + 1)), json: async () => JSON.parse(out.slice(0, cut)) };
           };
         }
         let raw = '';

@@ -8,7 +8,8 @@
 // instruction to the image service is written here from the studio's own catalogue
 // (tools/rooms/*.json), so this cannot be used to make arbitrary pictures.
 //
-// Needs HIGGSFIELD_API_KEY and HIGGSFIELD_API_SECRET in the environment. Without them
+// Needs HIGGSFIELD_API_KEY in the environment (and HIGGSFIELD_API_SECRET if the key came
+// as two values). GET /api/render?check reports whether the image service accepts it. Without them
 // the board simply does not offer rendering. Each render spends one image of credit.
 import { createRequire } from 'node:module';
 
@@ -65,10 +66,21 @@ export function instruction({ room, look, stage, picks }) {
 }
 
 export async function handle({ method, query = {}, body = {}, ip = '' }, env = process.env, fetchImpl = fetch) {
-  const key = env.HIGGSFIELD_API_KEY && env.HIGGSFIELD_API_SECRET ? `Key ${env.HIGGSFIELD_API_KEY}:${env.HIGGSFIELD_API_SECRET}` : null;
-  if (method === 'GET' && !query.id) return { status: 200, json: { enabled: Boolean(key) } };
-  if (!key) return { status: 503, json: { error: 'Rendering is not set up.' } };
+  // Either one combined value in HIGGSFIELD_API_KEY ("key-id:secret", as the Higgsfield
+  // console shows it), or the two halves in HIGGSFIELD_API_KEY and HIGGSFIELD_API_SECRET.
+  const id = (env.HIGGSFIELD_API_KEY || '').trim();
+  const secret = (env.HIGGSFIELD_API_SECRET || '').trim();
+  const key = id ? `Key ${secret && !id.includes(':') ? `${id}:${secret}` : id}` : null;
   const headers = { Authorization: key, 'Content-Type': 'application/json' };
+  if (method === 'GET' && !query.id) {
+    if (!key || !('check' in query)) return { status: 200, json: { enabled: Boolean(key) } };
+    // ?check asks the image service whether it accepts the key (an unknown render is
+    // "not found" with a good key and "unauthorised" with a bad one). Costs nothing.
+    const answer = await fetchImpl(`${API}/requests/00000000-0000-4000-8000-000000000000/status`, { headers });
+    const code = answer.status;
+    return { status: 200, json: { enabled: true, key: code === 401 || code === 403 ? 'rejected by the image service' : code === 404 || code === 200 ? 'accepted' : `unexpected answer ${code}`, form: id.includes(':') || secret ? 'key and secret' : 'single value' } };
+  }
+  if (!key) return { status: 503, json: { error: 'Rendering is not set up.' } };
 
   if (method === 'GET') {
     if (!/^[0-9a-f-]{36}$/.test(String(query.id))) return { status: 400, json: { error: 'Unknown render.' } };
@@ -92,6 +104,7 @@ export async function handle({ method, query = {}, body = {}, ip = '' }, env = p
     body: JSON.stringify({ prompt, resolution: '2k', aspect_ratio: '16:9', quality: 'medium', image_urls: [reference] }),
   });
   const data = await response.json();
+  if (response.status === 401 || response.status === 403) return { status: 502, json: { error: 'The studio\u2019s image service key was not accepted.' } };
   if (!data.request_id) return { status: 502, json: { error: 'The render could not be started. Please try again.' } };
   return { status: 200, json: { id: data.request_id } };
 }
