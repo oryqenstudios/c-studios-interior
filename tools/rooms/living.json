@@ -25,7 +25,8 @@
           "label": "Stone cladding",
           "spec": "Honed travertine slabs, book-matched. About 20 mm thick.",
           "add": "large honed travertine stone slabs cladding the whole right-hand wall.",
-          "thing": "all of the stone cladding on the right-hand wall."
+          "thing": "all of the stone cladding on the right-hand wall.",
+          "shape_from": "feature-1"
         },
         {
           "label": "Open shelving",
@@ -33,7 +34,8 @@
           "add": "built-in walnut open shelving with a few ceramics and books, softly lit, covering the right-hand wall.",
           "thing": "all of the built-in shelving on the right-hand wall and the objects on it."
         }
-      ]
+      ],
+      "smooth": 36
     },
     {
       "id": "curtain",
@@ -45,13 +47,15 @@
           "label": "Sheer linen",
           "spec": "Full-height sheers on a recessed ceiling track.",
           "add": "full-height sheer cream linen curtains hanging at both sides of the glass at the far end of the room.",
-          "thing": "all of the curtains."
+          "thing": "all of the curtains.",
+          "straight": 420
         },
         {
           "label": "Olive velvet",
           "spec": "Lined velvet drapes on a recessed track. Blackout lining.",
           "add": "full-height heavy olive green velvet curtains hanging at both sides of the glass at the far end of the room.",
-          "thing": "all of the curtains."
+          "thing": "all of the curtains.",
+          "straight": 420
         },
         {
           "label": "Timber blinds",
@@ -60,7 +64,8 @@
           "thing": "all of the timber blinds.",
           "image": "curtainB"
         }
-      ]
+      ],
+      "smooth": 14
     },
     {
       "id": "light",
@@ -228,5 +233,55 @@
       1,
       0
     ]
+  ],
+  "walls": [
+    {
+      "quad": [
+        [
+          0.04,
+          0.2
+        ],
+        [
+          0.275,
+          0.2
+        ],
+        [
+          0.275,
+          0.74
+        ],
+        [
+          0.04,
+          0.74
+        ]
+      ],
+      "size": [
+        3,
+        2.8
+      ]
+    },
+    {
+      "quad": [
+        [
+          0.85,
+          0.33
+        ],
+        [
+          1.0,
+          0.21
+        ],
+        [
+          1.0,
+          0.84
+        ],
+        [
+          0.85,
+          0.715
+        ]
+      ],
+      "size": [
+        6,
+        2.8
+      ]
+    }
   ]
 }

@@ -76,6 +76,7 @@ surfaces = []
 for key, m in masks.items():
     soft = Image.fromarray((m * 255).astype('uint8')).filter(ImageFilter.MedianFilter(3)).filter(ImageFilter.GaussianBlur(1.1))
     m = np.asarray(soft).astype(float) / 255
+    m = np.maximum(m, ndimage.grey_closing(m, size=(15, 15)))  # hairline gaps the model left in the painted area
     core = m > 0.6
     masks[key] = m
     surfaces.append(key)
@@ -95,6 +96,13 @@ first_base = base
 # The studio's own finished version of the room, for comparison.
 Image.open(spec['studio']).convert('RGB').resize((W, H), Image.LANCZOS).save(os.path.join(out, 'studio.webp'), 'WEBP', quality=90, method=6)
 
+# The floor with its tile joints ironed out, for when another flooring is chosen: the old
+# joints would otherwise show through the new boards. Only the floor area is kept.
+if 'floor' in masks:
+    shown = base if base2 is None else base2
+    flat = np.dstack([ndimage.median_filter(shown[..., c], size=13) for c in range(3)])
+    Image.fromarray(np.dstack([flat, masks['floor'] * 255]).astype('uint8'), 'RGBA').save(os.path.join(out, 'floor.webp'), 'WEBP', quality=90, alpha_quality=95, method=6)
+
 # ---- options: lift each added thing off the empty room as a layer ----
 # Parts of the picture that the image model redraws differently every time (foliage
 # outside the window, mostly) differ in most options. They are noise, not the thing.
@@ -102,10 +110,11 @@ names = [f"{g['id']}-{n}" for g in spec['groups'] for n in range(1, len(g['optio
 changed = np.zeros((H, W))
 for name in names:
     changed += np.abs(load(name) - base).sum(axis=2) > 60
-unstable = ndimage.binary_dilation(changed >= max(4, 0.3 * len(names)), iterations=2)
+unstable = ndimage.binary_dilation(changed >= max(4, 0.6 * len(names)), iterations=2)
 print(f'  {room}: {100 * unstable.mean():.1f}% of the picture is unstable between generations and ignored')
 
 groups = []
+shapes = {}
 for group in spec['groups']:
     options = []
     for n, option in enumerate(group['options'], 1):
@@ -149,7 +158,7 @@ for group in spec['groups']:
             whole = ndimage.binary_fill_holes(shape)
             return shape | (whole & ~roomish) if option.get('legs', group.get('legs')) else whole
 
-        keep = fill(ndimage.binary_opening((raw > 0.5) & allowed, iterations=1))
+        keep = fill(ndimage.binary_opening((raw > 0.3) & allowed, iterations=1))
         if keep.mean() > 0.3:
             print(f'  {room}: {name} outline covers {100 * keep.mean():.0f}% of the picture, skipped')
             continue
@@ -159,7 +168,7 @@ for group in spec['groups']:
         # Mend bites in the outline: pixels right beside the thing that are clearly not the
         # empty room, and not merely the room in shadow (same colour, only darker).
         # (the outline picture shows them faintly magenta: painted, but shaded too dark to count)
-        extra = (raw > 0.12) & (distance > 60) & ~room_like & ndimage.binary_dilation(keep, iterations=22) & ~unstable
+        extra = (raw > 0.12) & (distance > 60) & ~room_like & ndimage.binary_dilation(keep, iterations=22)
         keep = fill(ndimage.binary_closing(keep | ndimage.binary_opening(extra, iterations=2), iterations=3))
         labels, count = ndimage.label(keep)
         sizes = ndimage.sum(keep, labels, range(1, count + 1))
@@ -168,6 +177,30 @@ for group in spec['groups']:
         # The page places layers first and recolours walls and floor afterwards, so that
         # shade is recoloured with the surface it falls on; `protect` marks the thing
         # itself, which must keep its own colour.
+        # Parts the outline picture left out altogether (the model sometimes paints only the
+        # main body): everything in these boxes that is not plainly the empty room.
+        for x0, y0, x1, y1 in option.get('include', []):
+            box = np.zeros((H, W), bool)
+            box[int(y0 * H):int(y1 * H), int(x0 * W):int(x1 * W)] = True
+            keep |= ndimage.binary_fill_holes(ndimage.binary_closing(ndimage.binary_opening(box & (distance > 25), iterations=2), iterations=6))
+        # A sibling option that fills exactly the same place, with a cleaner outline.
+        if option.get('shape_from') in shapes:
+            keep = shapes[option['shape_from']].copy()
+        # Large flat things (wall panelling, curtains) have clean straight edges: iron out
+        # the ragged ones the outline picture gives them.
+        straight = option.get('straight', group.get('straight'))
+        if straight:
+            # hanging cloth: its sides run straight down, so close notches along them
+            padded = np.pad(keep, ((straight, straight), (0, 0)))
+            keep = ndimage.binary_closing(padded, structure=np.ones((straight, 1), bool))[straight:-straight]
+        smooth = option.get('smooth', group.get('smooth'))
+        if smooth:
+            padded = np.pad(keep, smooth + 2)
+            padded = ndimage.binary_opening(ndimage.binary_closing(padded, iterations=smooth), iterations=max(2, smooth // 3))
+            keep = padded[smooth + 2:-(smooth + 2), smooth + 2:-(smooth + 2)]
+        if option.get('shrink'):
+            keep = ndimage.binary_erosion(keep, iterations=option['shrink'])  # leave a soft halo to the glow layer
+        shapes[name] = keep.copy()
         solid = np.asarray(Image.fromarray((keep * 255).astype('uint8')).filter(ImageFilter.GaussianBlur(1.2))).astype(float) / 255
         # What must keep its own colour when the surfaces are recoloured. Pulled in by a
         # pixel or two, so the blended edge of the thing takes the new surface colour and
@@ -197,12 +230,32 @@ for group in spec['groups']:
                 for polygon in through:
                     ImageDraw.Draw(cut).polygon([(x * W, y * H) for x, y in polygon], fill=255)
                 # a little wider than drawn, but never the thing's own dark frame or stone
-                hole |= ndimage.binary_dilation(np.asarray(cut) > 0, iterations=24) & (lum(a) > 62) & (level > 0.4)
+                area = np.asarray(cut) > 0
+                grow = option.get('grow', 24)
+                if grow:
+                    area = ndimage.binary_dilation(area, iterations=grow)
+                found = area & (spread < option.get('tol', 0.2)) & (level > 0.4) & (level < 1.7) & (lum(a) > 62)
+                if option.get('thin'):
+                    found = ndimage.binary_opening(found, iterations=option['thin'])  # not the glints on thin rails
+                hole |= found
             guard &= ~hole
             # Nothing of the thing is there either, so whatever stands behind shows through.
             gap = np.asarray(Image.fromarray(((hole & keep) * 255).astype('uint8')).filter(ImageFilter.GaussianBlur(1.0))).astype(float) / 255
             solid = solid * (1 - gap)
         guard = np.asarray(Image.fromarray((guard * 255).astype('uint8')).filter(ImageFilter.GaussianBlur(0.8))).astype(float) / 255
+        if option.get('glass', group.get('glass')):
+            # Clear glass: the less a pixel differs from the empty room, the more of the
+            # room (and whatever stands behind) is seen through it. Glints, the lamp and
+            # the metal stay solid.
+            clear = (1 - np.clip((ndimage.gaussian_filter(distance, 1.5) - 25) / 120, 0, 1)) * 0.92
+            solid = solid * (1 - clear)
+            guard = guard * (1 - clear)
+        if option.get('reflect', group.get('reflect')):
+            # A mirror shows the wall opposite: let most of the wall colour through where
+            # the glass reflects plain wall, so the reflection follows the chosen colour.
+            glass = ndimage.binary_erosion(keep, iterations=10) & (spread < 0.4) & (level > 0.3) & (level < 3.2) & (a[..., 0] > a[..., 1] * 1.03)
+            glass = ndimage.gaussian_filter(ndimage.binary_opening(ndimage.binary_closing(glass, iterations=8), iterations=4).astype(float), 3)
+            guard = guard * (1 - 0.8 * glass)
         # The layer is the thing alone. What it does to the room around it travels separately:
         # `shade` is how much darker each pixel became (drawn by multiplying, so the shadow
         # falls on whatever is there: floor, rug, another piece), and `glow` is the light it
@@ -210,9 +263,9 @@ for group in spec['groups']:
         layer = np.dstack([a, solid * 255]).astype('uint8')
         Image.fromarray(layer, 'RGBA').save(os.path.join(out, name + '.webp'), 'WEBP', quality=92, alpha_quality=96, method=6)
         blur = lambda x, r: ndimage.gaussian_filter(x, (r, r, 0) if x.ndim == 3 else r)
-        reach = ndimage.binary_dilation(keep, iterations=90) & ~unstable
+        reach = ndimage.binary_dilation(keep, iterations=90)
         reach = blur(reach.astype(float), 18) * (1 - solid)
-        a_s, b_s = blur(a, 2.5), blur(base, 2.5)
+        a_s, b_s = blur(a, 4), blur(base, 4)
         darker = np.clip(1 - a_s / np.maximum(b_s, 8) - 0.05, 0, 1) / 0.95
         shade = 1 - darker * reach[..., None]
         Image.fromarray((shade * 255).astype('uint8')).save(os.path.join(out, name + '-s.webp'), 'WEBP', quality=88, method=6)
@@ -239,15 +292,23 @@ for group in spec['groups']:
 
 # The floor as a flat plane: a 3 x 3 matrix taking a point in the picture (as shares of its
 # width and height) to metres on the floor, so floor layouts can be drawn in perspective.
-floor_h = None
-if spec.get('floor'):
-    (fw, fd), quad = spec['floor']['size'], spec['floor']['quad']
-    world = [(0, fd), (fw, fd), (fw, 0), (0, 0)]
+def plane(quad, world):
+    """The 3 x 3 matrix taking picture points (as shares) to metres on a flat surface."""
     rows, rhs = [], []
     for (x, y), (u, v) in zip(quad, world):
         rows += [[x, y, 1, 0, 0, 0, -u * x, -u * y], [0, 0, 0, x, y, 1, -v * x, -v * y]]
         rhs += [u, v]
-    floor_h = [round(float(t), 6) for t in np.linalg.solve(np.array(rows, float), np.array(rhs, float))] + [1.0]
+    return [round(float(t), 6) for t in np.linalg.solve(np.array(rows, float), np.array(rhs, float))] + [1.0]
 
-json.dump({'width': W, 'height': H, 'build': True, 'floorH': floor_h, 'surfaces': surfaces, 'average': average, 'focus': focus, 'groups': groups},
+
+floor_h = None
+if spec.get('floor'):
+    (fw, fd), quad = spec['floor']['size'], spec['floor']['quad']
+    floor_h = plane(quad, [(0, fd), (fw, fd), (fw, 0), (0, 0)])
+# Each wall likewise (corners: top left, top right, bottom right, bottom left), so ribs and
+# stone joints follow the wall as it runs away from the camera.
+walls = [{'quad': w['quad'], 'h': plane(w['quad'], [(0, 0), (w['size'][0], 0), (w['size'][0], w['size'][1]), (0, w['size'][1])])}
+         for w in spec.get('walls', [])]
+
+json.dump({'width': W, 'height': H, 'build': True, 'floorH': floor_h, 'walls': walls, 'surfaces': surfaces, 'average': average, 'focus': focus, 'groups': groups},
           open(os.path.join(out, 'meta.json'), 'w'))

@@ -19,13 +19,15 @@
           "label": "Sheer linen",
           "spec": "Full-height sheers on a recessed ceiling track.",
           "add": "full-height sheer cream linen curtains gathered at the right-hand end of the glass wall on the left.",
-          "thing": "all of the curtains."
+          "thing": "all of the curtains.",
+          "straight": 420
         },
         {
           "label": "Olive velvet",
           "spec": "Lined velvet drapes with blackout lining.",
           "add": "full-height heavy olive green velvet curtains gathered at the right-hand end of the glass wall on the left.",
-          "thing": "all of the curtains."
+          "thing": "all of the curtains.",
+          "straight": 420
         },
         {
           "label": "Timber blinds",
@@ -34,7 +36,8 @@
           "thing": "all of the timber blinds.",
           "image": "curtainB"
         }
-      ]
+      ],
+      "smooth": 40
     },
     {
       "id": "light",
@@ -53,7 +56,7 @@
           "spec": "Pair of small glass pendants hung low at each side. Dimmable.",
           "add": "a pair of small clear glass pendant lights hanging low from the ceiling on slim brass rods, one at each side of the centre of the back wall, switched on.",
           "thing": "both pendant lights with their rods.",
-          "open": true
+          "glass": true
         },
         {
           "label": "Paper pendant",
@@ -303,5 +306,55 @@
       0.9,
       0
     ]
+  ],
+  "walls": [
+    {
+      "quad": [
+        [
+          0.235,
+          0.155
+        ],
+        [
+          0.78,
+          0.155
+        ],
+        [
+          0.78,
+          0.735
+        ],
+        [
+          0.235,
+          0.735
+        ]
+      ],
+      "size": [
+        5,
+        2.8
+      ]
+    },
+    {
+      "quad": [
+        [
+          0.78,
+          0.155
+        ],
+        [
+          0.845,
+          0.08
+        ],
+        [
+          0.845,
+          0.8
+        ],
+        [
+          0.78,
+          0.735
+        ]
+      ],
+      "size": [
+        2,
+        2.8
+      ]
+    }
   ]
 }

@@ -117,8 +117,8 @@ export function floorPattern(u, v, kind, layout) {
   }
   if (kind === 'marble') {
     // long, wandering grey veins
-    const vein = Math.abs(Math.sin(u * 1.7 + v * 0.9 + noise(u * 0.9, v * 0.9) * 6.5));
-    if (vein < 0.045) m *= 0.84 + vein * 2;
+    const vein = Math.abs(Math.sin(u * 1.1 + v * 0.7 + noise(u * 0.5, v * 0.5) * 2.2));
+    if (vein < 0.02) m *= 0.9 + vein * 4;
     m *= 0.98 + noise(u * 3, v * 3) * 0.04;
   } else if (kind === 'terrazzo') {
     const chip = hash(Math.floor(u / 0.022), Math.floor(v / 0.022));
@@ -132,21 +132,21 @@ export function floorPattern(u, v, kind, layout) {
   return m;
 }
 
-// The same for a wall, at a point in the picture (x, y as shares of its width).
+// The same for a wall, at a point on it (u across and v down, in metres).
 // Returns a multiplier around 1.
-export function wallPattern(x, y, finish) {
-  if (finish === 'limewash') return 0.93 + noise(x * 9, y * 9) * 0.1 + noise(x * 34, y * 34) * 0.04;
+export function wallPattern(u, v, finish) {
+  if (finish === 'limewash') return 0.93 + noise(u * 1.6, v * 1.6) * 0.1 + noise(u * 6, v * 6) * 0.04;
   if (finish === 'slats' || finish === 'fluted') {
-    const rib = frac(x * 150);
+    const rib = frac(u / (finish === 'slats' ? 0.045 : 0.032));
     const groove = finish === 'slats' ? 0.42 : 0.3;
     if (rib < groove) return finish === 'slats' ? 0.62 : 0.86;
     // each rib catches a little light on one side
     return 1 + (rib - groove) * (finish === 'slats' ? 0.12 : 0.07);
   }
   if (finish === 'stone') {
-    if (frac(x * 7) < 0.0035 || frac(y * 2.6) < 0.006) return 0.82; // slab joints
-    const vein = Math.abs(Math.sin(y * 46 + noise(x * 6, y * 6) * 5));
-    return (vein < 0.08 ? 0.93 : 1) * (0.97 + noise(x * 40, y * 40) * 0.06);
+    if (frac(u / 1.2) * 1.2 < 0.006 || frac(v / 1.4) * 1.4 < 0.006) return 0.82; // slab joints
+    // travertine: fine level bands, laid horizontally, with a little pitting
+    return 0.95 + noise(u * 0.7, v * 16) * 0.07 + noise(u * 3, v * 60) * 0.035;
   }
   return 1;
 }

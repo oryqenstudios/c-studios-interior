@@ -77,7 +77,8 @@
                 0.815
               ]
             ]
-          ]
+          ],
+          "tol": 2
         }
       ]
     },
@@ -92,7 +93,7 @@
           "spec": "Three clear glass globes on brass rods. Dimmable.",
           "add": "three clear glass globe pendant lights on slim brass rods hanging in a row from the ceiling over the centre of the room, switched on.",
           "thing": "all three pendant lights with their rods.",
-          "open": true
+          "glass": true
         },
         {
           "label": "Linear brass pendant",
@@ -145,13 +146,15 @@
           "label": "Sheer linen",
           "spec": "Full-height sheers on a recessed ceiling track.",
           "add": "full-height sheer cream linen curtains gathered at the right-hand end of the glass wall on the left.",
-          "thing": "all of the curtains."
+          "thing": "all of the curtains.",
+          "straight": 420
         },
         {
           "label": "Olive linen",
           "spec": "Lined linen drapes in olive on a recessed track.",
           "add": "full-height olive green linen curtains gathered at the right-hand end of the glass wall on the left.",
-          "thing": "all of the curtains."
+          "thing": "all of the curtains.",
+          "straight": 420
         },
         {
           "label": "Woven blinds",
@@ -160,7 +163,8 @@
           "thing": "all of the blinds.",
           "image": "curtainB"
         }
-      ]
+      ],
+      "smooth": 14
     }
   ],
   "surfaces_desc": {
@@ -228,5 +232,55 @@
       1,
       0
     ]
+  ],
+  "walls": [
+    {
+      "quad": [
+        [
+          0.29,
+          0.22
+        ],
+        [
+          0.72,
+          0.22
+        ],
+        [
+          0.72,
+          0.73
+        ],
+        [
+          0.29,
+          0.73
+        ]
+      ],
+      "size": [
+        5.5,
+        2.8
+      ]
+    },
+    {
+      "quad": [
+        [
+          0.84,
+          0.2
+        ],
+        [
+          1.0,
+          0.04
+        ],
+        [
+          1.0,
+          0.865
+        ],
+        [
+          0.84,
+          0.71
+        ]
+      ],
+      "size": [
+        5,
+        2.8
+      ]
+    }
   ]
 }

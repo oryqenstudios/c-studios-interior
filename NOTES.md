@@ -552,3 +552,35 @@ None at the moment.
   gaps seen in shadow (`open: "loose"`). It had been eating into paper shades and slats.
 - The empty living room, kitchen and bedroom were regenerated **without curtains**
   (`empty2.png`), and their blinds redone on that, so nothing shows under the blinds.
+
+## Defect pass on the built-up rooms
+
+Every option in every room was photographed close up against a dark floor and a coloured
+wall, and the defects found were fixed in `tools/pack-build-room.py`, the room
+descriptions and `src/ui/customise.js`:
+
+- **Outlines**: lower threshold so dark things (olive sofa) keep their base; ragged edges
+  of curtains and wall panels ironed straight (`smooth`, `straight`); the stone panel
+  borrows the slat panel's clean outline (`shape_from`); parts the outline picture missed
+  are added back (`include`: the towels and candle on the bathroom stool).
+- **See-through pieces**: clear glass shades are now softly transparent (`glass`), not
+  punched with holes; open areas of the heated rail, oak ladder, four-poster bed and
+  black island are marked by hand (`through`) so the wall shows between the rails.
+- **Mirrors** (`reflect`): the reflected wall follows the chosen wall colour.
+- **Backlit mirror**: outline pulled in (`shrink`) so its halo is carried by the glow
+  layer and has a soft edge.
+- **Shadows** are measured everywhere near a piece (the "unstable" garden test no longer
+  blanks them) and smoothed, so pieces sit on the floor and on rugs.
+- **Floors**: a joint-free copy of the floor (`floor.webp`) is used under any catalogue
+  flooring, so the old stone joints no longer show through boards; hairline gaps in the
+  wall and floor areas are closed. Marble veins are finer and calmer.
+- **Walls in perspective**: each room description lists its main walls (`walls`), so
+  slats, fluting and stone joints run along the wall as it recedes. Stone cladding is
+  now quiet banded travertine. The bathroom ceiling is cut out of the wall area.
+- **Highlight**: when looking at one piece, pieces in front of it are no longer lit up.
+- **Phones**: with the board along the bottom, the whole height of the room is fitted
+  into the free part of the screen (before, the floor was hidden behind the board).
+
+Known small leftovers: a speck of unrecoloured wall beside the towel on the heated rail,
+and a slightly uneven right edge on the backlit mirror's halo. Both would need those two
+pictures regenerated.

@@ -152,6 +152,14 @@ export async function initCustomiser() {
       view.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px) scale(${z.toFixed(3)})`;
       // Only the room on show may be visible while the camera is in close.
       root.classList.add('is-close');
+    } else if (freeArea().h < 0.98) {
+      // Board along the bottom (phones): fit the whole height of the room into the part
+      // of the screen the board leaves free, rather than hiding the floor behind it.
+      const free = freeArea();
+      const box = root.getBoundingClientRect();
+      const s = Math.max(free.h * 1.04, 0.5);
+      view.style.transform = `translate(0px, ${(-((1 - free.h) / 2) * box.height).toFixed(1)}px) scale(${s.toFixed(3)})`;
+      root.classList.remove('is-close');
     } else {
       view.style.transform = `scale(1.035) translate(${(-cam.driftX * 1.4).toFixed(2)}%, ${(-cam.driftY * 1.4).toFixed(2)}%)`;
       root.classList.remove('is-close');
@@ -224,6 +232,34 @@ export async function initCustomiser() {
       [data.matteCanvas, data.matteCtx] = sheet();
       [data.cutCanvas, data.cutCtx] = sheet();
       data.baseImg = baseImg;
+      // the floor without its stone joints, shown under any other flooring
+      data.floorImg = new Image();
+      data.floorImg.decoding = 'async';
+      data.floorImg.onload = () => data === room && requestRender();
+      data.floorImg.src = `${dir}/floor.webp?v=${__ASSET_VERSION__}`;
+      // Which measured wall each pixel belongs to (0 for none), worked out once.
+      if (meta.walls?.length) {
+        const at = new Uint8Array(meta.width * meta.height);
+        meta.walls.forEach((wall, index) => {
+          const q = wall.quad.map(([x, y]) => [x * meta.width, y * meta.height]);
+          const x0 = Math.max(0, Math.floor(Math.min(...q.map((c) => c[0]))));
+          const x1 = Math.min(meta.width - 1, Math.ceil(Math.max(...q.map((c) => c[0]))));
+          const y0 = Math.max(0, Math.floor(Math.min(...q.map((c) => c[1]))));
+          const y1 = Math.min(meta.height - 1, Math.ceil(Math.max(...q.map((c) => c[1]))));
+          for (let y = y0; y <= y1; y++) {
+            for (let x = x0; x <= x1; x++) {
+              let inside = true;
+              for (let k = 0; k < 4 && inside; k++) {
+                const [ax, ay] = q[k];
+                const [bx, by] = q[(k + 1) % 4];
+                inside = (bx - ax) * (y - ay) - (by - ay) * (x - ax) >= 0;
+              }
+              if (inside) at[y * meta.width + x] = index + 1;
+            }
+          }
+        });
+        data.wallAt = at;
+      }
       // Fetch the layers quietly so that trying an option is instant.
       for (const group of meta.groups) for (const option of group.options) layerOf(data, option.id);
     }
@@ -345,6 +381,7 @@ export async function initCustomiser() {
     let src = r.src;
     let protect = null;
     let litMatte = null;
+    const litOver = [];
     if (meta.build) {
       const w = meta.width;
       const h = meta.height;
@@ -352,6 +389,10 @@ export async function initCustomiser() {
       r.placedCtx.drawImage(r.baseImg, 0, 0, w, h);
       r.matteCtx.clearRect(0, 0, w, h);
       let any = false;
+      if (flooringNow() && r.floorImg?.complete && r.floorImg.naturalWidth) {
+        r.placedCtx.drawImage(r.floorImg, 0, 0, w, h);
+        any = true;
+      }
       for (const group of [...meta.groups].sort((a, b) => a.z - b.z)) {
         const id = optionOf(r, group);
         if (!id) continue;
@@ -373,6 +414,7 @@ export async function initCustomiser() {
         r.placedCtx.drawImage(img, 0, 0, w, h);
         r.matteCtx.drawImage(matte, 0, 0, w, h);
         any = true;
+        if (litMatte) litOver.push(matte); // stands in front of the thing being looked at
         if (r === room && focusGroup === group.id) litMatte = matte;
       }
       if (any) {
@@ -419,7 +461,17 @@ export async function initCustomiser() {
             const w = h[6] * x + h[7] * y + h[8];
             m = floorPattern((h[0] * x + h[1] * y + h[2]) / w, (h[3] * x + h[4] * y + h[5]) / w, fx.kind, fx.layout);
           } else {
-            m = wallPattern(px / width, py / width, fx.finish);
+            // on a measured wall, in that wall's own metres; elsewhere, flat to the picture
+            const x = px / width;
+            const y = py / height;
+            const wall = r.wallAt ? r.wallAt[py * width + px] : 0;
+            if (wall) {
+              const h = meta.walls[wall - 1].h;
+              const w = h[6] * x + h[7] * y + h[8];
+              m = wallPattern((h[0] * x + h[1] * y + h[2]) / w, (h[3] * x + h[4] * y + h[5]) / w, fx.finish);
+            } else {
+              m = wallPattern(x * 6, y * 3.4, fx.finish);
+            }
           }
           if (fx.contrast !== 1) {
             // polished finishes show light and shade more strongly, matte ones less
@@ -454,6 +506,8 @@ export async function initCustomiser() {
       r.cutCtx.globalCompositeOperation = 'source-over';
       r.cutCtx.clearRect(0, 0, w, h);
       r.cutCtx.drawImage(litMatte, 0, 0, w, h);
+      r.cutCtx.globalCompositeOperation = 'destination-out';
+      for (const matte of litOver) r.cutCtx.drawImage(matte, 0, 0, w, h);
       r.cutCtx.globalCompositeOperation = 'source-in';
       r.cutCtx.drawImage(r.canvas, 0, 0);
       r.ctx.fillStyle = 'rgb(12 10 8 / 0.58)';
