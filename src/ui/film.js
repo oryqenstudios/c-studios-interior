@@ -7,7 +7,9 @@ gsap.registerPlugin(ScrollTrigger);
 // Frames are individual images (seeking inside a video file is jerky in several
 // browsers). Three things keep it smooth:
 //   - the film eases toward the scroll position instead of jumping to it,
-//   - neighbouring frames are blended, so slow scrolling glides between them,
+//   - neighbouring frames are blended, so slow scrolling glides between them (two stacked
+//     canvases; the blend is an opacity change, so no canvas is redrawn every frame),
+//   - frames near the visitor are held as bitmaps already scaled to the screen,
 //   - frames are decoded before they are used, and the ones near the visitor's current
 //     position are fetched first.
 //
@@ -48,7 +50,7 @@ function initFilm(section) {
   const frames = new Array(count);
   let target = 0; // where the scroll says the film should be
   let progress = 0; // where the film is, easing toward the target
-  let drawnKey = '';
+  let drawnKey = -1; // the upper canvas's opacity as last set
   let started = false;
 
   const positionOf = (p) => clamp01(p / filmEnd) * (count - 1);
@@ -61,44 +63,120 @@ function initFilm(section) {
     return -1;
   }
 
-  function paint(img, alpha) {
+  // Two stacked canvases: even frames are drawn on the lower one, odd frames on the upper,
+  // and the blend between neighbouring frames is the upper canvas's opacity. A canvas is
+  // redrawn only when its own frame changes (not on every display frame), and the blend
+  // itself is done by the compositor, which costs nothing on the main thread.
+  const upper = canvas.cloneNode(false);
+  upper.style.transition = 'none';
+  upper.style.opacity = 0;
+  canvas.after(upper);
+  const layers = [
+    { el: canvas, ctx, shown: -1 },
+    { el: upper, ctx: upper.getContext('2d'), shown: -1 },
+  ];
+
+  // Frames near the visitor are also kept as bitmaps already cut and scaled to the canvas,
+  // so putting one on screen is a plain copy: no decoding and no resampling while scrolling.
+  const KEEP_BEHIND = 6;
+  const KEEP_AHEAD = 14;
+  let generation = 0; // bumped when the canvas changes size, to drop bitmaps made for the old size
+  function prepare(i) {
+    const frame = frames[i];
+    if (!frame?.ready || frame.bitmap || frame.preparing || !window.createImageBitmap) return;
+    const { img } = frame;
     const scale = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
-    const w = img.naturalWidth * scale;
-    const h = img.naturalHeight * scale;
-    ctx.globalAlpha = alpha;
-    ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+    const sw = canvas.width / scale;
+    const sh = canvas.height / scale;
+    const made = generation;
+    frame.preparing = true;
+    createImageBitmap(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, { resizeWidth: canvas.width, resizeHeight: canvas.height, resizeQuality: 'high' })
+      .then((bitmap) => {
+        frame.preparing = false;
+        if (made !== generation || Math.abs(i - Math.round(positionOf(progress))) > KEEP_AHEAD + 4) return bitmap.close();
+        frame.bitmap = bitmap;
+        for (const layer of layers) if (layer.shown === i) layer.shown = -1; // redraw it sharp
+        draw();
+      })
+      .catch(() => {
+        frame.preparing = false;
+      });
+  }
+  let windowAt = -99;
+  function keepWindow(here) {
+    if (here === windowAt) return;
+    windowAt = here;
+    const ahead = target >= progress ? KEEP_AHEAD : KEEP_BEHIND;
+    const behind = target >= progress ? KEEP_BEHIND : KEEP_AHEAD;
+    for (let i = Math.max(0, here - behind); i <= Math.min(count - 1, here + ahead); i++) prepare(i);
+    for (let i = 0; i < count; i++) {
+      const frame = frames[i];
+      if (frame?.bitmap && (i < here - behind - 3 || i > here + ahead + 3)) {
+        frame.bitmap.close();
+        frame.bitmap = null;
+      }
+    }
+  }
+
+  function paint(layer, index) {
+    if (layer.shown === index) return;
+    const frame = frames[index];
+    if (frame.bitmap) layer.ctx.drawImage(frame.bitmap, 0, 0);
+    else {
+      const { img } = frame;
+      const scale = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+      const w = img.naturalWidth * scale;
+      const h = img.naturalHeight * scale;
+      layer.ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+    }
+    layer.shown = index;
   }
 
   function draw() {
     const position = positionOf(progress);
-    const a = Math.floor(position);
-    const b = Math.min(a + 1, count - 1);
-    const mixAmount = Math.round((position - a) * 16) / 16;
-    if (frames[a]?.ready && frames[b]?.ready) {
-      const key = `${a}:${mixAmount}`;
-      if (key === drawnKey) return;
-      drawnKey = key;
-      paint(frames[a].img, 1);
-      if (mixAmount > 0) paint(frames[b].img, mixAmount);
-    } else {
+    let a = Math.floor(position);
+    let b = Math.min(a + 1, count - 1);
+    let mixAmount = position - a;
+    if (!(frames[a]?.ready && frames[b]?.ready)) {
       // not everything has loaded yet: show the closest frame that has
-      const index = nearest(Math.round(position));
-      if (index < 0 || `n${index}` === drawnKey) return;
-      drawnKey = `n${index}`;
-      paint(frames[index].img, 1);
+      a = nearest(Math.round(position));
+      if (a < 0) return;
+      b = a;
+      mixAmount = 0;
     }
-    ctx.globalAlpha = 1;
+    keepWindow(Math.round(position));
+    // the even frame goes on the lower canvas, the odd one on the upper
+    const even = a % 2 === 0 ? a : b;
+    const odd = a % 2 === 0 ? b : a;
+    if (even % 2 === 0) paint(layers[0], even);
+    if (odd % 2 === 1) paint(layers[1], odd);
+    const upperOpacity = a === b ? (a % 2 === 1 ? 1 : 0) : a % 2 === 0 ? mixAmount : 1 - mixAmount;
+    const rounded = Math.round(upperOpacity * 100) / 100;
+    if (rounded !== drawnKey) {
+      drawnKey = rounded;
+      upper.style.opacity = rounded;
+    }
     canvas.classList.add('is-ready');
   }
 
   function resize() {
     // Sharp on dense screens, but never larger than is useful for the footage.
-    const width = Math.min(Math.round(canvas.clientWidth * ratio), 2400);
-    canvas.width = width;
-    canvas.height = Math.round((width * canvas.clientHeight) / Math.max(1, canvas.clientWidth));
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    drawnKey = '';
+    const width = Math.min(Math.round(canvas.clientWidth * ratio), 1920);
+    const height = Math.round((width * canvas.clientHeight) / Math.max(1, canvas.clientWidth));
+    if (width === canvas.width && height === canvas.height) return;
+    generation++;
+    for (const frame of frames) {
+      if (frame?.bitmap) frame.bitmap.close();
+      if (frame) frame.bitmap = null;
+    }
+    windowAt = -99;
+    for (const layer of layers) {
+      layer.el.width = width;
+      layer.el.height = height;
+      layer.ctx.imageSmoothingEnabled = true;
+      layer.ctx.imageSmoothingQuality = 'high';
+      layer.shown = -1;
+    }
     draw();
   }
 
@@ -112,8 +190,10 @@ function initFilm(section) {
     // Decode off the main thread before the frame is used, so drawing it never stalls.
     const done = () => {
       frame.ready = true;
-      drawnKey = '';
-      draw();
+      if (Math.abs(i - positionOf(progress)) < KEEP_AHEAD) {
+        windowAt = -99;
+        draw();
+      }
     };
     if (img.decode) img.decode().then(done, () => (img.complete && img.naturalWidth ? done() : null));
     else img.onload = done;

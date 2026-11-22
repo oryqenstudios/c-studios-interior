@@ -58,7 +58,7 @@ export async function initLooks() {
     // Large photographs are heavy to hold: let go of the ones wanted longest ago.
     for (const [old, picture] of shots) {
       if (shots.size <= 10) break;
-      if (picture === shown || picture.classList.contains('is-under') || picture.classList.contains('is-leaving')) continue;
+      if (picture === shown || old === wanted || old === key || picture.classList.contains('is-under') || picture.classList.contains('is-leaving')) continue;
       picture.remove();
       shots.delete(old);
     }
@@ -66,9 +66,11 @@ export async function initLooks() {
   }
 
   let ticket = 0;
+  let wanted = null; // the photograph being brought up
   // Dissolve to a photograph. `push` is the stronger move used between rooms.
   async function show(key, push = false) {
     const mine = ++ticket;
+    wanted = key;
     const next = shot(key);
     await next.ready;
     if (mine !== ticket || next === shown) return;
@@ -84,11 +86,22 @@ export async function initLooks() {
     }
   }
   const showNow = (push) => show(urlOf(roomIndex, lookIndex, stageOf[roomIndex]), push);
-  // Have the likely next photographs ready: the next stage, and this stage in the other looks.
+  // Have the likely next photograph ready: the next stage of this look.
   function warm() {
     const s = stageOf[roomIndex];
     if (s < 3) shot(urlOf(roomIndex, lookIndex, s + 1));
-    if (s > 0) for (let l = 0; l < looks.length; l++) shot(urlOf(roomIndex, l, s));
+  }
+  // While the list of looks is open, fetch this room in the other looks one at a time,
+  // nearest in the list first, so choosing one is immediate without a burst of decoding.
+  let warming = 0;
+  async function warmLooks() {
+    const mine = ++warming;
+    const s = Math.max(1, stageOf[roomIndex]);
+    const order = looks.map((_, l) => l).sort((x, y) => Math.abs(x - lookIndex) - Math.abs(y - lookIndex));
+    for (const l of order.slice(1, 7)) {
+      if (mine !== warming) return;
+      await shot(urlOf(roomIndex, l, s)).ready;
+    }
   }
 
   /* ---------- camera: a slight drift, and fitting the room above the board on phones ---------- */
@@ -126,6 +139,14 @@ export async function initLooks() {
         button.setAttribute('role', 'menuitem');
         if (item.current) button.setAttribute('aria-current', 'true');
         if (item.plain) button.classList.add('lsc__row--plain');
+        if (item.swatch) {
+          // floor and wall of the look, as a two-tone sample
+          const swatch = document.createElement('i');
+          swatch.className = 'lsc__swatch';
+          swatch.style.setProperty('--a', item.swatch[0]);
+          swatch.style.setProperty('--b', item.swatch[1]);
+          button.append(swatch);
+        }
         const label = document.createElement('span');
         label.className = 'lsc__label';
         label.textContent = item.label;
@@ -176,12 +197,13 @@ export async function initLooks() {
     warm();
   }
   function showRoot(focusIndex = 0) {
+    warming++; // stop fetching other looks
     const room = rooms[roomIndex];
     const look = looks[lookIndex];
     const stage = stageOf[roomIndex];
     draw(room.label, [
       { label: 'Room', value: room.label, more: true, note: 'Move to another room. Scrolling also takes you through them.', select: showRooms },
-      { label: 'Look', value: look.label, more: true, note: look.line, select: showLooks },
+      { label: 'Look', value: look.label, more: true, note: `${look.line} ${looks.length} looks to choose from.`, select: showLooks },
       ...STAGES.map((s, i) => ({
         stage: i === 0 ? 'Build it up' : null,
         label: i === 0 ? s.label : `${pad(i)}  ${s.label}`,
@@ -218,8 +240,10 @@ export async function initLooks() {
     });
   }
   function showLooks() {
+    warmLooks();
     draw('Look', looks.map((look, i) => ({
       label: look.label,
+      swatch: look.swatch,
       current: i === lookIndex,
       note: look.line,
       select: () => {

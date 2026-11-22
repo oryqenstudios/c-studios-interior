@@ -68,6 +68,10 @@
    "id": "walnut",
    "label": "Warm walnut",
    "line": "Walnut, limewash and brushed brass.",
+   "swatch": [
+    "#7A5638",
+    "#F2EDE4"
+   ],
    "spec": {
     "Flooring": "Natural walnut, herringbone, satin",
     "Walls": "Limewash, warm white",
@@ -81,6 +85,10 @@
    "id": "stone",
    "label": "Quiet stone",
    "line": "Travertine, plaster and matte black.",
+   "swatch": [
+    "#D8C7A8",
+    "#CFC6B8"
+   ],
    "spec": {
     "Flooring": "Beige travertine, large slab, honed",
     "Walls": "Venetian plaster, greige",
@@ -94,6 +102,10 @@
    "id": "olive",
    "label": "Deep olive",
    "line": "Smoked oak, olive and aged bronze.",
+   "swatch": [
+    "#4E3B2C",
+    "#46503F"
+   ],
    "spec": {
     "Flooring": "Smoked oak, straight, matte",
     "Walls": "Matte paint, deep olive",
@@ -101,6 +113,91 @@
     "Stone": "Nero marquina",
     "Metal": "Aged bronze",
     "Fabric": "Olive velvet, tan leather"
+   }
+  },
+  {
+   "id": "sage",
+   "label": "Soft sage",
+   "line": "Whitewashed ash, sage and brushed nickel.",
+   "swatch": [
+    "#D9CDB8",
+    "#9BA58E"
+   ],
+   "spec": {
+    "Flooring": "Whitewashed ash, straight, matte",
+    "Walls": "Matte paint, sage",
+    "Joinery": "Matte white lacquer, cane inset",
+    "Stone": "White quartz",
+    "Metal": "Brushed nickel",
+    "Fabric": "Ivory linen, stone grey linen"
+   }
+  },
+  {
+   "id": "marble",
+   "label": "Marble and charcoal",
+   "line": "White marble, charcoal fluting and polished chrome.",
+   "swatch": [
+    "#F1EEE8",
+    "#2F2F31"
+   ],
+   "spec": {
+    "Flooring": "White marble, large slab, polished",
+    "Walls": "Fluted panel, charcoal",
+    "Joinery": "High-gloss lacquer",
+    "Stone": "Calacatta marble",
+    "Metal": "Polished chrome",
+    "Fabric": "Charcoal wool, cream boucle"
+   }
+  },
+  {
+   "id": "terracotta",
+   "label": "Terracotta terrazzo",
+   "line": "Terrazzo, terracotta and copper.",
+   "swatch": [
+    "#E3DED3",
+    "#B5694A"
+   ],
+   "spec": {
+    "Flooring": "Terrazzo, seamless, polished",
+    "Walls": "Limewash, terracotta",
+    "Joinery": "Oak veneer",
+    "Stone": "Travertine",
+    "Metal": "Copper",
+    "Fabric": "Rust velvet, ivory linen"
+   }
+  },
+  {
+   "id": "blue",
+   "label": "Blue concrete",
+   "line": "Microcement, dusty blue and matte black.",
+   "swatch": [
+    "#B4AFA6",
+    "#7F93A3"
+   ],
+   "spec": {
+    "Flooring": "Microcement, seamless, matte",
+    "Walls": "Venetian plaster, dusty blue",
+    "Joinery": "Black-stained ash",
+    "Stone": "Concrete",
+    "Metal": "Matte black",
+    "Fabric": "Charcoal wool, stone grey linen"
+   }
+  },
+  {
+   "id": "sand",
+   "label": "Sand and oak",
+   "line": "Light oak chevron, timber slats and brass.",
+   "swatch": [
+    "#C8A77A",
+    "#B7A68C"
+   ],
+   "spec": {
+    "Flooring": "Light oak, chevron, matte",
+    "Walls": "Timber slats and sand plaster",
+    "Joinery": "Oak veneer",
+    "Stone": "Butcher block, white quartz",
+    "Metal": "Brushed brass",
+    "Fabric": "Tan leather, ivory linen"
    }
   }
  ]

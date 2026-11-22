@@ -646,3 +646,24 @@ second except the model film and the board, which show occasional 50 ms frames.
   bitrate doubled the file for no visible gain; the clip's ceiling is the generated source.
 - NOT DONE: the hero and film are AI-generated clips at 1080p. Making them sharper than
   that means regenerating or upscaling them, which needs a decision on cost.
+
+## Eight looks, and a smoothness pass on the film and the board
+
+- **Looks**: five added (Soft sage, Marble and charcoal, Terracotta terrazzo, Blue
+  concrete, Sand and oak) to the three existing, so 8 looks x 4 rooms x 3 stages = 96
+  photographs. Between them they use eight of the studio's nine floors (not grey
+  porcelain), all six wall finish types, seven of the eight wall colours, all six metals,
+  and most joinery, countertop and fabric options. The look list shows a two-tone swatch
+  (floor, wall). All look names and pairings are DRAFT, mine.
+- **Film**: the blend between neighbouring frames is now the opacity of a second stacked
+  canvas (done by the compositor), so a canvas is redrawn only when its own frame changes,
+  not on every display frame. Frames near the visitor are held as bitmaps already cut and
+  scaled to the screen, so drawing one is a plain copy.
+- **Board**: photographs only change opacity (no scaling of 2K pictures); they stay on
+  the compositor so showing one does not wait on an upload; the panel no longer blurs
+  what is behind it live (plain dark glass instead); at most ten photographs are held;
+  other looks are fetched one at a time while the look list is open.
+- MEASURED in a headless browser with no graphics card: slow frames (50 ms) over a
+  60-second scroll of the whole page fell from about 60 to about 10-20, and the count
+  varies run to run. The ones left are at room changes, where that browser blends two
+  2K photographs in software. NOT VERIFIED on real hardware.

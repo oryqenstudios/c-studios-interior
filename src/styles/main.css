@@ -3285,3 +3285,57 @@ body {
   max-width: 62%;
   line-height: 1.5;
 }
+
+/* ---------- Smoothness pass ----------
+   The board's photographs only ever change opacity (no scaling of a 2K picture), stay
+   on the compositor at a hair above invisible so showing one never waits on an upload,
+   and the board panel is a plain dark glass without a live blur of what is behind it. */
+.cfg__canvas.cfg__shot,
+.cfg__canvas.cfg__shot.is-active,
+.cfg__canvas.cfg__shot.is-under,
+.cfg__canvas.cfg__shot.is-leaving {
+  transform: none;
+  visibility: visible;
+  will-change: opacity;
+  transition: opacity 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cfg__canvas.cfg__shot {
+  opacity: 0.001;
+  pointer-events: none;
+}
+
+.cfg__canvas.cfg__shot.is-active,
+.cfg__canvas.cfg__shot.is-under,
+.cfg__canvas.cfg__shot.is-leaving {
+  opacity: 1;
+}
+
+/* the photograph being left stays whole underneath until the new one has covered it */
+.cfg__canvas.cfg__shot.is-under,
+.cfg__canvas.cfg__shot.is-leaving {
+  transition: none;
+}
+
+.lsc {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: rgb(27 24 21 / 0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cfg__canvas.cfg__shot {
+    transition: opacity 200ms linear;
+  }
+}
+
+/* a look's floor and wall, side by side */
+.lsc__swatch {
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-right: 0.875rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--a) 0 50%, var(--b) 50% 100%);
+  box-shadow: 0 0 0 1px rgb(237 230 218 / 0.22);
+}
