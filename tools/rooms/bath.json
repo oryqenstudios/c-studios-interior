@@ -1,0 +1,149 @@
+{
+  "surfaces": [
+    "walls",
+    "floor"
+  ],
+  "groups": [
+    {
+      "id": "bath",
+      "label": "Bath",
+      "stage": 2,
+      "options": [
+        {
+          "label": "Oval stone",
+          "spec": "Freestanding. Carved travertine. About 1,700 mm long. Floor-mounted waste."
+        },
+        {
+          "label": "Rectangular white",
+          "spec": "Freestanding. Matte solid surface. About 1,700 mm long. Thin 12 mm rim."
+        },
+        {
+          "label": "Round timber soaking tub",
+          "spec": "Freestanding. Sealed hardwood. About 1,300 mm across. Deep-soak profile."
+        }
+      ],
+      "z": 6
+    },
+    {
+      "id": "vanity",
+      "label": "Vanity and basins",
+      "stage": 2,
+      "options": [
+        {
+          "label": "Walnut, stone vessels",
+          "spec": "Wall-hung. Walnut veneer, travertine top. Two vessel basins, wall-mounted mixers."
+        },
+        {
+          "label": "Oak, integrated basin",
+          "spec": "Wall-hung. Oak veneer, marble top. One wide integrated basin."
+        },
+        {
+          "label": "Twin stone pedestals",
+          "spec": "Floor-standing. Two fluted stone pedestal basins. Concealed trap."
+        }
+      ],
+      "z": 4
+    },
+    {
+      "id": "mirror",
+      "label": "Mirror",
+      "stage": 2,
+      "options": [
+        {
+          "label": "Backlit rectangle",
+          "spec": "Wall-mounted. LED halo, warm white. Needs a switched supply behind."
+        },
+        {
+          "label": "Round, brass frame",
+          "spec": "Wall-mounted. Brushed brass frame. About 900 mm across."
+        },
+        {
+          "label": "Arched, black frame",
+          "spec": "Wall-mounted or leaning. Powder-coated steel frame. About 1,800 mm tall."
+        }
+      ],
+      "z": 1
+    },
+    {
+      "id": "light",
+      "label": "Lighting",
+      "stage": 2,
+      "options": [
+        {
+          "label": "Glass globe pendants",
+          "spec": "Ceiling-hung pair. Clear glass, brass rod. Bathroom-rated fitting required."
+        },
+        {
+          "label": "Brass tube sconces",
+          "spec": "Wall-mounted pair. Brushed brass. Warm white, dimmable."
+        },
+        {
+          "label": "Pleated linen pendant",
+          "spec": "Ceiling-hung. Linen shade. For a zone away from water."
+        }
+      ],
+      "z": 2
+    },
+    {
+      "id": "shower",
+      "label": "Shower set",
+      "stage": 2,
+      "options": [
+        {
+          "label": "Round rain head, brass",
+          "spec": "Concealed thermostatic valve. Brushed brass. 250 mm rain head."
+        },
+        {
+          "label": "Square rain head, black",
+          "spec": "Concealed thermostatic valve. Matte black. 250 mm square head."
+        },
+        {
+          "label": "Exposed column, nickel",
+          "spec": "Exposed thermostatic riser. Polished nickel. Cross-handle valves."
+        }
+      ],
+      "z": 3
+    },
+    {
+      "id": "rail",
+      "label": "Towel rail",
+      "stage": 2,
+      "options": [
+        {
+          "label": "Heated ladder, brass",
+          "spec": "Wall-mounted, heated. Brushed brass. Needs a fused spur."
+        },
+        {
+          "label": "Single bar, black",
+          "spec": "Wall-mounted. Matte black. About 800 mm long."
+        },
+        {
+          "label": "Leaning oak ladder",
+          "spec": "Freestanding. Solid oak. No fixing required."
+        }
+      ],
+      "z": 3
+    },
+    {
+      "id": "style",
+      "label": "Finishing touch",
+      "stage": 3,
+      "options": [
+        {
+          "label": "Olive tree",
+          "spec": "Tall stone pot. Needs good daylight."
+        },
+        {
+          "label": "Walnut stool and towels",
+          "spec": "Solid walnut stool. Cotton towels."
+        },
+        {
+          "label": "Woven jute mat",
+          "spec": "Round, hand-woven jute. About 1,400 mm across."
+        }
+      ],
+      "z": 5
+    }
+  ],
+  "studio": "/home/user/.review/cfg-bath/base.png"
+}

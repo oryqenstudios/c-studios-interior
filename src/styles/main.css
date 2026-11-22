@@ -3198,3 +3198,38 @@ body {
     font-size: 1.05rem;
   }
 }
+
+/* ---------- Build-up rooms: stage headings and photographed option tiles ---------- */
+.lsc__stage {
+  margin: 0;
+  max-width: none;
+  padding: var(--space-4) 0 var(--space-2);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--brass) !important;
+  white-space: pre;
+}
+
+.lsc__chip--photo {
+  background-color: #2a2725;
+  background-size: cover;
+  background-position: center;
+}
+
+/* "None": an empty tile with a single diagonal rule */
+.lsc__list--samples .lsc__chip--none {
+  background: linear-gradient(to top right, transparent calc(50% - 0.5px), rgb(237 230 218 / 0.3) 50%, transparent calc(50% + 0.5px)), rgb(237 230 218 / 0.04);
+  box-shadow: inset 0 0 0 1px rgb(237 230 218 / 0.16);
+}
+
+.lsc__value:empty {
+  display: none;
+}
+
+.lsc__list--samples .lsc__chip--photo {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

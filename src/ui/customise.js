@@ -83,6 +83,13 @@ export async function initCustomiser() {
   let room = null;
   let focusKey = null; // the surface the camera is on; everything else is dimmed
   let comparing = false;
+  // Rooms that are built up from empty: what has been placed in each, the option being
+  // tried out, and the group the camera is on.
+  const placed = {}; // room id -> { group id -> option id }
+  let previewItem = null; // { group, option } (option null = none)
+  let focusGroup = null;
+  const placedIn = (r) => (placed[r.id] ??= {});
+  const optionOf = (r, group) => (r === room && previewItem?.group === group.id ? previewItem.option : placedIn(r)[group.id]) ?? null;
 
   const finishOf = (key) => (preview && key in preview ? preview[key] : chosen[key]) ?? null;
   const nameOf = (key, hex) => FINISHES[key].options.find((o) => o[1] === (hex ?? null))?.[0] ?? 'Custom';
@@ -140,11 +147,21 @@ export async function initCustomiser() {
   }
   function focusOn(key) {
     focusKey = key;
+    focusGroup = null;
     const focus = key && room.meta.focus?.[key];
     if (focus) {
       [cam.x, cam.y, cam.w, cam.h] = focus;
       cam.zoom = 2; // any value above 1: the real zoom is worked out from the screen
     } else cam.zoom = 1;
+    applyCamera();
+    requestRender();
+  }
+
+  function focusOnThing(group, box) {
+    focusKey = null;
+    focusGroup = group;
+    [cam.x, cam.y, cam.w, cam.h] = box;
+    cam.zoom = 2;
     applyCamera();
     requestRender();
   }
@@ -174,10 +191,31 @@ export async function initCustomiser() {
       src: pixels(baseImg, meta.width, meta.height),
       masks: maskImgs.map((img) => pixels(img, meta.width, meta.height)),
       out: ctx.createImageData(meta.width, meta.height),
-      baseUrl: `${dir}/base.webp?v=${__ASSET_VERSION__}`,
+      baseUrl: `${dir}/${meta.build ? 'studio' : 'base'}.webp?v=${__ASSET_VERSION__}`,
+      dir,
+      layers: {}, // option id -> image, for rooms that are built up from empty
+      mattes: {}, // option id -> the thing's outline
     };
+    if (meta.build) {
+      // Working canvases: the room with things placed (before recolouring), the outlines of
+      // those things, and a cut-out of the thing the camera is on.
+      const sheet = () => {
+        const c = document.createElement('canvas');
+        c.width = meta.width;
+        c.height = meta.height;
+        return [c, c.getContext('2d', { willReadFrequently: true })];
+      };
+      [data.placedCanvas, data.placedCtx] = sheet();
+      [data.matteCanvas, data.matteCtx] = sheet();
+      [data.cutCanvas, data.cutCtx] = sheet();
+      data.baseImg = baseImg;
+      // Fetch the layers quietly so that trying an option is instant.
+      for (const group of meta.groups) for (const option of group.options) layerOf(data, option.id);
+    }
     // Tapping a part of the room opens that part's finishes.
     canvas.addEventListener('click', (event) => {
+      const group = groupAt(data, event);
+      if (group) return openGroup(group);
       const index = surfaceAt(data, event);
       if (index >= 0) openSurface(data.meta.surfaces[index]);
     });
@@ -188,11 +226,49 @@ export async function initCustomiser() {
     return data;
   }
 
+  // A placed thing's picture, loaded on first use.
+  function layerOf(r, id) {
+    if (!r.layers[id]) {
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = () => r === room && requestRender();
+      img.src = `${r.dir}/${id}.webp?v=${__ASSET_VERSION__}`;
+      r.layers[id] = img;
+      // Its outline, used to keep the thing's own colour when the surfaces are recoloured.
+      const matte = new Image();
+      matte.decoding = 'async';
+      matte.onload = () => r === room && requestRender();
+      matte.src = `${r.dir}/${id}-p.webp?v=${__ASSET_VERSION__}`;
+      r.mattes[id] = matte;
+    }
+    return r.layers[id];
+  }
+
+  // Which placed thing is under the pointer, if any (topmost first).
+  const probe = document.createElement('canvas');
+  probe.width = probe.height = 1;
+  const probeCtx = probe.getContext('2d', { willReadFrequently: true });
+  function groupAt(r, event) {
+    if (!r.meta.build) return null;
+    const box = r.canvas.getBoundingClientRect();
+    const x = ((event.clientX - box.left) / box.width) * r.meta.width;
+    const y = ((event.clientY - box.top) / box.height) * r.meta.height;
+    for (const group of [...r.meta.groups].sort((a, b) => b.z - a.z)) {
+      const id = placedIn(r)[group.id];
+      const img = id && r.layers[id];
+      if (!img?.complete || !img.naturalWidth) continue;
+      probeCtx.clearRect(0, 0, 1, 1);
+      probeCtx.drawImage(img, -x, -y, r.meta.width, r.meta.height);
+      if (probeCtx.getImageData(0, 0, 1, 1).data[3] > 150) return group;
+    }
+    return null;
+  }
+
   // Strength (0 to 255) of surface i at byte offset p: three surfaces per sheet, in R, G, B.
   const maskAt = (r, i, p) => r.masks[(i / 3) | 0][p + (i % 3)];
 
   function render(r = room) {
-    const { meta, src, out } = r;
+    const { meta, out } = r;
     const count = meta.surfaces.length;
     const gains = meta.surfaces.map((key) => {
       const hex = finishOf(key);
@@ -206,25 +282,58 @@ export async function initCustomiser() {
       const tint = even > 1.6 ? 0.55 : 0.8;
       return [0, 1, 2].map((k) => Math.min(3.2, (target[k] / avg[k]) * tint + even * (1 - tint)));
     });
+
+    // In a room built up from empty, everything placed goes in first (with the light and
+    // shadow it throws), and the surfaces are recoloured around it afterwards.
+    let src = r.src;
+    let protect = null;
+    let litMatte = null;
+    if (meta.build) {
+      const w = meta.width;
+      const h = meta.height;
+      r.placedCtx.globalCompositeOperation = 'source-over';
+      r.placedCtx.drawImage(r.baseImg, 0, 0, w, h);
+      r.matteCtx.clearRect(0, 0, w, h);
+      let any = false;
+      for (const group of [...meta.groups].sort((a, b) => a.z - b.z)) {
+        const id = optionOf(r, group);
+        if (!id) continue;
+        const img = layerOf(r, id);
+        const matte = r.mattes[id];
+        if (!img.complete || !img.naturalWidth || !matte?.complete || !matte.naturalWidth) continue;
+        r.placedCtx.drawImage(img, 0, 0, w, h);
+        r.matteCtx.drawImage(matte, 0, 0, w, h);
+        any = true;
+        if (r === room && focusGroup === group.id) litMatte = matte;
+      }
+      if (any) {
+        src = r.placedCtx.getImageData(0, 0, w, h).data;
+        protect = r.matteCtx.getImageData(0, 0, w, h).data;
+      }
+    }
+
     const spot = r === room && focusKey ? meta.surfaces.indexOf(focusKey) : -1;
     const data = out.data;
     for (let p = 0; p < src.length; p += 4) {
       let red = src[p];
       let green = src[p + 1];
       let blue = src[p + 2];
-      for (let i = 0; i < count; i++) {
-        const gain = gains[i];
-        if (!gain) continue;
-        const m = maskAt(r, i, p);
-        if (m < 8) continue;
-        const a = m / 255;
-        red += (Math.min(255, src[p] * gain[0]) - src[p]) * a;
-        green += (Math.min(255, src[p + 1] * gain[1]) - src[p + 1]) * a;
-        blue += (Math.min(255, src[p + 2] * gain[2]) - src[p + 2]) * a;
+      const open = protect ? 1 - protect[p + 3] / 255 : 1; // 0 where something placed covers the surface
+      if (open > 0.02) {
+        for (let i = 0; i < count; i++) {
+          const gain = gains[i];
+          if (!gain) continue;
+          const m = maskAt(r, i, p);
+          if (m < 8) continue;
+          const a = (m / 255) * open;
+          red += (Math.min(255, src[p] * gain[0]) - src[p]) * a;
+          green += (Math.min(255, src[p + 1] * gain[1]) - src[p + 1]) * a;
+          blue += (Math.min(255, src[p + 2] * gain[2]) - src[p + 2]) * a;
+        }
       }
       if (spot >= 0) {
         // Spotlight: everything that is not the chosen surface falls back into shadow.
-        const keep = 0.34 + 0.66 * (maskAt(r, spot, p) / 255);
+        const keep = 0.34 + 0.66 * (maskAt(r, spot, p) / 255) * open;
         red *= keep;
         green *= keep;
         blue *= keep;
@@ -235,6 +344,21 @@ export async function initCustomiser() {
       data[p + 3] = 255;
     }
     r.ctx.putImageData(out, 0, 0);
+
+    if (litMatte) {
+      // The camera is on one placed thing: cut it out of the finished picture, dim the
+      // room, and set it back on top.
+      const w = meta.width;
+      const h = meta.height;
+      r.cutCtx.globalCompositeOperation = 'source-over';
+      r.cutCtx.clearRect(0, 0, w, h);
+      r.cutCtx.drawImage(litMatte, 0, 0, w, h);
+      r.cutCtx.globalCompositeOperation = 'source-in';
+      r.cutCtx.drawImage(r.canvas, 0, 0);
+      r.ctx.fillStyle = 'rgb(12 10 8 / 0.58)';
+      r.ctx.fillRect(0, 0, w, h);
+      r.ctx.drawImage(r.cutCanvas, 0, 0);
+    }
   }
 
   // Redraw at most once per display frame, however fast the visitor moves through options.
@@ -289,7 +413,9 @@ export async function initCustomiser() {
     const previous = room;
     room = next;
     preview = null;
+    previewItem = null;
     focusKey = null;
+    focusGroup = null;
     cam.zoom = 1;
     setComparing(false);
     render(next);
@@ -345,7 +471,7 @@ export async function initCustomiser() {
     menuBack = back;
     panel.classList.toggle('has-back', Boolean(back));
     // Finishes are laid out as a board of sample tiles; everything else is a list.
-    samples = Boolean(items[0]?.chip);
+    samples = items.some((item) => item.chip || item.thumb !== undefined);
     list.classList.toggle('lsc__list--samples', samples);
     crumb.textContent = title;
     list.replaceChildren(
@@ -357,7 +483,13 @@ export async function initCustomiser() {
         button.className = 'lsc__row';
         button.setAttribute('role', 'menuitem');
         if (item.current) button.setAttribute('aria-current', 'true');
-        const chip = item.chip ? `<i class="lsc__chip" style="--c: ${item.chip}"></i>` : '';
+        const chip = item.thumb
+          ? `<i class="lsc__chip lsc__chip--photo" style="background-image: url('${item.thumb}')"></i>`
+          : item.thumb === null
+            ? '<i class="lsc__chip lsc__chip--none"></i>'
+            : item.chip
+              ? `<i class="lsc__chip" style="--c: ${item.chip}"></i>`
+              : '';
         const value = item.value ? `<span class="lsc__value">${item.value}</span>` : '';
         const mark = item.current ? '<span class="lsc__tick" aria-hidden="true"></span>' : item.more ? '<span class="lsc__more" aria-hidden="true"></span>' : '';
         button.innerHTML = `${chip}<span class="lsc__label">${item.label}</span>${value}${mark}`;
@@ -365,6 +497,12 @@ export async function initCustomiser() {
         const over = () => highlight(i, false);
         button.addEventListener('pointerenter', (event) => event.pointerType === 'mouse' && over());
         button.addEventListener('focus', over);
+        if (item.stage) {
+          const heading = document.createElement('p');
+          heading.className = 'lsc__stage';
+          heading.textContent = item.stage;
+          li.append(heading);
+        }
         li.append(button);
         return li;
       }),
@@ -375,49 +513,97 @@ export async function initCustomiser() {
   let current = 0;
   function highlight(index, moveFocus = true) {
     current = index;
-    for (const [i, li] of [...list.children].entries()) li.firstChild.classList.toggle('is-current', i === index);
+    for (const [i, li] of [...list.children].entries()) li.lastChild.classList.toggle('is-current', i === index);
     counter.textContent = `${index + 1} / ${rows.length}`;
     note.textContent = rows[index]?.note ?? '';
     rows[index]?.over?.();
-    const button = list.children[index]?.firstChild;
+    const button = list.children[index]?.lastChild;
     if (moveFocus) button?.focus({ preventScroll: true });
     button?.scrollIntoView({ block: 'nearest' });
   }
 
   function showRoot(focusIndex = 0) {
     preview = null;
-    if (focusKey) focusOn(null);
+    previewItem = null;
+    if (focusKey || focusGroup) focusOn(null);
     const config = roomConfig();
+    const build = room.meta.build;
+    const groups = build ? room.meta.groups : [];
+    const stageRows = (stage) =>
+      groups
+        .filter((group) => group.stage === stage)
+        .map((group, i) => ({
+          stage: i === 0 ? (stage === 2 ? '02  Fixtures and fittings' : '03  Furniture and styling') : null,
+          label: group.label,
+          value: group.options.find((o) => o.id === placedIn(room)[group.id])?.label ?? 'Not chosen',
+          more: true,
+          note: 'Select to see the options and place one in the room.',
+          select: () => openGroup(group),
+        }));
+    const done = groups.filter((group) => placedIn(room)[group.id]).length;
     draw(config.label === 'Living' ? 'Living room' : config.label, [
       { label: 'Room', value: config.label, more: true, note: 'Move to another room. Scrolling also takes you through them.', select: () => showRooms() },
-      ...room.meta.surfaces.map((key) => ({
+      ...room.meta.surfaces.map((key, i) => ({
+        stage: build && i === 0 ? '01  Surface selections' : null,
         label: labelFor(key),
         value: nameOf(key, chosen[key]),
         more: true,
         note: 'Select to look closer and choose a finish.',
         select: () => openSurface(key),
       })),
-      { label: 'Themes', more: true, note: 'Set every surface in the home at once.', select: () => showThemes() },
+      ...stageRows(2),
+      ...stageRows(3),
+      { stage: build ? `${done} of ${groups.length} placed` : null, label: 'Themes', more: true, note: 'Set every surface in the home at once.', select: () => showThemes() },
       {
-        label: 'Compare',
-        value: comparing ? 'Original' : 'Yours',
-        note: 'Switch between the room as designed and your version.',
+        label: build ? 'The studio\u2019s version' : 'Compare',
+        value: comparing ? (build ? 'Showing' : 'Original') : build ? '' : 'Yours',
+        note: build ? 'See how the studio finished this room, then switch back to yours.' : 'Switch between the room as designed and your version.',
         select: () => {
           setComparing(!comparing);
           showRoot(current);
         },
       },
       {
-        label: 'Reset',
-        note: 'Return every surface to the original design.',
+        label: build ? 'Start again' : 'Reset',
+        note: build ? 'Empty this room and return its surfaces to the original.' : 'Return every surface to the original design.',
         select: () => {
           for (const key of Object.keys(FINISHES)) delete chosen[key];
+          placed[room.id] = {};
           setComparing(false);
           requestRender();
           showRoot(current);
         },
       },
     ], { focusIndex });
+    if (build && done === 0 && !Object.keys(chosen).length) note.textContent = 'An empty room. Begin with the surfaces, then place the fixtures.';
+  }
+
+  // The options for one kind of fixture or furniture: try them in the room, place one.
+  function openGroup(group) {
+    setComparing(false);
+    const index = room.meta.surfaces.length + 1 + room.meta.groups.indexOf(group);
+    const applied = placedIn(room)[group.id] ?? null;
+    const look = (option) => focusOnThing(group.id, (option ?? group.options.find((o) => o.id === applied) ?? group.options[0]).focus);
+    look(null);
+    const items = [{ id: null, label: 'None', spec: 'Leave this out.' }, ...group.options].map((option) => ({
+      label: option.label,
+      thumb: option.id ? `${room.dir}/${option.id}-t.webp?v=${__ASSET_VERSION__}` : null,
+      current: option.id === applied,
+      note: option.spec,
+      over: () => {
+        previewItem = { group: group.id, option: option.id };
+        if (option.id) look(option);
+        requestRender();
+      },
+      select: () => {
+        if (option.id) placedIn(room)[group.id] = option.id;
+        else delete placedIn(room)[group.id];
+        previewItem = null;
+        requestRender();
+        openGroup(group);
+      },
+    }));
+    draw(group.label, items, { back: () => showRoot(index), focusIndex: Math.max(0, items.findIndex((item, i) => (i ? group.options[i - 1].id : null) === applied)) });
   }
 
   function showRooms() {
@@ -503,13 +689,14 @@ export async function initCustomiser() {
     if ((event.key === 'Escape' || event.key === 'Backspace' || (!samples && event.key === 'ArrowLeft')) && menuBack) {
       event.preventDefault();
       menuBack();
-      list.children[current]?.firstChild.focus({ preventScroll: true });
+      list.children[current]?.lastChild.focus({ preventScroll: true });
     }
   });
   // Leaving the menu drops any finish that was only being previewed.
   panel.addEventListener('pointerleave', (event) => {
-    if (event.pointerType !== 'mouse' || !preview) return;
+    if (event.pointerType !== 'mouse' || (!preview && !previewItem)) return;
     preview = null;
+    previewItem = null;
     requestRender();
   });
 
