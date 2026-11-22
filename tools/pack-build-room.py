@@ -22,7 +22,7 @@ import numpy as np
 from PIL import Image, ImageFilter
 from scipy import ndimage
 
-W, H = 1600, 900
+W, H = 2240, 1260  # close to the generated size, so close-ups and large screens stay sharp
 src, room, spec_path = sys.argv[1:4]
 spec = json.load(open(spec_path))
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'public', 'cfg', room)
@@ -80,9 +80,9 @@ for i in range(0, len(surfaces), 3):
     while len(chans) < 3:
         chans.append(np.zeros((H, W)))
     Image.fromarray((np.dstack(chans) * 255).astype('uint8')).save(os.path.join(out, f'masks-{i // 3}.webp'), 'WEBP', lossless=True)
-Image.fromarray(base.astype('uint8')).save(os.path.join(out, 'base.webp'), 'WEBP', quality=86, method=6)
+Image.fromarray(base.astype('uint8')).save(os.path.join(out, 'base.webp'), 'WEBP', quality=92, method=6)
 # The studio's own finished version of the room, for comparison.
-Image.open(spec['studio']).convert('RGB').resize((W, H), Image.LANCZOS).save(os.path.join(out, 'studio.webp'), 'WEBP', quality=84, method=6)
+Image.open(spec['studio']).convert('RGB').resize((W, H), Image.LANCZOS).save(os.path.join(out, 'studio.webp'), 'WEBP', quality=90, method=6)
 
 # ---- options: lift each added thing off the empty room as a layer ----
 # Parts of the picture that the image model redraws differently every time (foliage
@@ -134,13 +134,33 @@ for group in spec['groups']:
         # shade is recoloured with the surface it falls on; `protect` marks the thing
         # itself, which must keep its own colour.
         solid = np.asarray(Image.fromarray((keep * 255).astype('uint8')).filter(ImageFilter.GaussianBlur(1.2))).astype(float) / 255
-        near = ndimage.binary_dilation(keep, iterations=55) & ~unstable
+        # What must keep its own colour when the surfaces are recoloured. Pulled in by a
+        # pixel or two, so the blended edge of the thing takes the new surface colour and
+        # no pale fringe is left. For open things (a tree, a ladder, glass) anything inside
+        # the outline that still looks like the empty room is surface seen through it,
+        # and is left free to be recoloured.
+        guard = ndimage.binary_erosion(keep, iterations=2)
+        regions = option.get('open_regions')  # parts of the picture (x0, y0, x1, y1 as shares) where gaps show the room behind
+        if group.get('open') or option.get('open') or regions:
+            # Unchanged from the empty room, or the same colour only lighter or darker:
+            # that is wall or floor (perhaps in the thing's shadow), not the thing.
+            ratio3 = a / np.maximum(base, 8)
+            same_hue = ((ratio3.max(axis=2) - ratio3.min(axis=2)) < 0.12) & (ratio3.mean(axis=2) > 0.45) & (ratio3.mean(axis=2) < 1.6)
+            see_through = (np.abs(a - base).sum(axis=2) < 34) | same_hue
+            if regions:
+                inside = np.zeros((H, W), bool)
+                for x0, y0, x1, y1 in regions:
+                    inside[int(y0 * H):int(y1 * H), int(x0 * W):int(x1 * W)] = True
+                see_through &= inside
+            guard &= ~ndimage.binary_closing(ndimage.binary_opening(see_through, iterations=1), iterations=1)
+        guard = np.asarray(Image.fromarray((guard * 255).astype('uint8')).filter(ImageFilter.GaussianBlur(0.8))).astype(float) / 255
+        near = ndimage.binary_dilation(keep, iterations=75) & ~unstable
         near = np.asarray(Image.fromarray((near * 255).astype('uint8')).filter(ImageFilter.GaussianBlur(16))).astype(float) / 255
         changed_here = np.clip((np.abs(lum(a) - lum(base)) - 5) / 14, 0, 1)
         alpha = np.clip(solid + near * changed_here * (1 - solid), 0, 1)
         layer = np.dstack([a, alpha * 255]).astype('uint8')
-        Image.fromarray(layer, 'RGBA').save(os.path.join(out, name + '.webp'), 'WEBP', quality=88, alpha_quality=92, method=6)
-        protect = np.dstack([np.full((H, W, 3), 255), solid * 255]).astype('uint8')
+        Image.fromarray(layer, 'RGBA').save(os.path.join(out, name + '.webp'), 'WEBP', quality=92, alpha_quality=96, method=6)
+        protect = np.dstack([np.full((H, W, 3), 255), guard * 255]).astype('uint8')
         Image.fromarray(protect, 'RGBA').save(os.path.join(out, name + '-p.webp'), 'WEBP', lossless=True)
         # A square thumbnail of the thing, and where the camera goes to look at it.
         ys, xs = np.nonzero(keep)

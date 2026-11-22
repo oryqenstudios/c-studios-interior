@@ -11,18 +11,22 @@
       "options": [
         {
           "label": "Oval stone",
-          "spec": "Freestanding. Carved travertine. About 1,700 mm long. Floor-mounted waste."
+          "spec": "Freestanding. Carved travertine. About 1,700 mm long. Floor-mounted waste.",
+          "open": false
         },
         {
           "label": "Rectangular white",
-          "spec": "Freestanding. Matte solid surface. About 1,700 mm long. Thin 12 mm rim."
+          "spec": "Freestanding. Matte solid surface. About 1,700 mm long. Thin 12 mm rim.",
+          "open": false
         },
         {
           "label": "Round timber soaking tub",
-          "spec": "Freestanding. Sealed hardwood. About 1,300 mm across. Deep-soak profile."
+          "spec": "Freestanding. Sealed hardwood. About 1,300 mm across. Deep-soak profile.",
+          "open": false
         }
       ],
-      "z": 6
+      "z": 6,
+      "open": false
     },
     {
       "id": "vanity",
@@ -31,18 +35,22 @@
       "options": [
         {
           "label": "Walnut, stone vessels",
-          "spec": "Wall-hung. Walnut veneer, travertine top. Two vessel basins, wall-mounted mixers."
+          "spec": "Wall-hung. Walnut veneer, travertine top. Two vessel basins, wall-mounted mixers.",
+          "open": false
         },
         {
           "label": "Oak, integrated basin",
-          "spec": "Wall-hung. Oak veneer, marble top. One wide integrated basin."
+          "spec": "Wall-hung. Oak veneer, marble top. One wide integrated basin.",
+          "open": false
         },
         {
           "label": "Twin stone pedestals",
-          "spec": "Floor-standing. Two fluted stone pedestal basins. Concealed trap."
+          "spec": "Floor-standing. Two fluted stone pedestal basins. Concealed trap.",
+          "open": false
         }
       ],
-      "z": 4
+      "z": 4,
+      "open": false
     },
     {
       "id": "mirror",
@@ -51,18 +59,22 @@
       "options": [
         {
           "label": "Backlit rectangle",
-          "spec": "Wall-mounted. LED halo, warm white. Needs a switched supply behind."
+          "spec": "Wall-mounted. LED halo, warm white. Needs a switched supply behind.",
+          "open": false
         },
         {
           "label": "Round, brass frame",
-          "spec": "Wall-mounted. Brushed brass frame. About 900 mm across."
+          "spec": "Wall-mounted. Brushed brass frame. About 900 mm across.",
+          "open": false
         },
         {
           "label": "Arched, black frame",
-          "spec": "Wall-mounted or leaning. Powder-coated steel frame. About 1,800 mm tall."
+          "spec": "Wall-mounted or leaning. Powder-coated steel frame. About 1,800 mm tall.",
+          "open": false
         }
       ],
-      "z": 1
+      "z": 1,
+      "open": false
     },
     {
       "id": "light",
@@ -71,18 +83,22 @@
       "options": [
         {
           "label": "Glass globe pendants",
-          "spec": "Ceiling-hung pair. Clear glass, brass rod. Bathroom-rated fitting required."
+          "spec": "Ceiling-hung pair. Clear glass, brass rod. Bathroom-rated fitting required.",
+          "open": true
         },
         {
           "label": "Brass tube sconces",
-          "spec": "Wall-mounted pair. Brushed brass. Warm white, dimmable."
+          "spec": "Wall-mounted pair. Brushed brass. Warm white, dimmable.",
+          "open": true
         },
         {
           "label": "Pleated linen pendant",
-          "spec": "Ceiling-hung. Linen shade. For a zone away from water."
+          "spec": "Ceiling-hung. Linen shade. For a zone away from water.",
+          "open": true
         }
       ],
-      "z": 2
+      "z": 2,
+      "open": false
     },
     {
       "id": "shower",
@@ -91,18 +107,22 @@
       "options": [
         {
           "label": "Round rain head, brass",
-          "spec": "Concealed thermostatic valve. Brushed brass. 250 mm rain head."
+          "spec": "Concealed thermostatic valve. Brushed brass. 250 mm rain head.",
+          "open": true
         },
         {
           "label": "Square rain head, black",
-          "spec": "Concealed thermostatic valve. Matte black. 250 mm square head."
+          "spec": "Concealed thermostatic valve. Matte black. 250 mm square head.",
+          "open": true
         },
         {
           "label": "Exposed column, nickel",
-          "spec": "Exposed thermostatic riser. Polished nickel. Cross-handle valves."
+          "spec": "Exposed thermostatic riser. Polished nickel. Cross-handle valves.",
+          "open": true
         }
       ],
-      "z": 3
+      "z": 3,
+      "open": false
     },
     {
       "id": "rail",
@@ -111,18 +131,36 @@
       "options": [
         {
           "label": "Heated ladder, brass",
-          "spec": "Wall-mounted, heated. Brushed brass. Needs a fused spur."
+          "spec": "Wall-mounted, heated. Brushed brass. Needs a fused spur.",
+          "open": false
         },
         {
           "label": "Single bar, black",
-          "spec": "Wall-mounted. Matte black. About 800 mm long."
+          "spec": "Wall-mounted. Matte black. About 800 mm long.",
+          "open": false
         },
         {
           "label": "Leaning oak ladder",
-          "spec": "Freestanding. Solid oak. No fixing required."
+          "spec": "Freestanding. Solid oak. No fixing required.",
+          "open": false,
+          "open_regions": [
+            [
+              0.57,
+              0.3,
+              0.71,
+              0.475
+            ],
+            [
+              0.57,
+              0.675,
+              0.71,
+              0.78
+            ]
+          ]
         }
       ],
-      "z": 3
+      "z": 3,
+      "open": false
     },
     {
       "id": "style",
@@ -131,18 +169,22 @@
       "options": [
         {
           "label": "Olive tree",
-          "spec": "Tall stone pot. Needs good daylight."
+          "spec": "Tall stone pot. Needs good daylight.",
+          "open": true
         },
         {
           "label": "Walnut stool and towels",
-          "spec": "Solid walnut stool. Cotton towels."
+          "spec": "Solid walnut stool. Cotton towels.",
+          "open": false
         },
         {
           "label": "Woven jute mat",
-          "spec": "Round, hand-woven jute. About 1,400 mm across."
+          "spec": "Round, hand-woven jute. About 1,400 mm across.",
+          "open": false
         }
       ],
-      "z": 5
+      "z": 5,
+      "open": false
     }
   ],
   "studio": "/home/user/.review/cfg-bath/base.png"

@@ -1,0 +1,174 @@
+{
+  "source": "/home/user/.review/walk2/k2.png",
+  "studio": "/home/user/.review/walk2/k2.png",
+  "work": "/home/user/.review/r-living",
+  "empty": "Remove everything else: both sofas, the coffee table, the rug, the floor lamp, the plant, the curtains, the timber slatted wall panelling (leave a plain plaster wall in its place), the artwork, and the dining table and chairs in the background. Keep the open walnut pivot door on the left.",
+  "keep": "the plaster walls and ceiling, the stone floor, the open walnut pivot door on the left, the floor-to-ceiling glass and the tropical garden outside, and the sunlight and leaf shadows",
+  "surfaces": [
+    "walls",
+    "floor"
+  ],
+  "groups": [
+    {
+      "id": "feature",
+      "label": "Feature wall",
+      "stage": 2,
+      "z": 1,
+      "options": [
+        {
+          "label": "Walnut slats",
+          "spec": "Full-height fluted walnut panelling. Concealed fixings.",
+          "add": "full-height vertical walnut slatted timber panelling covering the right-hand wall.",
+          "thing": "all of the timber slatted wall panelling on the right-hand wall."
+        },
+        {
+          "label": "Stone cladding",
+          "spec": "Honed travertine slabs, book-matched. About 20 mm thick.",
+          "add": "large honed travertine stone slabs cladding the whole right-hand wall.",
+          "thing": "all of the stone cladding on the right-hand wall."
+        },
+        {
+          "label": "Open shelving",
+          "spec": "Built-in walnut shelving with integrated LED strips.",
+          "add": "built-in walnut open shelving with a few ceramics and books, softly lit, covering the right-hand wall.",
+          "thing": "all of the built-in shelving on the right-hand wall and the objects on it."
+        }
+      ]
+    },
+    {
+      "id": "curtain",
+      "label": "Window treatment",
+      "stage": 2,
+      "z": 2,
+      "options": [
+        {
+          "label": "Sheer linen",
+          "spec": "Full-height sheers on a recessed ceiling track.",
+          "add": "full-height sheer cream linen curtains hanging at both sides of the glass at the far end of the room.",
+          "thing": "all of the curtains."
+        },
+        {
+          "label": "Olive velvet",
+          "spec": "Lined velvet drapes on a recessed track. Blackout lining.",
+          "add": "full-height heavy olive green velvet curtains hanging at both sides of the glass at the far end of the room.",
+          "thing": "all of the curtains."
+        },
+        {
+          "label": "Timber blinds",
+          "spec": "Slatted timber venetian blinds. Motorised option.",
+          "add": "slatted natural timber venetian blinds half lowered over the glass at the far end of the room.",
+          "thing": "all of the timber blinds."
+        }
+      ]
+    },
+    {
+      "id": "light",
+      "label": "Lighting",
+      "stage": 2,
+      "z": 3,
+      "open": true,
+      "options": [
+        {
+          "label": "Brass arc floor lamp",
+          "spec": "Floor-standing. Brushed brass, dome shade. Plug-in.",
+          "add": "one tall brushed brass arc floor lamp with a dome shade standing at the far right of the room, switched on.",
+          "thing": "the whole floor lamp."
+        },
+        {
+          "label": "Paper pendant",
+          "spec": "Ceiling-hung. Hand-made paper shade. Dimmable.",
+          "add": "one large sculptural white paper pendant lamp hanging from the ceiling over the centre of the room, switched on.",
+          "thing": "the whole pendant lamp and its cord."
+        },
+        {
+          "label": "Linear brass pendant",
+          "spec": "Ceiling-hung. Brushed brass bar, about 1,500 mm. Dimmable.",
+          "add": "one long slim linear brushed brass pendant light hanging horizontally from the ceiling over the centre of the room, switched on.",
+          "thing": "the whole linear pendant light and its cables."
+        }
+      ]
+    },
+    {
+      "id": "rug",
+      "label": "Rug",
+      "stage": 3,
+      "z": 4,
+      "options": [
+        {
+          "label": "Natural wool",
+          "spec": "Hand-loomed undyed wool. About 3 x 4 m.",
+          "add": "a large rectangular natural beige wool rug lying flat on the floor in the centre right of the room.",
+          "thing": "the whole rug."
+        },
+        {
+          "label": "Charcoal wool",
+          "spec": "Hand-tufted wool, charcoal. About 3 x 4 m.",
+          "add": "a large rectangular charcoal grey wool rug lying flat on the floor in the centre right of the room.",
+          "thing": "the whole rug."
+        },
+        {
+          "label": "Round jute",
+          "spec": "Hand-woven jute. About 3 m across.",
+          "add": "a large round woven jute rug lying flat on the floor in the centre right of the room.",
+          "thing": "the whole rug."
+        }
+      ]
+    },
+    {
+      "id": "sofa",
+      "label": "Sofas",
+      "stage": 3,
+      "z": 5,
+      "options": [
+        {
+          "label": "Olive velvet and cream boucle",
+          "spec": "A curved three-seater and a curved two-seater. Fixed upholstery.",
+          "add": "a curved olive green velvet sofa at the back and a curved cream boucle sofa at the right, facing each other across the centre right of the room, leaving the floor between them empty.",
+          "thing": "both sofas."
+        },
+        {
+          "label": "Modular linen",
+          "spec": "Low modular sofa in oatmeal linen. Loose covers.",
+          "add": "one large low L-shaped modular sofa in oatmeal linen with loose cushions, in the centre right of the room, leaving the floor in front of it empty.",
+          "thing": "the whole sofa and its cushions."
+        },
+        {
+          "label": "Tan leather pair",
+          "spec": "Two three-seaters in aniline leather on slim steel legs.",
+          "add": "two matching tan leather sofas on slim black steel legs facing each other across the centre right of the room, leaving the floor between them empty.",
+          "thing": "both sofas."
+        }
+      ]
+    },
+    {
+      "id": "table",
+      "label": "Coffee table",
+      "stage": 3,
+      "z": 6,
+      "options": [
+        {
+          "label": "Travertine block",
+          "spec": "Solid honed travertine. About 1,200 x 800 mm.",
+          "add": "one low rectangular block coffee table in honed travertine, on the floor in the centre right of the room.",
+          "thing": "the whole coffee table."
+        },
+        {
+          "label": "Round walnut",
+          "spec": "Solid walnut, turned base. About 1,000 mm across.",
+          "add": "one low round solid walnut coffee table, on the floor in the centre right of the room.",
+          "thing": "the whole coffee table."
+        },
+        {
+          "label": "Glass and brass",
+          "spec": "Tempered glass top on a brushed brass frame.",
+          "add": "one low rectangular coffee table with a clear glass top on a slim brushed brass frame, on the floor in the centre right of the room.",
+          "thing": "the whole coffee table."
+        }
+      ]
+    }
+  ],
+  "surfaces_desc": {
+    "walls": "all the plaster walls and the ceiling (not the timber door, not the glass, not the garden).",
+    "floor": "the entire stone floor indoors (not the door, not the garden)."
+  }
+}
