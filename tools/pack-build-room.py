@@ -119,7 +119,13 @@ for group in spec['groups']:
             print(f'  {room}: {name} outline came out empty, skipped')
             continue
         raw = np.clip((shift / np.percentile(strong, 85) - 0.3) / 0.35, 0, 1)
-        keep = ndimage.binary_opening(raw > 0.5, iterations=1)
+        # Safeguard: the outline may not reach beyond where the thing actually changed the
+        # picture (the model occasionally paints a whole wall).
+        allowed = ndimage.binary_fill_holes(ndimage.binary_closing(ndimage.binary_dilation(different, iterations=14), iterations=30))
+        keep = ndimage.binary_fill_holes(ndimage.binary_opening((raw > 0.5) & allowed, iterations=1))
+        if keep.mean() > 0.3:
+            print(f'  {room}: {name} outline covers {100 * keep.mean():.0f}% of the picture, skipped')
+            continue
         labels, count = ndimage.label(keep)
         sizes = ndimage.sum(keep, labels, range(1, count + 1))
         keep = np.isin(labels, [i + 1 for i, s in enumerate(sizes) if s > max(40, sizes.max() * 0.01)])

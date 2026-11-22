@@ -126,7 +126,7 @@ export async function initCustomiser() {
       const pw = cover * pictureRatio;
       const ph = cover;
       // Zoom until the thing fills about two thirds of the free area, within limits.
-      const z = Math.max(1.5, Math.min(3, Math.min((free.w * box.width * 0.68) / (cam.w * pw), (free.h * box.height * 0.68) / (cam.h * ph))));
+      const z = Math.max(1.5, Math.min(2.4, Math.min((free.w * box.width * 0.68) / (cam.w * pw), (free.h * box.height * 0.68) / (cam.h * ph))));
       cam.zoom = z;
       // Move the thing's centre to the centre of the free area, without showing an edge.
       const want = (c, size, screen, centre) => {
