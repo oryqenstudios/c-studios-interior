@@ -730,3 +730,40 @@ Visitors reported that choosing a material did not change the room. Agreed fix
 - Close-up option photographs repacked at the full generated size (2816 x 1584), like
   everything else on the board. `public/cfg` is now about 250 MB; a visitor only
   downloads the photographs they look at.
+
+## Items now change the room: live render
+
+The studio reported (with a screen recording) that choosing a light, curtains or other
+items did not change the room, in any room. Agreed fix: **live render**.
+
+- Stages 02 and 03 have a "Render my room" row. The visitor chooses items and materials,
+  presses it, and about 40 seconds later the room photograph is replaced by a new one made
+  for exactly those choices. Changing a choice afterwards returns the room to the look and
+  offers the render again.
+- `api/render.js` is a Vercel function. The visitor sends only a room, a look, a stage and
+  option numbers; the instruction to the image service is written on the server from
+  `tools/rooms/options.json`, so it cannot be used to make arbitrary pictures.
+- **Needs the studio's own Higgsfield key** in Vercel as `HIGGSFIELD_API_KEY` and
+  `HIGGSFIELD_API_SECRET`. Without them the row does not appear and the board behaves as
+  before. Each render spends one image of the studio's credit.
+- Limits: 5 renders a day per browser (kept in the browser, so it can be cleared) and 6
+  an hour per address on the server (memory only, so it resets). These slow abuse; they
+  do not cap total spend. A hard daily cap would need a small database.
+- Rendered photographs are served from the image service's own address and are NOT
+  reviewed by anyone before the visitor sees them. They are not kept by the site.
+- Tested end to end in development only (through this session's Higgsfield access). NOT
+  yet tested on Vercel with a real key.
+- Development: `vite` serves `/api/render` with the same code (see `vite.config.js`).
+
+## Other fixes from the same recording
+
+- **Wrong object in a room's samples** (a bathroom tap shown for Metal in the living
+  room): shared materials now have room-specific close-ups where needed. Metal: door
+  handle and lamp (living), wall light and drawer pull (bedroom). Stone: vanity top
+  (bathroom). Fabric: stool seat (kitchen), headboard (bedroom). 33 new images.
+- **Garden changing while browsing walls**: each wall photograph was a separate
+  generation with its own garden. Only the wall is now kept from each (`wall-mask.png`);
+  the garden, glazing and ceiling come from the empty room. Stage 01 always uses these
+  wall and floor photographs, so nothing but the surfaces changes from the empty shell on.
+- STILL DIFFERS: the looks' own photographs (stages 02 and 03) and rendered rooms each
+  have their own garden, so trees shift when moving between stages or looks.

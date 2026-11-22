@@ -3624,3 +3624,8 @@ body {
 .cfg__canvas.cfg__shot.cfg__shot--floor.is-leaving {
   z-index: 3;
 }
+
+/* the render row */
+.lsc__row[data-render] .lsc__label {
+  color: var(--brass);
+}

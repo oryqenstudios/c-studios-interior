@@ -35,7 +35,9 @@ export async function initLooks() {
   const pickKey = (gid) => (catalogue.groups[gid].kind === 'item' ? `${rooms[roomIndex].id}:${gid}` : gid);
   // What the look itself uses, shown until the visitor chooses otherwise.
   const lookDefault = (gid, look) => ({ flooring: look.spec.Flooring, wallfinish: look.spec.Walls, wallcolour: look.spec.Walls, joinery: look.spec.Joinery, stone: look.spec.Stone, metal: look.spec.Metal, fabric: look.spec.Fabric, glass: 'Clear' })[gid];
-  const optionShot = (gid, n) => `${base}/opts/${gid}-${n + 1}`;
+  // Shared materials have close-ups of their own for some rooms (metal on a door handle in
+  // the living room, not on a tap).
+  const optionShot = (gid, n) => `${base}/opts/${gid}${catalogue.groups[gid].rooms?.includes(rooms[roomIndex].id) ? `-${rooms[roomIndex].id}` : ''}-${n + 1}`;
 
   let roomIndex = 0;
   let lookIndex = 0; // one look runs through the whole home
@@ -59,9 +61,12 @@ export async function initLooks() {
         img.className = `cfg__canvas cfg__shot ${extraClass}`;
         img.alt = '';
         img.decoding = 'async';
-        img.sizes = '(max-aspect-ratio: 16/9) 178vh, 100vw';
-        img.srcset = `${key}-s.webp?v=${__ASSET_VERSION__} ${small}w, ${key}.webp?v=${__ASSET_VERSION__} ${large}w`;
-        img.src = `${key}.webp?v=${__ASSET_VERSION__}`;
+        if (key.startsWith('http')) img.src = key; // a photograph rendered for this visitor
+        else {
+          img.sizes = '(max-aspect-ratio: 16/9) 178vh, 100vw';
+          img.srcset = `${key}-s.webp?v=${__ASSET_VERSION__} ${small}w, ${key}.webp?v=${__ASSET_VERSION__} ${large}w`;
+          img.src = `${key}.webp?v=${__ASSET_VERSION__}`;
+        }
         img.ready = img.decode().catch(() => {});
         view.append(img);
         shots.set(key, img);
@@ -121,6 +126,81 @@ export async function initLooks() {
     return { wall: finish === 'slats' || finish === 'stone' ? `${dir}/wall-${finish}` : `${dir}/wall-${finish}-${colour + 1}`, floor: `${dir}/floor-${floor + 1}` };
   }
 
+  /* ---------- rendering the room with the visitor's choices ---------- */
+
+  // Fittings and furniture cannot be swapped inside a photograph, so the room is
+  // photographed afresh for the visitor's exact choices by /api/render (about 40 seconds;
+  // offered only when the studio has set it up).
+  let renderOn = false;
+  const renders = {}; // 'room:stage' -> { signature, url }
+  let rendering = null; // { key, started }
+  const RENDERS_A_DAY = 5;
+  // This room's choices up to a stage, by group id.
+  function choicesFor(stage) {
+    const out = {};
+    for (const s of [1, 2, 3]) {
+      if (s > stage) break;
+      for (const gid of catalogue.rooms[rooms[roomIndex].id][s]) if (picks[pickKey(gid)] != null) out[gid] = picks[pickKey(gid)];
+    }
+    return out;
+  }
+  const signature = (stage) => JSON.stringify([looks[lookIndex].id, choicesFor(stage)]);
+  function rendersLeft(spend = false) {
+    try {
+      const today = new Date().toDateString();
+      const kept = JSON.parse(localStorage.getItem('cs-renders') || '{}');
+      const used = kept.day === today ? kept.used : 0;
+      if (spend) localStorage.setItem('cs-renders', JSON.stringify({ day: today, used: used + 1 }));
+      return RENDERS_A_DAY - used;
+    } catch {
+      return RENDERS_A_DAY;
+    }
+  }
+  async function startRender(stage, redraw) {
+    if (rendering) return;
+    const room = rooms[roomIndex];
+    const key = `${room.id}:${stage}`;
+    const mine = signature(stage);
+    const say = (text) => {
+      if (crumb.textContent.startsWith(pad(stage))) note.textContent = text;
+    };
+    if (!Object.keys(choicesFor(stage)).length) return say('Choose at least one option first, then render.');
+    if (rendersLeft() <= 0) return say('That is all the renders for today. Your choices are saved and sent with your enquiry.');
+    rendering = { key, started: Date.now() };
+    redraw();
+    const clock = setInterval(() => {
+      const value = list.querySelector('[data-render] .lsc__value');
+      if (value) value.textContent = `${Math.round((Date.now() - rendering.started) / 1000)} s`;
+    }, 1000);
+    try {
+      const started = await fetch('/api/render', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ room: room.id, look: looks[lookIndex].id, stage, picks: choicesFor(stage) }) });
+      const { id, error } = await started.json();
+      if (!id) throw new Error(error || 'The render could not be started.');
+      rendersLeft(true);
+      let url = null;
+      for (let tries = 0; tries < 50 && !url; tries++) {
+        await new Promise((done) => setTimeout(done, 3000));
+        const state = await (await fetch(`/api/render?id=${id}`)).json();
+        if (state.status === 'failed') throw new Error('The render did not come out. Please try again.');
+        url = state.url ?? null;
+      }
+      if (!url) throw new Error('The render is taking too long. Please try again.');
+      await main.shot(url).ready;
+      renders[key] = { signature: mine, url };
+      clearInterval(clock);
+      rendering = null;
+      if (rooms[roomIndex] === room && crumb.textContent.startsWith(pad(stage))) {
+        showNow();
+        redraw();
+      } else if (rooms[roomIndex] === room) showNow();
+    } catch (error) {
+      clearInterval(clock);
+      rendering = null;
+      redraw();
+      say(error.message);
+    }
+  }
+
   let ticket = 0;
   // Dissolve to a photograph, with or without a floor over it. Both are decoded first so
   // they arrive together.
@@ -134,22 +214,32 @@ export async function initLooks() {
   }
   function showNow(push) {
     const stage = stageOf[roomIndex];
-    if (stage === 1 && customSurfaces()) {
+    // Surfaces are always the wall and floor photographs of the empty room, so the garden
+    // and everything else stay put from the empty shell through every choice.
+    if (stage === 1) {
       const keys = surfaceKeys(roomIndex);
       return show(keys.wall, push, keys.floor);
     }
+    // A photograph rendered for exactly the choices now made, if there is one.
+    const made = renders[`${rooms[roomIndex].id}:${stage}`];
+    if (stage >= 2 && made && made.signature === signature(stage)) return show(made.url, push);
     return show(urlOf(roomIndex, lookIndex, stage), push);
   }
   // Have the likely next photograph ready: the next stage of this look.
   function warm() {
     const s = stageOf[roomIndex];
-    if (s < 3) shot(urlOf(roomIndex, lookIndex, s + 1));
+    if (s === 0) {
+      const keys = surfaceKeys(roomIndex);
+      shot(keys.wall);
+      floors.shot(keys.floor);
+    } else if (s < 3) shot(urlOf(roomIndex, lookIndex, s + 1));
   }
   // While the list of looks is open, fetch this room in the other looks one at a time,
   // nearest in the list first, so choosing one is immediate without a burst of decoding.
   let warming = 0;
   async function warmLooks() {
     const mine = ++warming;
+    if (stageOf[roomIndex] <= 1) return; // surfaces do not use the looks' own photographs
     const s = Math.max(1, stageOf[roomIndex]);
     const order = looks.map((_, l) => l).sort((x, y) => Math.abs(x - lookIndex) - Math.abs(y - lookIndex));
     for (const l of order.slice(1, 7)) {
@@ -194,6 +284,7 @@ export async function initLooks() {
         if (item.current) button.setAttribute('aria-current', 'true');
         if (item.plain) button.classList.add('lsc__row--plain');
         if (item.chosen) button.classList.add('lsc__row--chosen');
+        if (item.id) button.dataset[item.id] = '';
         if (item.swatch) {
           // floor and wall of the look, as a two-tone sample
           const swatch = document.createElement('i');
@@ -302,7 +393,31 @@ export async function initLooks() {
     const room = rooms[roomIndex];
     const look = looks[lookIndex];
     const ids = catalogue.rooms[room.id][stage];
-    const heading = stage === 1 ? 'Shown in the room' : `Shown up close · room in ${look.label}`;
+    const heading = stage === 1 ? 'Shown in the room' : renderOn ? 'Choose, then render the room' : `Shown up close · room in ${look.label}`;
+    const key = `${room.id}:${stage}`;
+    const count = Object.keys(choicesFor(stage)).length;
+    const upToDate = renders[key]?.signature === signature(stage);
+    const busy = rendering?.key === key;
+    const redraw = () => crumb.textContent.startsWith(pad(stage)) && showStage(stage, ids.length);
+    const renderRow =
+      stage >= 2 && renderOn
+        ? [{
+            stage: 'See it in the room',
+            id: 'render',
+            label: busy ? 'Rendering your room' : upToDate ? 'Rendered with your choices' : 'Render my room',
+            value: busy ? '0 s' : upToDate ? '' : `${count} ${count === 1 ? 'choice' : 'choices'}`,
+            current: upToDate && !busy,
+            more: !upToDate && !busy,
+            note: busy
+              ? 'A new photograph of this room is being made with your choices. About 40 seconds.'
+              : upToDate
+                ? 'This photograph was made for your choices. Change any of them and render again.'
+                : rendering
+                  ? 'Another room is rendering. One at a time.'
+                  : `Makes a new photograph of this room with your choices. About 40 seconds. ${Math.max(0, rendersLeft())} left today.`,
+            select: () => startRender(stage, redraw),
+          }]
+        : [];
     const items = ids.map((gid, i) => {
       const group = catalogue.groups[gid];
       const picked = picks[pickKey(gid)];
@@ -323,12 +438,12 @@ export async function initLooks() {
         chosen: picked != null,
         stage: i === 0 ? heading : null,
         more: true,
-        note: stage === 1 ? `${group.options.length} options. Each one is shown in the room.` : `${group.options.length} options, each shown up close. The room stays in the ${look.label} look.`,
+        note: stage === 1 ? `${group.options.length} options. Each one is shown in the room.` : renderOn ? `${group.options.length} options, each shown up close. Render the room to see your choices in it.` : `${group.options.length} options, each shown up close. The room stays in the ${look.label} look.`,
         select: () => showOptions(gid, stage, i),
       };
     });
     const next = stage < 3 ? [{ stage: 'Next', label: `${pad(stage + 1)}  ${STAGES[stage + 1].label}`, more: true, note: STAGES[stage + 1].note, select: () => (setStage(stage + 1), showStage(stage + 1)) }] : [];
-    draw(`${pad(stage)}  ${STAGES[stage].label}`, [...items, ...next], { back: () => showRoot(2 + stage), focusIndex: focusIndex ?? 0 });
+    draw(`${pad(stage)}  ${STAGES[stage].label}`, [...items, ...renderRow, ...next], { back: () => showRoot(2 + stage), focusIndex: focusIndex ?? 0 });
   }
   // One item's options. Moving through them brings up each one's own photograph; selecting
   // keeps it. Going back returns to the room.
@@ -462,6 +577,12 @@ export async function initLooks() {
   }
   window.addEventListener('resize', applyCamera);
 
+  fetch('/api/render')
+    .then((response) => response.json())
+    .then((answer) => {
+      renderOn = Boolean(answer.enabled);
+    })
+    .catch(() => {});
   record();
   roomIndex = -1;
   goTo(0);

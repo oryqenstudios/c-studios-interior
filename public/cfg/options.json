@@ -176,6 +176,9 @@
      "label": "Concrete",
      "spec": "Matte."
     }
+   ],
+   "rooms": [
+    "bath"
    ]
   },
   "glass": {
@@ -236,6 +239,10 @@
      "label": "Copper",
      "spec": "Satin."
     }
+   ],
+   "rooms": [
+    "living",
+    "bedroom"
    ]
   },
   "fabric": {
@@ -270,6 +277,10 @@
      "label": "Stone grey linen",
      "spec": "Fine weave."
     }
+   ],
+   "rooms": [
+    "kitchen",
+    "bedroom"
    ]
   },
   "panelling": {

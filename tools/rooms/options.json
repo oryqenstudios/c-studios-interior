@@ -213,6 +213,9 @@
      "spec": "Matte.",
      "desc": "a matte cast concrete worktop"
     }
+   ],
+   "rooms": [
+    "bath"
    ]
   },
   "glass": {
@@ -285,6 +288,10 @@
      "spec": "Satin.",
      "desc": "a satin copper tap and cabinet handle"
     }
+   ],
+   "rooms": [
+    "living",
+    "bedroom"
    ]
   },
   "fabric": {
@@ -326,6 +333,10 @@
      "spec": "Fine weave.",
      "desc": "stone grey linen upholstery on a sofa cushion"
     }
+   ],
+   "rooms": [
+    "kitchen",
+    "bedroom"
    ]
   },
   "panelling": {

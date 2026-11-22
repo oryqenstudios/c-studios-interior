@@ -29,5 +29,11 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/render.js": {
+      "includeFiles": "tools/rooms/*.json",
+      "maxDuration": 30
+    }
+  }
 }
