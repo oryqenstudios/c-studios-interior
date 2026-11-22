@@ -667,3 +667,19 @@ second except the model film and the board, which show occasional 50 ms frames.
   60-second scroll of the whole page fell from about 60 to about 10-20, and the count
   varies run to run. The ones left are at room changes, where that browser blends two
   2K photographs in software. NOT VERIFIED on real hardware.
+
+## Statement and Services (sections 5 and 6), made interactive
+
+- **Statement**: the studio's sentence, "From imagination to creation – we bring visions
+  to life." (the studio's words; I set the hyphen as a spaced dash). Words rise in one by
+  one, line by line, on the plain dark page. INTERACTIVE: the sentence is set twice, a
+  fine brass outline and a solid fill; the fill sweeps across once, then follows the
+  visitor's pointer (or finger) across the line. Leaving the section fills it again.
+  With reduced motion it is simply the sentence.
+- **Services**: four cards (Residential, Commercial, Styling, Renovation management),
+  each with a line and three points. DRAFT COPY, written by me; the studio will replace
+  it with its own. Cards rise in sequence, tilt and light their edge on hover.
+  INTERACTIVE: one card is always selected and shows its three points; pointing at,
+  tapping or tabbing to a card selects it. On phones the others fold their points away.
+- **Bug fixed in the board**: its menu used `scrollIntoView`, which also scrolled the
+  page, pulling the visitor back up to the board when rooms changed on the way past.

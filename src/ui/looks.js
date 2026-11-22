@@ -187,7 +187,14 @@ export async function initLooks() {
     note.textContent = rows[index]?.note ?? '';
     const button = list.children[index]?.lastChild;
     if (moveFocus) button?.focus({ preventScroll: true });
-    button?.scrollIntoView({ block: 'nearest' });
+    // Keep the row in view inside the list only. (scrollIntoView would also scroll the
+    // page, dragging the visitor back to the board as rooms change on the way past.)
+    if (button && list.scrollHeight > list.clientHeight) {
+      const row = button.getBoundingClientRect();
+      const box = list.getBoundingClientRect();
+      if (row.top < box.top) list.scrollTop -= box.top - row.top;
+      else if (row.bottom > box.bottom) list.scrollTop += row.bottom - box.bottom;
+    }
   }
 
   const pad = (n) => String(n).padStart(2, '0');

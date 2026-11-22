@@ -7,7 +7,7 @@ import { initHeroVideo } from './ui/herovideo.js';
 import { initMagnetic } from './ui/magnetic.js';
 import { initForm } from './ui/form.js';
 import { initLooks } from './ui/looks.js';
-import { initFaq, initHeader, initReveals, initTilt, initWork } from './ui/sections.js';
+import { initFaq, initHeader, initReveals, initServices, initStatement, initTilt, initWork } from './ui/sections.js';
 import { initProcess } from './ui/process.js';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -29,6 +29,8 @@ initFilms();
 const heroVideo = initHeroVideo({ reducedMotion });
 initHeader();
 initReveals({ reducedMotion });
+initStatement({ reducedMotion });
+initServices();
 initTilt({ reducedMotion });
 initProcess({ reducedMotion });
 initWork();

@@ -3339,3 +3339,273 @@ body {
   background: linear-gradient(135deg, var(--a) 0 50%, var(--b) 50% 100%);
   box-shadow: 0 0 0 1px rgb(237 230 218 / 0.22);
 }
+
+/* ---------- Statement: one sentence, revealed word by word, line by line ---------- */
+.statement {
+  background: var(--ink);
+}
+
+.statement__text {
+  font-size: clamp(2.1rem, 1rem + 4.6vw, 5.25rem);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.statement__text.is-split .statement__line {
+  overflow: hidden;
+  /* room for descenders inside the mask */
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.statement__word {
+  display: inline-block;
+  transform: translateY(115%);
+  opacity: 0;
+  transition:
+    transform 1100ms cubic-bezier(0.2, 0.8, 0.1, 1),
+    opacity 700ms ease-out;
+  transition-delay: calc(var(--w, 0) * 90ms);
+  will-change: transform;
+}
+
+.statement__text.is-in .statement__word {
+  transform: none;
+  opacity: 1;
+}
+
+/* a brass rule draws in under the sentence once it has landed */
+.statement__text::after {
+  content: '';
+  display: block;
+  width: 4.5rem;
+  height: 1px;
+  margin: var(--space-6) auto 0;
+  background: var(--brass);
+  transform: scaleX(0);
+  transition: transform 1200ms cubic-bezier(0.2, 0.8, 0.1, 1) 1500ms;
+}
+
+.statement__text.is-in::after,
+.statement__text:not(.is-split)::after {
+  transform: none;
+}
+
+/* ---------- Service cards: refined ---------- */
+.cards {
+  gap: var(--space-5);
+}
+
+.card {
+  padding: var(--space-6) var(--space-5) var(--space-6);
+  background: linear-gradient(180deg, rgb(237 230 218 / 0.045), rgb(237 230 218 / 0.012));
+  border: 1px solid rgb(237 230 218 / 0.1);
+  border-top: 1px solid var(--brass);
+}
+
+.card__no {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  letter-spacing: 0.14em;
+  color: var(--brass);
+}
+
+.card h3 {
+  font-size: clamp(1.5rem, 1.2rem + 0.9vw, 1.875rem);
+  line-height: 1.15;
+}
+
+.card > p {
+  color: var(--muted);
+  min-height: 3.2em;
+}
+
+.card .ticks {
+  padding-top: var(--space-4);
+  border-top: 1px solid rgb(237 230 218 / 0.1);
+}
+
+/* the rise is a little longer and more spaced than the page's other reveals */
+.can-reveal .card[data-reveal] {
+  transform: translateY(3.5rem);
+  transition-duration: 1200ms;
+  transition-delay: calc(var(--i, 0) * 170ms);
+}
+
+.card.is-in.is-tilt-ready {
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0);
+  transition: transform 500ms var(--ease), background 500ms var(--ease);
+}
+
+.card.is-tilting {
+  background: linear-gradient(180deg, rgb(237 230 218 / 0.07), rgb(237 230 218 / 0.02));
+}
+
+/* ---------- Statement: outline to solid, following the visitor ---------- */
+.statement {
+  position: relative;
+  touch-action: pan-y;
+  cursor: default;
+}
+
+.statement__text {
+  position: relative;
+}
+
+/* the idea: a fine brass outline */
+.statement__text.is-split > .statement__line .statement__word {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(184 147 90 / 0.75);
+}
+
+/* the thing made: the same words, solid, uncovered from the left */
+.statement__fill {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: var(--plaster);
+  clip-path: inset(-10% calc(100% - var(--fill, 0%)) -10% 0);
+  pointer-events: none;
+}
+
+.statement__hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--space-7);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 800ms var(--ease) 3200ms;
+}
+
+.statement:has(.is-in) .statement__hint {
+  opacity: 0.7;
+}
+
+.statement.is-touched .statement__hint {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+@media (hover: none) {
+  .statement__hint {
+    font-size: 0;
+  }
+
+  .statement__hint::before {
+    content: 'Drag across the line';
+    font-size: var(--text-label, 0.6875rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .statement__hint {
+    display: none;
+  }
+}
+
+/* ---------- Services: the selected card opens ---------- */
+.card__toggle {
+  all: unset;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+}
+
+.card__toggle:focus-visible {
+  outline: 1px solid var(--brass);
+  outline-offset: 0.375rem;
+}
+
+.cards.is-interactive .card {
+  cursor: pointer;
+  transition:
+    opacity 1200ms var(--ease),
+    transform 1200ms var(--ease),
+    background 500ms var(--ease),
+    border-color 500ms var(--ease);
+}
+
+.cards.is-interactive .card h3,
+.cards.is-interactive .card > p,
+.cards.is-interactive .card__no {
+  transition: color 500ms var(--ease), opacity 500ms var(--ease);
+}
+
+.cards.is-interactive .card:not(.is-selected) h3 {
+  color: rgb(237 230 218 / 0.62);
+}
+
+.cards.is-interactive .card:not(.is-selected) .card__no {
+  opacity: 0.55;
+}
+
+.cards.is-interactive .card.is-selected {
+  background: linear-gradient(180deg, rgb(184 147 90 / 0.13), rgb(237 230 218 / 0.025) 70%);
+  border-color: rgb(184 147 90 / 0.45);
+  border-top-color: var(--brass);
+}
+
+/* the three points: drawn in one after another */
+.cards.is-interactive .card__more .ticks li {
+  opacity: 0;
+  transform: translateY(0.625rem);
+  transition:
+    opacity 450ms var(--ease),
+    transform 450ms var(--ease);
+}
+
+.cards.is-interactive .card.is-selected .card__more .ticks li {
+  opacity: 1;
+  transform: none;
+}
+
+.cards.is-interactive .card.is-selected .card__more .ticks li:nth-child(1) { transition-delay: 120ms; }
+.cards.is-interactive .card.is-selected .card__more .ticks li:nth-child(2) { transition-delay: 220ms; }
+.cards.is-interactive .card.is-selected .card__more .ticks li:nth-child(3) { transition-delay: 320ms; }
+
+.cards.is-interactive .card .ticks {
+  border-top-color: transparent;
+  transition: border-color 500ms var(--ease);
+}
+
+.cards.is-interactive .card.is-selected .ticks {
+  border-top-color: rgb(237 230 218 / 0.14);
+}
+
+/* stacked on small screens: closed cards fold their points away */
+@media (max-width: 47.99rem) {
+  .cards.is-interactive .card__more {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 600ms var(--ease);
+  }
+
+  .cards.is-interactive .card__more > .ticks {
+    overflow: hidden;
+    min-height: 0;
+    padding-top: 0;
+    border-top-width: 0;
+  }
+
+  .cards.is-interactive .card.is-selected .card__more {
+    grid-template-rows: 1fr;
+  }
+
+  .cards.is-interactive .card.is-selected .card__more > .ticks {
+    padding-top: var(--space-4);
+    border-top-width: 1px;
+  }
+
+  .card > p {
+    min-height: 0;
+  }
+}
+
+/* keep the tilt's quick transform once the rise has finished */
+.cards.is-interactive .card.is-in.is-tilt-ready {
+  transition:
+    transform 500ms var(--ease),
+    background 500ms var(--ease),
+    border-color 500ms var(--ease);
+}

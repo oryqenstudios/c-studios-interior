@@ -51,6 +51,115 @@ export function initReveals({ reducedMotion }) {
   for (const el of items) observer.observe(el);
 }
 
+// Statement: the sentence arrives word by word, one line after the other, each word
+// rising from behind the line's lower edge. It is set twice, one copy over the other: a
+// fine brass outline (the idea) and a solid fill (the thing made). The fill sweeps across
+// once on arrival; after that it follows the visitor's pointer or finger across the line.
+export function initStatement({ reducedMotion }) {
+  const text = document.querySelector('[data-statement]');
+  if (!text || reducedMotion || !('IntersectionObserver' in window)) return;
+  const section = text.closest('.statement');
+  text.setAttribute('aria-label', text.textContent.replace(/\s+/g, ' ').trim());
+  let index = 0;
+  const lines = [...text.querySelectorAll('.statement__line')];
+  for (const [l, line] of lines.entries()) {
+    const words = line.textContent.trim().split(/\s+/);
+    line.setAttribute('aria-hidden', 'true');
+    line.replaceChildren(
+      ...words.flatMap((word, i) => {
+        const span = document.createElement('span');
+        span.className = 'statement__word';
+        span.textContent = word;
+        span.style.setProperty('--w', index++ + l * 3); // a beat between the lines
+        return i < words.length - 1 ? [span, ' '] : [span];
+      }),
+    );
+  }
+  // the solid copy, laid exactly over the outlined one
+  const fill = document.createElement('span');
+  fill.className = 'statement__fill';
+  fill.setAttribute('aria-hidden', 'true');
+  fill.append(...lines.map((line) => line.cloneNode(true)));
+  text.append(fill);
+  text.classList.add('is-split');
+
+  // How far the fill reaches, 0 to 1 across the sentence, easing toward where it should be.
+  let shown = 0;
+  let goal = 0;
+  let running = false;
+  let lastTime = 0;
+  let speed = 2.2; // slower for the first sweep, quicker when following a pointer
+  function tick(now) {
+    const dt = Math.min(0.05, (now - lastTime) / 1000);
+    lastTime = now;
+    shown += (goal - shown) * (1 - Math.exp(-speed * dt));
+    if (Math.abs(goal - shown) < 0.001) shown = goal;
+    text.style.setProperty('--fill', `${(shown * 100).toFixed(2)}%`);
+    if (shown !== goal) requestAnimationFrame(tick);
+    else running = false;
+  }
+  function reach(value, rate) {
+    goal = Math.max(0, Math.min(1, value));
+    speed = rate;
+    if (running) return;
+    running = true;
+    lastTime = performance.now();
+    requestAnimationFrame(tick);
+  }
+
+  let arrived = false;
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (!entry.isIntersecting) return;
+      text.classList.add('is-in');
+      observer.disconnect();
+      // once the words have landed, the fill sweeps across by itself
+      setTimeout(() => {
+        arrived = true;
+        reach(1, 1.6);
+      }, 1500);
+    },
+    { threshold: 0.6 },
+  );
+  observer.observe(text);
+
+  const follow = (event) => {
+    if (!arrived) return;
+    const box = text.getBoundingClientRect();
+    // a little past each end, so the whole sentence can be emptied or filled
+    reach((event.clientX - box.left) / box.width * 1.1 - 0.05, 9);
+    section.classList.add('is-touched');
+  };
+  section.addEventListener('pointermove', follow);
+  section.addEventListener('pointerdown', follow);
+  const settle = () => arrived && reach(1, 2.2);
+  section.addEventListener('pointerleave', settle);
+  section.addEventListener('pointerup', (event) => event.pointerType !== 'mouse' && settle());
+  section.addEventListener('pointercancel', settle);
+}
+
+// Services: one card is always selected and shows its three points. Pointing at a card,
+// tapping it or tabbing to it selects it.
+export function initServices() {
+  const cards = [...document.querySelectorAll('.cards .card')];
+  if (!cards.length) return;
+  const list = cards[0].parentElement;
+  list.classList.add('is-interactive');
+  function select(card) {
+    for (const other of cards) {
+      const on = other === card;
+      other.classList.toggle('is-selected', on);
+      other.querySelector('.card__toggle')?.setAttribute('aria-expanded', String(on));
+    }
+  }
+  for (const card of cards) {
+    card.addEventListener('pointerenter', (event) => event.pointerType === 'mouse' && select(card));
+    card.addEventListener('click', () => select(card));
+    card.addEventListener('focusin', () => select(card));
+  }
+  select(cards[0]);
+}
+
 // Service cards: tilt toward the cursor and light the nearest edge. Mouse only.
 export function initTilt({ reducedMotion }) {
   if (reducedMotion || !finePointer()) return;
