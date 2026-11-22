@@ -40,7 +40,8 @@ for room, r in spec['rooms'].items():
     rooms.append({'id': room, 'label': LABELS[room], 'fixtures': r['fx'], 'furniture': r['fn']})
     print('packed', room)
 if not ONLY:
-  json.dump({'rooms': rooms, 'looks': [{k: look[k] for k in ('id', 'label', 'line', 'swatch', 'surface', 'spec')} for look in spec['looks']]},
+  kept = json.load(open(os.path.join(out, 'looks.json'))).get('pre', []) if os.path.exists(os.path.join(out, 'looks.json')) else []  # set by pack-pre.py
+  json.dump({'pre': kept, 'rooms': rooms, 'looks': [{k: look[k] for k in ('id', 'label', 'line', 'swatch', 'surface', 'spec')} for look in spec['looks']]},
           open(os.path.join(out, 'looks.json'), 'w'), indent=1)
 
 # ---- floors and walls: each as its own photograph of each empty room ----

@@ -37,6 +37,11 @@ export async function initLooks() {
   const lookDefault = (gid, look) => ({ flooring: look.spec.Flooring, wallfinish: look.spec.Walls, wallcolour: look.spec.Walls, joinery: look.spec.Joinery, stone: look.spec.Stone, metal: look.spec.Metal, fabric: look.spec.Fabric, glass: 'Clear' })[gid];
   // Shared materials have close-ups of their own for some rooms (metal on a door handle in
   // the living room, not on a tap).
+  // Looks for which every option of every item has been photographed in the room itself,
+  // so choosing one changes the room at once.
+  const inRoom = () => Boolean(data.pre?.includes(looks[lookIndex].id));
+  const roomShot = (gid, n, stage) => `${base}/${rooms[roomIndex].id}/pre/${looks[lookIndex].id}-${stage}-${gid}-${n + 1}`;
+  const latest = {}; // 'room:stage' -> the choice made most recently there: { gid, n }
   const optionShot = (gid, n) => `${base}/opts/${gid}${catalogue.groups[gid].rooms?.includes(rooms[roomIndex].id) ? `-${rooms[roomIndex].id}` : ''}-${n + 1}`;
 
   let roomIndex = 0;
@@ -54,7 +59,7 @@ export async function initLooks() {
     let shown = null;
     let wanted = null; // the photograph being brought up
     function shot(key) {
-      const [small, large] = [1408, 2816];
+      const [small, large] = key.includes('/pre/') ? [960, 1920] : [1408, 2816];
       let img = shots.get(key);
       if (!img) {
         img = new Image();
@@ -223,6 +228,9 @@ export async function initLooks() {
     // A photograph rendered for exactly the choices now made, if there is one.
     const made = renders[`${rooms[roomIndex].id}:${stage}`];
     if (stage >= 2 && made && made.signature === signature(stage)) return show(made.url, push);
+    // Otherwise the room with the visitor's most recent choice in it.
+    const last = latest[`${rooms[roomIndex].id}:${stage}`];
+    if (stage >= 2 && last && inRoom() && picks[pickKey(last.gid)] === last.n) return show(roomShot(last.gid, last.n, stage), push);
     return show(urlOf(roomIndex, lookIndex, stage), push);
   }
   // Have the likely next photograph ready: the next stage of this look.
@@ -394,7 +402,7 @@ export async function initLooks() {
     const room = rooms[roomIndex];
     const look = looks[lookIndex];
     const ids = catalogue.rooms[room.id][stage];
-    const heading = stage === 1 ? 'Shown in the room' : renderOn ? 'Choose, then render the room' : `Shown up close · room in ${look.label}`;
+    const heading = stage === 1 ? 'Shown in the room' : inRoom() ? 'Shown in the room, one at a time' : renderOn ? 'Choose, then render the room' : `Shown up close · room in ${look.label}`;
     const key = `${room.id}:${stage}`;
     const count = Object.keys(choicesFor(stage)).length;
     const upToDate = renders[key]?.signature === signature(stage);
@@ -440,7 +448,7 @@ export async function initLooks() {
         stack: true,
         stage: i === 0 ? heading : null,
         more: true,
-        note: stage === 1 ? `${group.options.length} options. Each one is shown in the room.` : renderOn ? `${group.options.length} options, each shown up close. Render the room to see your choices in it.` : `${group.options.length} options, each shown up close. The room stays in the ${look.label} look.`,
+        note: stage === 1 ? `${group.options.length} options. Each one is shown in the room.` : inRoom() ? `${group.options.length} options. Each one is shown in the room as you move through them.` : renderOn ? `${group.options.length} options, each shown up close. Render the room to see your choices in it.` : `${group.options.length} options, each shown up close. The room stays in the ${look.label} look.`,
         select: () => showOptions(gid, stage, i),
       };
     });
@@ -462,9 +470,9 @@ export async function initLooks() {
       label: option.label,
       swatch: gid === 'wallcolour' ? [option.spec, option.spec] : null,
       current: picks[key] === n,
-      note: surface ? `${option.spec} Shown in the room.` : `${option.spec} Shown up close.`,
+      note: surface || inRoom() ? `${option.spec} Shown in the room.` : `${option.spec} Shown up close.`,
       over: () => {
-        if (!surface) return show(optionShot(gid, n));
+        if (!surface) return show(inRoom() ? roomShot(gid, n, stage) : optionShot(gid, n));
         // floors and walls are tried in the room itself
         trial = { [gid]: n };
         // a colour only shows on a painted or plastered wall
@@ -472,9 +480,13 @@ export async function initLooks() {
         showNow();
       },
       select: () => {
-        if (picks[key] === n) delete picks[key];
-        else {
+        const place = `${rooms[roomIndex].id}:${stage}`;
+        if (picks[key] === n) {
+          delete picks[key];
+          if (latest[place]?.gid === gid) delete latest[place];
+        } else {
           picks[key] = n;
+          if (!surface) latest[place] = { gid, n };
           if (surface && trial?.wallfinish != null && gid === 'wallcolour') picks.wallfinish = trial.wallfinish;
         }
         record();
@@ -489,7 +501,7 @@ export async function initLooks() {
       { label: 'Look', value: looks[lookIndex].label, plain: true, note: looks[lookIndex].line },
       ...list.map((c) => ({ label: c.label, value: c.value, plain: true, note: c.where })),
       ...(list.length
-        ? [{ stage: 'Start again', label: 'Clear my choices', more: true, note: 'Removes every choice; the look stays.', select: () => { for (const k of Object.keys(picks)) delete picks[k]; record(); showSpecification(); } }]
+        ? [{ stage: 'Start again', label: 'Clear my choices', more: true, note: 'Removes every choice; the look stays.', select: () => { for (const k of Object.keys(picks)) delete picks[k]; for (const k of Object.keys(latest)) delete latest[k]; record(); showSpecification(); } }]
         : []),
     ], { back: () => showRoot(6) });
     note.textContent = list.length ? 'These choices are sent with your enquiry.' : 'Nothing chosen yet. Open a stage and choose from any item.';
