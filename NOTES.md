@@ -832,3 +832,5 @@ pendants, balcony with plants, marble floor).
   Wide file about 19 MB (was 5.7 MB).
 - NOT CHANGED: the scroll-driven model film and the material board still show the
   earlier tropical house with a garden. They no longer match the hero.
+
+- Hero retake: the first condo clip had furniture stretching and passing through other pieces (the studio flagged it). Replaced with a calmer take: steady half-orbit, pieces lower in one at a time and keep their shape.
