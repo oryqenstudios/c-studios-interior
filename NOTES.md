@@ -814,3 +814,21 @@ The studio rejected the quality of the in-room option photographs. Two faults, b
 ## Quiet stone has in-room options too
 
 Quiet stone: 170 option photographs (no glass), packed like Warm walnut. The other six looks were paused by the studio before they started; they still show close-ups. To add one: `genpre.py <look>` (scratch script, see NOTES above), then `python3 tools/pack-pre.py .review/looks .review/pre <all looks to include>`.
+
+## Hero: Singapore condominium
+
+The studio's client asked for the hero to be a Singapore home. The studio supplied a
+reference photograph of a condo living room (marble TV wall, oak cabinetry with lit
+niches, cove-lit false ceiling, wall air-conditioner, dry kitchen with island and
+pendants, balcony with plants, marble floor).
+
+- The reference was used for its features only, not copied: the hero room was generated
+  anew (`.review/sg/G1.png`) keeping the existing furniture (olive and cream sofas,
+  travertine table, rug, brass lamp) in a condo of that kind.
+- Same animation as before: one orbiting take in which the room builds itself, made by
+  generating the un-build from the finished room and reversing it. 10 s, same text.
+- The video model outputs 1080p. The studio asked for 2K, so the clip is enlarged to
+  2560 x 1440 (810 x 1440 for phones). That is an enlargement, not extra detail.
+  Wide file about 19 MB (was 5.7 MB).
+- NOT CHANGED: the scroll-driven model film and the material board still show the
+  earlier tropical house with a garden. They no longer match the hero.
