@@ -834,3 +834,7 @@ pendants, balcony with plants, marble floor).
   earlier tropical house with a garden. They no longer match the hero.
 
 - Hero retake: the first condo clip had furniture stretching and passing through other pieces (the studio flagged it). Replaced with a calmer take: steady half-orbit, pieces lower in one at a time and keep their shape.
+
+## Instagram reel
+
+`public/reel/c-studio-interior-reel.mp4` (1080 x 1920, 30 fps, for posting) and `-4k.mp4` (2160 x 3840, 60 fps master). 26 s, silent sound track. Made from the site's own footage: hero clip, model film, the living room built up, looks, sofa options, end card. Scripts in `tools/reel/` (paths point at this session's working folders). The 4K is an enlargement: sources are 1080p video and 2816-wide photographs cropped to portrait. No music: add in Instagram.
