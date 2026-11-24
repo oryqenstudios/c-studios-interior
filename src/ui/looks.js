@@ -109,6 +109,9 @@ export async function initLooks() {
       const next = key ? shot(key) : null;
       if (next === shown) return;
       const previous = shown;
+      // Safety net: the photograph being left also becomes the backdrop, so if a frame is
+      // ever painted with neither photograph opaque, the room shows, never the film behind.
+      if (previous && !extraClass && previous.currentSrc) view.style.background = `center / cover no-repeat url("${previous.currentSrc}")`;
       shown = next;
       for (const img of shots.values()) if (img !== next && img !== previous) img.classList.remove('is-active', 'is-under', 'is-leaving');
       if (next) {

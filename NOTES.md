@@ -844,3 +844,6 @@ pendants, balcony with plants, marble floor).
 `public/reel/c-studio-interior-walkthrough.mp4`: a 2 min 50 s guided recording of the real site on a phone-sized screen (1080 x 1920), for presenting to the director. Nine captioned parts; taps are marked. The material board is shown in Warm walnut only (the look with complete in-room options). Recorded by `tools/reel/walk.cjs` against the local build.
 
 - Landscape walkthrough: `public/reel/c-studio-interior-walkthrough-landscape.mp4`, 1920 x 1080, exactly 50 s. Hero at real speed and in full; the material board (Warm walnut) with nothing removed, played 1.17x; the scroll film 3x and the closing sections (statement, services, process) 2.4x. Recorded by `tools/reel/walk2.cjs`.
+
+- Landscape walkthrough, final: 59 s, 1920 x 1080, everything at real speed. Hero in full, the scroll film at an unhurried scroll, then the kitchen board in Warm walnut (cabinetry and oven, island sink and tap, stone, joinery, pendant lights). Recorded by `tools/reel/walk3.cjs`.
+- Site fix found while recording: going back from an option list could flash the film behind the board for one frame. The photograph being left is now also the backdrop.
