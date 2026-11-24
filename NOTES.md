@@ -838,3 +838,7 @@ pendants, balcony with plants, marble floor).
 ## Instagram reel
 
 `public/reel/c-studio-interior-reel.mp4` (1080 x 1920, 30 fps, for posting) and `-4k.mp4` (2160 x 3840, 60 fps master). 26 s, silent sound track. Made from the site's own footage: hero clip, model film, the living room built up, looks, sofa options, end card. Scripts in `tools/reel/` (paths point at this session's working folders). The 4K is an enlargement: sources are 1080p video and 2816-wide photographs cropped to portrait. No music: add in Instagram.
+
+## Walkthrough video
+
+`public/reel/c-studio-interior-walkthrough.mp4`: a 2 min 50 s guided recording of the real site on a phone-sized screen (1080 x 1920), for presenting to the director. Nine captioned parts; taps are marked. The material board is shown in Warm walnut only (the look with complete in-room options). Recorded by `tools/reel/walk.cjs` against the local build.
