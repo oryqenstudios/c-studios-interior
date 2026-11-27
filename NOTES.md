@@ -847,3 +847,21 @@ pendants, balcony with plants, marble floor).
 
 - Landscape walkthrough, final: 59 s, 1920 x 1080, everything at real speed. Hero in full, the scroll film at an unhurried scroll, then the kitchen board in Warm walnut (cabinetry and oven, island sink and tap, stone, joinery, pendant lights). Recorded by `tools/reel/walk3.cjs`.
 - Site fix found while recording: going back from an option list could flash the film behind the board for one frame. The photograph being left is now also the backdrop.
+
+## Site photographs from the client (kitchen job)
+
+The studio's client approved the photo review sheet ("C-Studio-Interior-Photo-Review" in
+the studio's Drive) and asked for the photographs to go up as they are, uncropped, at
+the sheet's locations. The sheet was written for a page layout this site does not have,
+so two blocks were added to hold them:
+
+- Photo 2: Services, Renovation management card.
+- Photos 3 and 4: Process, step 03 Build.
+- New "Case study" block (after Selected work): photo 1 (before), 4, 7, 8.
+- New "Millwork partnership" block: photos 3, 8, 9.
+- NOT PLACED: photos 5 and 6 (the sheet gives them no location), and three extra
+  photographs sent that are not in the sheet. Kept in `.review/site-extra` (not in git).
+- Photos are 1280 px on the long side as received, shown whole (no cropping).
+- DRAFT COPY, mine: the two blocks' headings and captions. Nothing is claimed about the
+  millwork partner beyond the heading.
+- People are identifiable in several photographs. Published on the client's go-ahead.
