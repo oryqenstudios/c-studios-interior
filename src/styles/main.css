@@ -3925,3 +3925,75 @@ mark.todo {
   color: var(--muted);
   font-style: italic;
 }
+
+/* ---------- After the door opens: the material board teaser, over the hero's room ---------- */
+.film--build.is-live {
+  height: 984vh;
+}
+
+.film__teaser {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 900ms var(--ease),
+    visibility 0s linear 900ms;
+}
+
+.is-film-done .film__teaser {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 900ms var(--ease),
+    visibility 0s;
+}
+
+.film__teaser img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.film__teaser::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgb(20 19 18 / 0.78) 0%, rgb(20 19 18 / 0.45) 34%, rgb(20 19 18 / 0) 62%);
+}
+
+.film__teaser-text {
+  position: absolute;
+  z-index: 1;
+  left: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+  max-width: 26rem;
+}
+
+.film__teaser-text h2 {
+  font-size: clamp(2.2rem, 1.5rem + 2.6vw, 3.75rem);
+}
+
+.film__teaser-text p:not(.label) {
+  color: rgb(237 230 218 / 0.9);
+}
+
+@media (max-width: 47.99rem) {
+  .film__teaser::after {
+    background: linear-gradient(to top, rgb(20 19 18 / 0.88) 0%, rgb(20 19 18 / 0.55) 42%, rgb(20 19 18 / 0) 70%);
+  }
+
+  .film__teaser-text {
+    top: auto;
+    bottom: calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
+    right: var(--gutter);
+    transform: none;
+  }
+}

@@ -908,3 +908,5 @@ Applied as listed by the studio; answers taken from the sheet's Questions tab.
 - Also changed for consistency: FAQ answer now says "Project management".
 - NOT CHANGED, now out of step: the FAQ "How long does a project take?" still says
   three to five months; the reel and walkthrough videos show the old layout.
+
+- Material board teaser: no longer a separate block. After "Now open the door" the film holds on its last frame, then dissolves to the hero's finished room (`/film/hero/final-*.jpg`) with "Make it yours" and the button over it. The film section is 984vh with the film ending at 0.876, so the film's scroll speed is unchanged.
