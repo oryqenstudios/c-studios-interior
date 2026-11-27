@@ -7,7 +7,7 @@
 const STAGES = [
   { label: 'Empty shell', note: 'The room as the builder leaves it.' },
   { label: 'Surface selections', note: 'Flooring and wall finishes.' },
-  { label: 'Fixtures and fittings', note: 'Joinery, sanitary ware, lighting and hardware.' },
+  { label: 'Fixtures and fittings', note: 'Millwork, sanitary ware, lighting and hardware.' },
   { label: 'Furniture and styling', note: 'The pieces that make it yours.' },
 ];
 
@@ -384,8 +384,19 @@ export async function initLooks() {
     const look = looks[lookIndex];
     const stage = stageOf[roomIndex];
     draw(room.label, [
-      { label: 'Room', value: room.label, more: true, note: 'Move to another room. Scrolling also takes you through them.', select: showRooms },
+      { label: 'Room', value: room.label, more: true, note: section ? 'Move to another room. Scrolling also takes you through them.' : 'Move to another room.', select: showRooms },
       { label: 'Look', value: look.label, more: true, note: `${look.line} ${looks.length} looks to choose from.`, select: showLooks },
+      // Wall colour, offered beside the look: it shows on the surfaces stage, so choosing one goes there.
+      {
+        label: 'Colour',
+        value: catalogue.groups.wallcolour.options[picks.wallcolour ?? look.surface.colour].label,
+        more: true,
+        note: 'Wall colour, shown in the room at the surfaces stage.',
+        select: () => {
+          setStage(1);
+          showOptions('wallcolour', 1, catalogue.rooms[room.id][1].indexOf('wallcolour'));
+        },
+      },
       ...STAGES.map((s, i) => ({
         stage: i === 0 ? 'Build it up' : null,
         label: i === 0 ? s.label : `${pad(i)}  ${s.label}`,
@@ -395,7 +406,7 @@ export async function initLooks() {
         note: s.note,
         select: () => {
           setStage(i);
-          if (i === 0) showRoot(2);
+          if (i === 0) showRoot(3);
           else showStage(i);
         },
       })),
@@ -412,7 +423,14 @@ export async function initLooks() {
     });
   }
   function record() {
-    if (field) field.value = [`Look: ${looks[lookIndex].label}`, ...chosen().map((c) => `${c.where} - ${c.label}: ${c.value}`)].join('\n');
+    const text = [`Look: ${looks[lookIndex].label}`, ...chosen().map((c) => `${c.where} - ${c.label}: ${c.value}`)].join('\n');
+    if (field) field.value = text;
+    // the enquiry form is on the main page: keep the choices for it
+    try {
+      localStorage.setItem('cs-specification', text);
+    } catch {
+      /* storage unavailable */
+    }
   }
 
   // What a stage puts into the room. Every item and material opens its own options.
@@ -471,7 +489,7 @@ export async function initLooks() {
       };
     });
     const next = stage < 3 ? [{ stage: 'Next', label: `${pad(stage + 1)}  ${STAGES[stage + 1].label}`, more: true, note: STAGES[stage + 1].note, select: () => (setStage(stage + 1), showStage(stage + 1)) }] : [];
-    draw(`${pad(stage)}  ${STAGES[stage].label}`, [...items, ...renderRow, ...next], { back: () => showRoot(2 + stage), focusIndex: focusIndex ?? 0 });
+    draw(`${pad(stage)}  ${STAGES[stage].label}`, [...items, ...renderRow, ...next], { back: () => showRoot(3 + stage), focusIndex: focusIndex ?? 0 });
   }
   // One item's options. Moving through them brings up each one's own photograph; selecting
   // keeps it. Going back returns to the room.
@@ -524,7 +542,7 @@ export async function initLooks() {
       ...(list.length
         ? [{ stage: 'Start again', label: 'Clear my choices', more: true, note: 'Removes every choice; the look stays.', select: () => { for (const k of Object.keys(picks)) delete picks[k]; for (const k of Object.keys(latest)) delete latest[k]; record(); showSpecification(); } }]
         : []),
-    ], { back: () => showRoot(6) });
+    ], { back: () => showRoot(7) });
     note.textContent = list.length ? 'These choices are sent with your enquiry.' : 'Nothing chosen yet. Open a stage and choose from any item.';
   }
   function showLooks() {

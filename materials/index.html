@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#141312" />
+    <title>The material board · C Studio Interior</title>
+    <meta
+      name="description"
+      content="Choose a look, then floors, walls, fittings and furniture, and see each room change. The material board of C Studio Interior."
+    />
+    <!-- The site address comes from VITE_SITE_URL in .env (currently a placeholder) -->
+    <link rel="canonical" href="%VITE_SITE_URL%/materials/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="C Studio Interior" />
+    <meta property="og:title" content="C Studio Interior · An interior journey with you." />
+    <meta
+      property="og:description"
+      content="An interior journey with you. Interior design in Singapore."
+    />
+    <meta property="og:url" content="%VITE_SITE_URL%/materials/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A living room in olive, cream and walnut, open to a tropical garden." />
+    <meta property="og:locale" content="en_SG" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="C Studio Interior · An interior journey with you." />
+    <meta
+      name="twitter:description"
+      content="An interior journey with you. Interior design in Singapore."
+    />
+    <meta name="twitter:image" content="%VITE_SITE_URL%/og-image.png" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link
+      rel="preload"
+      href="/src/assets/fonts/bodoni-moda-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/src/assets/fonts/jost-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body class="board-body">
+    <header class="site-header">
+      <a class="logo" href="/" aria-label="C Studio Interior, home">
+        <img class="logo__mark" src="/src/assets/logo-c.png" width="434" height="472" alt="" />
+        <span class="logo__word" aria-hidden="true">Studio Interior</span>
+      </a>
+      <nav class="site-nav" aria-label="Sections">
+        <a href="/#services">Services</a>
+        <a href="/#process">Process</a>
+        <a href="/materials/" aria-current="page">Materials</a>
+        <a href="/#about">About</a>
+        <a href="/#consultation">Contact</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <h1 class="visually-hidden">The material board</h1>
+      <section class="board-page" aria-label="The material board: choose a look, then finishes, fittings and furniture for each room">
+        <div class="cfg" data-customiser="/cfg">
+            <div class="cfg__view">
+            </div>
+            <aside class="lsc" aria-label="Customise the home">
+              <header class="lsc__banner">
+                <span class="lsc__studio">The material board</span>
+                <h2>Make it yours</h2>
+              </header>
+              <div class="lsc__sub">
+                <button type="button" class="lsc__back" data-back aria-label="Back"></button>
+                <span class="lsc__crumb"></span>
+                <span class="lsc__count" aria-hidden="true"></span>
+              </div>
+              <ul class="lsc__list" role="menu" aria-label="Options"></ul>
+              <p class="lsc__desc" aria-live="polite"></p>
+            </aside>
+            <p class="lsc__keys" aria-hidden="true">Choose a room from the list</p>
+          </div>
+        <span class="film__note" aria-hidden="true">Concept visual</span>
+        <a class="board-page__enquire" href="/#consultation">Send your choices with an enquiry</a>
+      </section>
+    </main>
+    <script type="module" src="/src/materials.js"></script>
+  </body>
+</html>

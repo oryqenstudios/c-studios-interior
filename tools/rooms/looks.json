@@ -169,34 +169,6 @@
    }
   },
   {
-   "id": "blue",
-   "label": "Blue concrete",
-   "line": "Microcement, dusty blue and matte black.",
-   "swatch": [
-    "#B4AFA6",
-    "#7F93A3"
-   ],
-   "floor": "seamless matte grey microcement",
-   "walls": "dusty blue Venetian plaster with a subtle polished sheen",
-   "metal": "matte black",
-   "joinery": "black-stained ash with visible grain",
-   "stone": "matte grey concrete",
-   "fabric": "charcoal wool and stone grey linen",
-   "spec": {
-    "Flooring": "Microcement, seamless, matte",
-    "Walls": "Venetian plaster, dusty blue",
-    "Joinery": "Black-stained ash",
-    "Stone": "Concrete",
-    "Metal": "Matte black",
-    "Fabric": "Charcoal wool, stone grey linen"
-   },
-   "surface": {
-    "floor": 8,
-    "finish": "venetian",
-    "colour": 6
-   }
-  },
-  {
    "id": "sand",
    "label": "Sand and oak",
    "line": "Light oak chevron, timber slats and brass.",
@@ -228,7 +200,7 @@
  "rooms": {
   "living": {
    "empty": ".review/r-living/empty2.png",
-   "fixtures": "full-height {joinery} wall panelling with open shelving and warm concealed LED strip lighting on the right-hand wall, one long linear {metal} pendant light hanging from the ceiling, and floor-to-ceiling sheer ivory linen curtains drawn to the sides of the glazing on a concealed track",
+   "fixtures": "full-height {millwork} wall panelling with open shelving and warm concealed LED strip lighting on the right-hand wall, one long linear {metal} pendant light hanging from the ceiling, and floor-to-ceiling sheer ivory linen curtains drawn to the sides of the glazing on a concealed track",
    "furniture": "a large rug, two generous low sofas upholstered in {fabric} arranged in an L around a low coffee table with a {stone} top, a {metal} floor lamp, and two or three quiet ceramic objects and books on the shelves",
    "fx": [
     "Wall panelling and shelving",
@@ -244,7 +216,7 @@
   },
   "kitchen": {
    "empty": ".review/r-kitchen/empty2.png",
-   "fixtures": "a full wall of handleless floor-to-ceiling kitchen cabinetry in {joinery} on the back wall with an integrated oven, a {stone} splashback and worktop with warm under-cabinet LED lighting, a long kitchen island with a {stone} waterfall top, an undermounted sink and a {metal} tap, and two pendant lights with {metal} details hanging over the island",
+   "fixtures": "a full wall of handleless floor-to-ceiling kitchen cabinetry in {millwork} on the back wall with an integrated oven, a {stone} splashback and worktop with warm under-cabinet LED lighting, a long kitchen island with a {stone} waterfall top, an undermounted sink and a {metal} tap, and two pendant lights with {metal} details hanging over the island",
    "furniture": "four bar stools with {metal} frames and seats in {fabric} at the island, a ceramic bowl of fruit and a small vase of branches on the island, and sheer ivory linen curtains at the side of the glazing",
    "fx": [
     "Cabinetry and oven",
@@ -261,7 +233,7 @@
   "bedroom": {
    "empty": ".review/r-bedroom/empty2.png",
    "fixtures": "a full-width upholstered headboard wall panel in {fabric} on the back wall, two {metal} wall lights mounted either side of where the bed will stand, and floor-to-ceiling sheer ivory linen curtains at the glazing on a concealed track",
-   "furniture": "a king-size bed with crisp white bedding and a throw in {fabric} centred on the back wall, two bedside tables in {joinery}, a large soft rug under the bed, and an upholstered bench at the foot of the bed",
+   "furniture": "a king-size bed with crisp white bedding and a throw in {fabric} centred on the back wall, two bedside tables in {millwork}, a large soft rug under the bed, and an upholstered bench at the foot of the bed",
    "fx": [
     "Headboard wall",
     "Wall lights",
@@ -276,7 +248,7 @@
   },
   "bath": {
    "empty": ".review/b2/empty.png",
-   "fixtures": "a freestanding bathtub in front of the glazing on the left with a floor-standing {metal} bath filler, a wall-mounted {metal} rain shower head and mixer on the back wall, a floating double vanity in {joinery} with a {stone} top, two basins and {metal} wall taps on the right-hand wall, a large mirror above the vanity with a soft backlit glow, and a {metal} heated towel rail on the back wall",
+   "fixtures": "a freestanding bathtub in front of the glazing on the left with a floor-standing {metal} bath filler, a wall-mounted {metal} rain shower head and mixer on the back wall, a floating double vanity in {millwork} with a {stone} top, two basins and {metal} wall taps on the right-hand wall, a large mirror above the vanity with a soft backlit glow, and a {metal} heated towel rail on the back wall",
    "furniture": "white folded towels on the rail, a small timber stool with a candle beside the bath, a woven bath mat, and a potted olive tree in the corner by the glazing",
    "fx": [
     "Bath and filler",

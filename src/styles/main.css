@@ -3768,3 +3768,160 @@ body {
 .sitework__grid {
   align-items: start;
 }
+
+/* ---------- Content pass ---------- */
+/* Build story: a line under each heading */
+.film__line {
+  margin: var(--space-3) 0 0;
+  max-width: 26rem;
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.1875rem);
+  line-height: 1.5;
+  color: rgb(237 230 218 / 0.86);
+}
+
+/* The model film now runs to the end of its section (the board has its own page) */
+.film--build.is-live {
+  height: 898vh;
+}
+
+/* Teaser for the material board */
+.teaser {
+  display: grid;
+  gap: var(--space-6);
+  align-items: center;
+}
+
+.teaser__text {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+}
+
+.teaser__image {
+  position: relative;
+  margin: 0;
+}
+
+.teaser__image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (min-width: 56.25rem) {
+  .teaser {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+}
+
+/* Services: five cards, each with a heading and a line */
+.card__head {
+  font-family: var(--font-display);
+  font-size: 1.1875rem;
+  line-height: 1.3;
+  color: var(--plaster) !important;
+  min-height: 0 !important;
+}
+
+.card__tag {
+  min-height: 0 !important;
+  margin: 0;
+}
+
+.cards.is-interactive .card:not(.is-selected) .card__head {
+  color: rgb(237 230 218 / 0.62) !important;
+}
+
+@media (min-width: 80rem) {
+  .cards--five {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .cards--five .card {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .cards--five .card h3 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Process: the note under the steps */
+.proc__note {
+  margin: var(--space-4) 0 0;
+  font-size: var(--text-small);
+  color: var(--muted);
+}
+
+/* Copy still to come from the studio */
+mark.todo {
+  padding: 0.1em 0.4em;
+  border: 1px dashed var(--brass);
+  background: none;
+  color: var(--brass);
+  font-size: 0.85em;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- The material board's own page ---------- */
+.board-body {
+  background: var(--ink);
+}
+
+.board-page {
+  position: relative;
+  height: 100svh;
+  min-height: 34rem;
+  overflow: hidden;
+}
+
+.board-page .cfg.is-ready {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 700ms var(--ease);
+}
+
+.board-page__enquire {
+  position: absolute;
+  z-index: 3;
+  right: var(--gutter);
+  top: 5.25rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid rgb(184 147 90 / 0.7);
+  background: rgb(20 19 18 / 0.72);
+  color: var(--plaster);
+  font-size: var(--text-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.board-page__enquire:hover,
+.board-page__enquire:focus-visible {
+  background: var(--brass);
+  color: var(--ink);
+}
+
+@media (max-width: 47.99rem) {
+  .board-page__enquire {
+    display: none;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.pstep .pstep__note {
+  margin-top: var(--space-3);
+  font-size: 0.8125rem;
+  color: var(--muted);
+  font-style: italic;
+}

@@ -1,12 +1,12 @@
 import gsap from 'gsap';
 
 // The process as a lock you open. A brass dial is turned by hand through five positions:
-// Brief, Plan, Build, Style, Handover. Behind it the picture changes from a page of notes
+// Storytelling, Plan, Build, Furnishing, Handover. Behind it the picture changes from a page of notes
 // to a floor plan, bare walls and a furnished model, a week counter runs, and the last
 // turn of the dial turns the key and opens the door onto the finished home.
 const SWEEP = 270; // degrees of travel, from lower left round to lower right
-const WEEKS = [1, 5, 14, 21, 23]; // roughly where each step falls in the project
-const NAMES = ['Brief', 'Plan', 'Build', 'Style', 'Handover'];
+const WEEKS = [1, 4, 8, 16, 17]; // the week each step starts in, taking the longest of each stated range (1-3, 3-4, 1-8, within 1)
+const NAMES = ['Storytelling', 'Plan', 'Build', 'Furnishing', 'Handover'];
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
 export function initProcess({ reducedMotion }) {

@@ -867,3 +867,44 @@ so two blocks were added to hold them:
 - People are identifiable in several photographs. Published on the client's go-ahead.
 
 - Photo 2 removed from the Services section at the studio's request (file kept in `.review/site-extra`).
+
+## Content pass from the client's copy review (sheet "C Studio Interior: Website Copy Review")
+
+Applied as listed by the studio; answers taken from the sheet's Questions tab.
+
+- Hero: first floating line is now "Every space begins as a story." (the h1 remains the
+  studio name and motto).
+- Build story: five stages rewritten, each a heading and a line; 05 renamed Ambience.
+  06 Arrival ("Now open the door.") was not in the list and is unchanged.
+- Statement: now "You bring the story. We bring it to life." It REPLACES the earlier
+  "From imagination to creation" line in the same place (the brief said "add"; two
+  statements in a row made no sense).
+- Material board: moved to its own page, `/materials/` (`materials/index.html`,
+  `src/materials.js`), linked in the menu; a teaser with a button sits where it was.
+  The model film now ends its own section (898vh, was 1340vh). Rooms are chosen from the
+  list on the new page (no scroll between rooms). Choices are kept in the browser
+  (`cs-specification`) so the enquiry form on the main page still receives them.
+- Board: the Blue concrete look is removed (data and photographs). A "Colour" row is
+  added under Look: it opens the wall colours and switches the room to the surfaces
+  stage, where colour shows. MY READING of "add a colour option under Looks".
+- NOT DONE, needs the studio: "Spray painted" and "Plaster" are not names of any option
+  on the board. Candidates: "Venetian plaster" (wall finish; the Quiet stone look uses
+  it) and the lacquer finishes under Millwork. Nothing removed until confirmed.
+- Services: five cards (Residential, Commercial, Shop drawing and design, Project
+  management, Defect report). Commercial lists the same five points as Residential
+  ("same for now", per the sheet); the other three have none.
+- Process: steps renamed and re-timed; note about timelines under each step. Dial week
+  counter starts each step at week 1, 4, 8, 16, 17 (longest of each stated range). Step
+  05 has no duration (the sheet's answer, "Yes", did not say which).
+- "joinery" reads "millwork" everywhere visible, including the board's group name.
+- About: new heading and body. Founder NOT named (sheet: "Do not mention the founders
+  name"); line written from the sheet's facts: 5 years, millwork development for
+  high-end luxury, projects in SEA and the US from shop drawings to store opening.
+- Millwork partnership: moved after About; "Crafted in partnership with CTS Gen."
+  PLACEHOLDER on the page: [WHAT THE PARTNERSHIP COVERS] (sheet left it blank).
+  Permission to show the CTS name and logo: yes, but no logo file has been supplied.
+- Form: project types updated (adds Minor work; "Not sure yet" dropped as not listed);
+  Budget "Others" reveals a text box (`budget_other`).
+- Also changed for consistency: FAQ answer now says "Project management".
+- NOT CHANGED, now out of step: the FAQ "How long does a project take?" still says
+  three to five months; the reel and walkthrough videos show the old layout.

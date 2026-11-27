@@ -40,6 +40,8 @@ function renderApi() {
 // makes browsers fetch the new versions instead of reusing saved copies.
 export default defineConfig({
   plugins: [renderApi()],
+  // two pages: the site, and the material board at /materials/
+  build: { rollupOptions: { input: { main: 'index.html', materials: 'materials/index.html' } } },
   define: {
     __ASSET_VERSION__: JSON.stringify(Date.now().toString(36)),
   },

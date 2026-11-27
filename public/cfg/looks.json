@@ -197,28 +197,6 @@
    }
   },
   {
-   "id": "blue",
-   "label": "Blue concrete",
-   "line": "Microcement, dusty blue and matte black.",
-   "swatch": [
-    "#B4AFA6",
-    "#7F93A3"
-   ],
-   "surface": {
-    "floor": 8,
-    "finish": "venetian",
-    "colour": 6
-   },
-   "spec": {
-    "Flooring": "Microcement, seamless, matte",
-    "Walls": "Venetian plaster, dusty blue",
-    "Joinery": "Black-stained ash",
-    "Stone": "Concrete",
-    "Metal": "Matte black",
-    "Fabric": "Charcoal wool, stone grey linen"
-   }
-  },
-  {
    "id": "sand",
    "label": "Sand and oak",
    "line": "Light oak chevron, timber slats and brass.",

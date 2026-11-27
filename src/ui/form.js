@@ -31,6 +31,22 @@ export function initForm() {
   const stepNow = form.querySelector('[data-step-now]');
   const attempted = { 1: false, 2: false };
 
+  // "Others" under Budget range reveals a box to type an amount.
+  const budget = form.querySelector('#f-budget');
+  const budgetOther = form.querySelector('[data-budget-other]');
+  budget?.addEventListener('change', () => {
+    budgetOther.hidden = budget.value !== 'Others';
+    if (budgetOther.hidden) budgetOther.querySelector('input').value = '';
+    else budgetOther.querySelector('input').focus();
+  });
+  // The look and choices made on the material board (its own page) travel with the enquiry.
+  try {
+    const kept = localStorage.getItem('cs-specification');
+    if (kept) form.querySelector('[name="specification"]').value = kept;
+  } catch {
+    /* storage unavailable: the enquiry simply goes without them */
+  }
+
   function showError(input, message) {
     const field = input.closest('.field');
     let error = field.querySelector('.field__error');
