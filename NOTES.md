@@ -914,3 +914,5 @@ Applied as listed by the studio; answers taken from the sheet's Questions tab.
 ## Process is scroll-driven
 
 The Process section now holds in place (ScrollTrigger pin, 340% of a screen) while the page scrolls through the five steps; the dial, week counter and pictures follow. Turning the dial, its marks and the arrow keys move the scroll, so they stay in step. With reduced motion nothing is held and the dial is turned by hand. On phones the section is laid out to fit one screen (smaller dial, bottom right).
+
+- Model film ending regenerated: from the closed door (frame 250) the door now opens onto the hero's condominium living room (Kling, first frame = old frame 250, last frame = the hero clip's last frame). 330 frames in all three sets (was 325). Sources in `.review/door`. The scale model earlier in the film still shows the earlier house layout.
