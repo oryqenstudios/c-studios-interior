@@ -1,4 +1,7 @@
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // The process as a lock you open. A brass dial is turned by hand through five positions:
 // Storytelling, Plan, Build, Furnishing, Handover. Behind it the picture changes from a page of notes
@@ -71,9 +74,36 @@ export function initProcess({ reducedMotion }) {
     section.classList.toggle('is-open', v > 0.97);
   }
 
-  function turnTo(value, duration = 0.9) {
+  // Scrolling drives it: the section holds in place while the page scrolls through the
+  // five steps, and the dial follows. Turning the dial by hand, its marks and the arrow
+  // keys all work by moving the scroll, so the two can never disagree. (With reduced
+  // motion nothing is held: the dial is simply turned.)
+  const HOLD = 0.07; // a short rest at the first and last step
+  const pin = reducedMotion
+    ? null
+    : ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: '+=340%',
+        pin: true,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          state.value = clamp01((self.progress - HOLD) / (1 - 2 * HOLD));
+          if (self.progress > 0.02) section.classList.add('is-used');
+          apply();
+        },
+      });
+  const scrollFor = (value) => pin.start + (HOLD + clamp01(value) * (1 - 2 * HOLD)) * (pin.end - pin.start);
+
+  function turnTo(value, duration = 0.9, immediate = false) {
     section.classList.add('is-used');
-    gsap.to(state, { value: clamp01(value), duration: reducedMotion ? 0 : duration, ease: 'power3.out', overwrite: true, onUpdate: apply });
+    if (pin) {
+      const y = scrollFor(value);
+      if (window.__lenis) window.__lenis.scrollTo(y, immediate ? { immediate: true } : { duration });
+      else window.scrollTo({ top: y, behavior: immediate ? 'instant' : 'smooth' });
+      return;
+    }
+    gsap.to(state, { value: clamp01(value), duration: 0, overwrite: true, onUpdate: apply });
   }
 
   // Turning by hand: follow the change in the pointer's angle round the dial's centre,
@@ -96,6 +126,7 @@ export function initProcess({ reducedMotion }) {
     if (delta > 180) delta -= 360;
     if (delta < -180) delta += 360;
     drag = now;
+    if (pin) return turnTo(state.value + delta / SWEEP, 0, true);
     state.value = clamp01(state.value + delta / SWEEP);
     apply();
   });
@@ -118,19 +149,4 @@ export function initProcess({ reducedMotion }) {
 
   section.classList.add('is-live');
   apply();
-
-  // The first time it comes into view, the dial gives a small turn and returns, to show
-  // that it can be turned.
-  if (!reducedMotion && 'IntersectionObserver' in window) {
-    const seen = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        seen.disconnect();
-        if (section.classList.contains('is-used')) return;
-        gsap.to(state, { value: 0.13, duration: 0.7, ease: 'power2.inOut', yoyo: true, repeat: 1, delay: 0.5, onUpdate: apply });
-      },
-      { threshold: 0.6 },
-    );
-    seen.observe(section);
-  }
 }

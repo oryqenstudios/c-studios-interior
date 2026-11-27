@@ -3997,3 +3997,60 @@ mark.todo {
     transform: none;
   }
 }
+
+/* Process, held in place while the page scrolls through its steps: one screen tall */
+.proc.is-live .proc__inner {
+  height: 100svh;
+  min-height: 0;
+}
+
+/* Phones: everything fits the one held screen. The steps sit in the middle, the dial is
+   smaller and sits bottom right, and the site photographs in step 03 stay small. */
+@media (max-width: 47.99rem) {
+  .proc.is-live .proc__inner {
+    grid-template-rows: auto 1fr auto;
+    gap: var(--space-3);
+    padding-top: calc(var(--header-height) + var(--space-3));
+    padding-bottom: var(--space-4);
+  }
+
+  .proc.is-live .proc__steps {
+    min-height: 0;
+    margin-top: 0;
+    align-self: end;
+  }
+
+  .proc.is-live .proc__control {
+    justify-self: end;
+    width: min(46vw, 11.5rem);
+    margin: var(--space-5) var(--space-5) var(--space-5) 0;
+  }
+
+  .proc.is-live .pstep__photos {
+    max-width: 14rem;
+    margin: var(--space-2) 0;
+  }
+
+  .proc.is-live .proc__welcome {
+    top: 20%;
+  }
+
+  .proc.is-live .proc__notes span {
+    top: calc(var(--y) * 0.45 + 12%);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  /* the handwritten notes and the welcome sit in the gap between the text and the dial */
+  .proc.is-live .proc__notes span {
+    top: calc(var(--y) * 0.3 + 49%);
+  }
+
+  .proc.is-live .proc__welcome {
+    top: 57%;
+  }
+
+  .proc.is-live .proc__steps {
+    align-self: start;
+  }
+}

@@ -910,3 +910,7 @@ Applied as listed by the studio; answers taken from the sheet's Questions tab.
   three to five months; the reel and walkthrough videos show the old layout.
 
 - Material board teaser: no longer a separate block. After "Now open the door" the film holds on its last frame, then dissolves to the hero's finished room (`/film/hero/final-*.jpg`) with "Make it yours" and the button over it. The film section is 984vh with the film ending at 0.876, so the film's scroll speed is unchanged.
+
+## Process is scroll-driven
+
+The Process section now holds in place (ScrollTrigger pin, 340% of a screen) while the page scrolls through the five steps; the dial, week counter and pictures follow. Turning the dial, its marks and the arrow keys move the scroll, so they stay in step. With reduced motion nothing is held and the dial is turned by hand. On phones the section is laid out to fit one screen (smaller dial, bottom right).
