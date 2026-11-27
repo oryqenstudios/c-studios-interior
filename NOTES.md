@@ -865,3 +865,5 @@ so two blocks were added to hold them:
 - DRAFT COPY, mine: the two blocks' headings and captions. Nothing is claimed about the
   millwork partner beyond the heading.
 - People are identifiable in several photographs. Published on the client's go-ahead.
+
+- Photo 2 removed from the Services section at the studio's request (file kept in `.review/site-extra`).
