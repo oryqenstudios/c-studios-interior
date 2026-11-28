@@ -920,3 +920,5 @@ The Process section now holds in place (ScrollTrigger pin, 340% of a screen) whi
 - Millwork partnership: the three site photographs removed at the studio's request; heading and line of text remain. Photo 9 is no longer used anywhere (kept in `.review/site-extra`); photos 3 and 8 remain in Process step 03 and the case study.
 
 - Millwork partnership line filled from the client's reply ("Custom Millwork / For CTS Gen / In house"): "Through our partnership with CTS Gen, our custom millwork is made in-house." MY WORDING of three short notes; no placeholders remain on the page.
+
+- Millwork partnership line reworded at the studio's request: "Every piece of custom millwork is designed by our studio and crafted in-house through our partnership with CTS Gen, so what we draw is what gets built." Still rests only on the client's three notes; "designed by our studio" follows from the services list.
