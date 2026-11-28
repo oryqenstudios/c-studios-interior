@@ -898,7 +898,7 @@ Applied as listed by the studio; answers taken from the sheet's Questions tab.
   05 has no duration (the sheet's answer, "Yes", did not say which).
 - "joinery" reads "millwork" everywhere visible, including the board's group name.
 - About: new heading and body. Founder NOT named (sheet: "Do not mention the founders
-  name"); line written from the sheet's facts: 5 years, millwork development for
+  name"); line written from the sheet's facts, with the years corrected by the studio to 7 (the sheet said 5): millwork development for
   high-end luxury, projects in SEA and the US from shop drawings to store opening.
 - Millwork partnership: moved after About; "Crafted in partnership with CTS Gen."
   PLACEHOLDER on the page: [WHAT THE PARTNERSHIP COVERS] (sheet left it blank).
@@ -916,3 +916,5 @@ Applied as listed by the studio; answers taken from the sheet's Questions tab.
 The Process section now holds in place (ScrollTrigger pin, 340% of a screen) while the page scrolls through the five steps; the dial, week counter and pictures follow. Turning the dial, its marks and the arrow keys move the scroll, so they stay in step. With reduced motion nothing is held and the dial is turned by hand. On phones the section is laid out to fit one screen (smaller dial, bottom right).
 
 - Model film ending regenerated: from the closed door (frame 250) the door now opens onto the hero's condominium living room (Kling, first frame = old frame 250, last frame = the hero clip's last frame). 330 frames in all three sets (was 325). Sources in `.review/door`. The scale model earlier in the film still shows the earlier house layout.
+
+- Millwork partnership: the three site photographs removed at the studio's request; heading and line of text remain. Photo 9 is no longer used anywhere (kept in `.review/site-extra`); photos 3 and 8 remain in Process step 03 and the case study.
