@@ -922,3 +922,5 @@ The Process section now holds in place (ScrollTrigger pin, 340% of a screen) whi
 - Millwork partnership line filled from the client's reply ("Custom Millwork / For CTS Gen / In house"): "Through our partnership with CTS Gen, our custom millwork is made in-house." MY WORDING of three short notes; no placeholders remain on the page.
 
 - Millwork partnership line reworded at the studio's request: "Every piece of custom millwork is designed by our studio and crafted in-house through our partnership with CTS Gen, so what we draw is what gets built." Still rests only on the client's three notes; "designed by our studio" follows from the services list.
+
+- Millwork partnership line, chosen by the studio: "In partnership with CTS Gen, we design and produce custom millwork in-house, keeping every detail under one roof."
