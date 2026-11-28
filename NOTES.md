@@ -918,3 +918,5 @@ The Process section now holds in place (ScrollTrigger pin, 340% of a screen) whi
 - Model film ending regenerated: from the closed door (frame 250) the door now opens onto the hero's condominium living room (Kling, first frame = old frame 250, last frame = the hero clip's last frame). 330 frames in all three sets (was 325). Sources in `.review/door`. The scale model earlier in the film still shows the earlier house layout.
 
 - Millwork partnership: the three site photographs removed at the studio's request; heading and line of text remain. Photo 9 is no longer used anywhere (kept in `.review/site-extra`); photos 3 and 8 remain in Process step 03 and the case study.
+
+- Millwork partnership line filled from the client's reply ("Custom Millwork / For CTS Gen / In house"): "Through our partnership with CTS Gen, our custom millwork is made in-house." MY WORDING of three short notes; no placeholders remain on the page.
